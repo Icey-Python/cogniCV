@@ -1,0 +1,53 @@
+{
+  "name": "server",
+  "main": "app.ts",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "scripts": {
+    "dev": "tsx watch app.ts",
+    "build": "tsc",
+    "generateDocs": "tsx ./docs/generateDocs.ts && cp ./docs/openapi.json ./build/docs/openapi.json",
+    "deploy": "pm2 start  build/app.js --name template-backend --instances 2",
+    "start": "node ./build/app.js"
+  },
+  "dependencies": {
+    "@scalar/express-api-reference": "^0.8.40",
+    "axios": "^1.13.4",
+    "bcrypt": "^5.1.1",
+    "borgen": "^2.0.0",
+    "compression": "^1.8.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "express-basic-auth": "^1.2.1",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^7.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.6",
+    "node-cron": "^3.0.3",
+    "resend": "^6.9.1",
+    "swagger-jsdoc": "^6.2.8",
+    "ws": "^8.19.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "bcrypt"
+    ]
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/compression": "^1.8.1",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node-cron": "^3.0.11",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/ws": "^8.18.1",
+    "typescript": "^5.9.3"
+  }
+}
