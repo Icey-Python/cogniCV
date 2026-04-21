@@ -13,18 +13,10 @@
 			"src/*.{js,jsx,ts,tsx,json,css,md}": [
 				"pnpm exec biome check --write"
 			]
-		},
-		"prisma:generate": "prisma generate",
-		"prisma:migrate:dev": "prisma migrate dev",
-		"prisma:migrate:deploy": "prisma migrate deploy",
-		"prisma:studio": "prisma studio",
-		"prisma:seed": "prisma db seed",
-		"postinstall": "prisma generate && lefthook install"
+		}
 	},
 	"dependencies": {
 		"@biomejs/biome": "^2.3.12",
-		"@prisma/adapter-better-sqlite3": "^7.3.0",
-		"@prisma/client": "7.2.0",
 		"@radix-ui/react-slot": "^1.2.4",
 		"@tabler/icons-react": "^3.36.1",
 		"axios": "^1.13.3",
@@ -37,7 +29,6 @@
 		"lucide-react": "^0.475.0",
 		"next": "16.0.10",
 		"prettier-plugin-tailwindcss": "^0.6.14",
-		"prisma": "^7.3.0",
 		"react": "19.2.1",
 		"react-dom": "19.2.1",
 		"sharp": "^0.33.5",
@@ -50,12 +41,9 @@
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
-			"@prisma/client",
-			"@prisma/engines",
 			"better-sqlite3",
 			"esbuild",
 			"lefthook",
-			"prisma",
 			"sharp"
 		],
 		"overrides": {
