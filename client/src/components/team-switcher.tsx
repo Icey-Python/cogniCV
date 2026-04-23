@@ -5,8 +5,6 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	SidebarTrigger,
-	useSidebar
 } from '@/components/ui/sidebar';
 
 export function TeamSwitcher({
@@ -18,7 +16,6 @@ export function TeamSwitcher({
 		plan: string;
 	}[];
 }) {
-	const { isMobile } = useSidebar();
 	const [activeTeam, setActiveTeam] = React.useState(teams[0]);
 
 	if (!activeTeam) {
@@ -39,7 +36,6 @@ export function TeamSwitcher({
 						<span className="truncate font-semibold">{activeTeam.name}</span>
 						<span className="truncate text-xs">{activeTeam.plan}</span>
 					</div>
-					<SidebarTrigger className="-ml-1" />
 				</SidebarMenuButton>
 			</SidebarMenuItem>
 		</SidebarMenu>
