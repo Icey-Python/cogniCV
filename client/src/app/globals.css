@@ -130,7 +130,10 @@
 	--shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
 }
 
-@theme inline {
+@theme {
+	--breakpoint-2xl: 1400px;
+	--breakpoint-3xl: 1700px;
+
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
 	--color-card: var(--card);
