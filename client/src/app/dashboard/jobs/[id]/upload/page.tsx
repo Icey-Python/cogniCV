@@ -19,7 +19,7 @@ export default function JobUploadPage() {
 	}
 
 	return (
-		<div className="max-w-3xl mx-auto space-y-6">
+		<div className="max-w-6xl space-y-6">
 			<div>
 				<h1 className="text-2xl font-semibold">Upload Applicants</h1>
 				<p className="text-muted-foreground mt-1">
