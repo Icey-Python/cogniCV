@@ -6,25 +6,37 @@ import { type RankedCandidate } from '@/types';
 import { ApplicantInsightDrawer } from '@/components/jobs/applicant-insight-drawer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+	CardDescription
+} from '@/components/ui/card';
 import { RankedApplicantsTable } from '@/components/jobs/ranked-applicants-table';
 import { IconSearch } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 
-const allCandidates = Object.entries(MOCK_RANKED_CANDIDATES).flatMap(([jobId, candidates]) => {
-	const job = MOCK_JOBS.find((j) => j._id === jobId);
-	return candidates.map((c) => ({ ...c, job }));
-});
+const allCandidates = Object.entries(MOCK_RANKED_CANDIDATES).flatMap(
+	([jobId, candidates]) => {
+		const job = MOCK_JOBS.find((j) => j._id === jobId);
+		return candidates.map((c) => ({ ...c, job }));
+	}
+);
 
 export default function ApplicantsPage() {
 	const [search, setSearch] = useState('');
 	const [selected, setSelected] = useState<RankedCandidate | null>(null);
 	const [drawerOpen, setDrawerOpen] = useState(false);
+	const [selectedJobId, setSelectedJobId] = useState<string | undefined>(
+		undefined
+	);
 
 	const filtered = useMemo(() => {
 		const q = search.toLowerCase();
 		return allCandidates.filter((c) => {
-			const name = `${c.profileSnapshot.firstName} ${c.profileSnapshot.lastName}`.toLowerCase();
+			const name =
+				`${c.profileSnapshot.firstName} ${c.profileSnapshot.lastName}`.toLowerCase();
 			const headline = c.profileSnapshot.headline.toLowerCase();
 			const jobTitle = (c.job?.title ?? '').toLowerCase();
 			return name.includes(q) || headline.includes(q) || jobTitle.includes(q);
@@ -33,6 +45,9 @@ export default function ApplicantsPage() {
 
 	const openDrawer = (candidate: RankedCandidate) => {
 		setSelected(candidate);
+		setSelectedJobId(
+			(candidate as RankedCandidate & { job?: { _id: string } }).job?._id
+		);
 		setDrawerOpen(true);
 	};
 
@@ -46,24 +61,29 @@ export default function ApplicantsPage() {
 					</p>
 				</div>
 				<div className="relative">
-					<IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+					<IconSearch className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
 					<Input
 						placeholder="Search by name, role, or job..."
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
-						className="pl-9 w-120"
+						className="w-120 pl-9"
 					/>
 				</div>
 			</div>
 
 			<Card>
-				<RankedApplicantsTable candidates={filtered} onRowClick={openDrawer} showJob />
+				<RankedApplicantsTable
+					candidates={filtered}
+					onRowClick={openDrawer}
+					showJob
+				/>
 			</Card>
 
 			<ApplicantInsightDrawer
 				candidate={selected}
 				open={drawerOpen}
 				onOpenChange={setDrawerOpen}
+				jobId={selectedJobId}
 			/>
 		</div>
 	);
