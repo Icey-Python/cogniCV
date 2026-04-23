@@ -64,13 +64,13 @@ export default function NewJobPage() {
 				<div className="mx-auto size-24 relative">
 					<div className="absolute inset-0 bg-primary/10 rounded-full animate-ping opacity-20" />
 					<div className="relative size-full rounded-full bg-primary/5 flex items-center justify-center border border-primary/20">
-						<svg 
-							viewBox="0 0 24 24" 
-							fill="none" 
-							className="size-12 text-primary" 
-							stroke="currentColor" 
-							strokeWidth="3" 
-							strokeLinecap="round" 
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							className="size-12 text-primary"
+							stroke="currentColor"
+							strokeWidth="3"
+							strokeLinecap="round"
 							strokeLinejoin="round"
 						>
 							<path d="M20 6L9 17L4 12" />
@@ -94,7 +94,7 @@ export default function NewJobPage() {
 							{jobType === 'internal' ? (
 								<><IconUsers className="mr-2 size-5" /> View Applicants</>
 							) : (
-								<><IconUpload className="mr-2 size-5" /> Upload Applicants</>
+								<><IconUpload className="mr-2 size-5" /> Import Applications</>
 							)}
 						</Link>
 					</Button>
