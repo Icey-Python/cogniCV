@@ -4,7 +4,6 @@ import { type RankedCandidate } from '@/types';
 import {
 	Sheet,
 	SheetContent,
-	SheetHeader,
 	SheetTitle,
 	SheetDescription
 } from '@/components/ui/sheet';
@@ -14,22 +13,19 @@ import {
 	IconCircleCheck,
 	IconAlertTriangle,
 	IconTrophy,
-	IconBriefcase,
-	IconSchool,
-	IconClock,
 	IconExternalLink,
 	IconStar,
-	IconChartBar,
 	IconBolt
 } from '@tabler/icons-react';
-import { cn } from '@/lib/utils';
 
 import { CircularScoreProgress } from '@/components/jobs/ranked-applicants-table';
+import Link from 'next/link';
 
 interface ApplicantInsightDrawerProps {
 	candidate: RankedCandidate | null;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
+	jobId?: string;
 }
 
 function RankBadge({ rank }: { rank: number }) {
@@ -50,7 +46,8 @@ function RankBadge({ rank }: { rank: number }) {
 export function ApplicantInsightDrawer({
 	candidate,
 	open,
-	onOpenChange
+	onOpenChange,
+	jobId
 }: ApplicantInsightDrawerProps) {
 	if (!candidate) return null;
 
@@ -109,6 +106,16 @@ export function ApplicantInsightDrawer({
 							>
 								{p.availability.status}
 							</span>
+							<Link
+								href={
+									jobId
+										? `/dashboard/applicants/${p._id}?jobId=${jobId}`
+										: `/dashboard/applicants/${p._id}`
+								}
+								className="text-primary ml-auto text-sm underline underline-offset-2 hover:underline"
+							>
+								Detailed Analysis
+							</Link>
 						</div>
 					</div>
 				</div>
