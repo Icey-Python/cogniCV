@@ -288,39 +288,68 @@ export default function JobsPage() {
 				</section>
 
 				{/* Filters */}
-				<section className="mt-6 rounded-3xl border border-border/70 bg-card/85 p-4 shadow-sm md:p-5">
-					<div className="grid gap-4 lg:grid-cols-[1fr_2fr]">
-						<div className="relative col-span-full lg:col-span-1">
-							<IconSearch className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+				<section className="mt-6 rounded-2xl border border-border/70 bg-card/85 p-2 shadow-sm transition-all focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50">
+					<div className="flex flex-col md:flex-row md:items-center gap-2">
+						<div className="relative flex-1 group">
+							<IconSearch className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
 							<Input
 								value={searchValue}
 								onChange={(e) => setSearchValue(e.target.value)}
-								placeholder="Search by role, company, or skill"
-								className="pl-9"
+								placeholder="Search by role, company, or skill..."
+								className="pl-12 h-14 border-none bg-transparent focus-visible:ring-0 shadow-none text-base"
 							/>
 						</div>
-						<div className="col-span-full flex flex-col gap-3 lg:col-span-1">
-							<div className="flex flex-wrap gap-2">
-								{EMPLOYMENT_FILTERS.map((f) => (
-									<Button key={f} type="button" variant={typeFilter === f ? 'default' : 'outline'} size="sm" onClick={() => setTypeFilter(f)}>
-										{f}
-									</Button>
-								))}
+						<div className="hidden md:block w-px h-8 bg-border/70" />
+						<div className="flex items-center gap-2 px-3 pb-3 md:pb-0 overflow-x-auto shrink-0 hide-scrollbar">
+							<div className="relative">
+								<select
+									value={typeFilter}
+									onChange={(e) => setTypeFilter(e.target.value as 'All' | EmploymentType)}
+									className={cn("h-10 pl-4 pr-8 rounded-full border bg-background/50 text-sm font-medium focus:outline-hidden appearance-none cursor-pointer hover:bg-muted/50 transition-colors", typeFilter !== 'All' ? "border-primary text-primary" : "border-border/60")}
+								>
+									{EMPLOYMENT_FILTERS.map(f => <option key={f} value={f}>{f === 'All' ? 'Job Type' : f}</option>)}
+								</select>
+								<div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+									<svg className="size-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+								</div>
 							</div>
-							<div className="flex flex-wrap gap-2">
-								{EXPERIENCE_LEVELS.map((l) => (
-									<Button key={l} type="button" variant={experienceFilter === l ? 'default' : 'outline'} size="sm" onClick={() => setExperienceFilter(l)}>
-										{l === 'All' ? 'Experience: All' : l}
-									</Button>
-								))}
+							
+							<div className="relative">
+								<select
+									value={experienceFilter}
+									onChange={(e) => setExperienceFilter(e.target.value as 'All' | ExperienceLevel)}
+									className={cn("h-10 pl-4 pr-8 rounded-full border bg-background/50 text-sm font-medium focus:outline-hidden appearance-none cursor-pointer hover:bg-muted/50 transition-colors", experienceFilter !== 'All' ? "border-primary text-primary" : "border-border/60")}
+								>
+									{EXPERIENCE_LEVELS.map(f => <option key={f} value={f}>{f === 'All' ? 'Experience' : f}</option>)}
+								</select>
+								<div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+									<svg className="size-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+								</div>
 							</div>
-							<div className="flex flex-wrap gap-2">
-								{locationFilters.map((loc) => (
-									<Button key={loc} type="button" variant={locationFilter === loc ? 'secondary' : 'outline'} size="sm" onClick={() => setLocationFilter(loc)}>
-										{loc === 'All' ? 'All locations' : loc}
-									</Button>
-								))}
+
+							<div className="relative">
+								<select
+									value={locationFilter}
+									onChange={(e) => setLocationFilter(e.target.value)}
+									className={cn("h-10 pl-4 pr-8 rounded-full border bg-background/50 text-sm font-medium focus:outline-hidden appearance-none cursor-pointer hover:bg-muted/50 transition-colors", locationFilter !== 'All' ? "border-primary text-primary" : "border-border/60")}
+								>
+									{locationFilters.map(f => <option key={f} value={f}>{f === 'All' ? 'Location' : f}</option>)}
+								</select>
+								<div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+									<svg className="size-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+								</div>
 							</div>
+
+							{(typeFilter !== 'All' || experienceFilter !== 'All' || locationFilter !== 'All' || searchValue !== '') && (
+								<Button 
+									variant="ghost" 
+									size="sm" 
+									onClick={() => {setTypeFilter('All'); setExperienceFilter('All'); setLocationFilter('All'); setSearchValue('');}} 
+									className="text-muted-foreground hover:text-foreground h-10 rounded-full px-4 ml-1"
+								>
+									Clear all
+								</Button>
+							)}
 						</div>
 					</div>
 				</section>

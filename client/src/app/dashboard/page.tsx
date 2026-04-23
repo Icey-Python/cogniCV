@@ -336,11 +336,11 @@ export default function DashboardPage() {
 			<aside className="w-64 shrink-0 border-r border-border/60 bg-card/40 backdrop-blur-xl">
 				<div className="flex h-full flex-col px-4 py-6">
 					<div className="mb-8 px-2">
-						<div className="gap-2 flex items-center text-sm font-medium text-primary">
+						<div className="gap-2 flex items-center text-xl font-serif font-medium text-primary">
 							<div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
 								<IconSparkles className="size-4" />
 							</div>
-							CogniCV Recruiting
+							CogniCV
 						</div>
 					</div>
 
