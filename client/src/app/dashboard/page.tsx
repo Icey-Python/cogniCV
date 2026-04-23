@@ -1,5 +1,5 @@
+import { RecruiterDashboard } from '@/components/dashboard/recruiter-dashboard';
+
 export default function Page() {
-  return (
-  <p>Hello from your dashboard!</p>
-  )
+	return <RecruiterDashboard />;
 }

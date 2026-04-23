@@ -14,7 +14,7 @@
   --secondary: oklch(0.1884 0.0128 248.5103);
   --secondary-foreground: oklch(1.0000 0 0);
   --muted: oklch(0.9222 0.0013 286.3737);
-  --muted-foreground: oklch(0.1884 0.0128 248.5103);
+  --muted-foreground: oklch(0.1884 0.0128 248.5103); 
   --accent: oklch(0.9392 0.0166 250.8453);
   --accent-foreground: oklch(0.6723 0.1606 244.9955);
   --destructive: oklch(0.6188 0.2376 25.7658);
@@ -38,7 +38,7 @@
   --font-sans: Work Sans, ui-sans-serif, sans-serif, system-ui;
   --font-serif: Lora, serif;
   --font-mono: "JetBrains Mono", monospace;
-  --radius: 1.3rem;
+  --radius: 0.5rem;
   --shadow-x: 0px;
   --shadow-y: 2px;
   --shadow-blur: 0px;
@@ -93,7 +93,7 @@
   --font-sans: Work Sans, ui-sans-serif, sans-serif, system-ui;
   --font-serif: Lora, serif;
   --font-mono: "JetBrains Mono", monospace;
-  --radius: 1.3rem;
+  --radius: 0.5rem;
   --shadow-x: 0px;
   --shadow-y: 2px;
   --shadow-blur: 0px;
@@ -169,5 +169,46 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@keyframes rise-in {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@layer utilities {
+  .animate-rise-in {
+    animation: rise-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .animate-pop-in {
+    animation: pop-in 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise-in,
+  .animate-pop-in {
+    animation: none !important;
   }
 }

@@ -2,6 +2,8 @@ import './globals.css';
 import { Work_Sans, Lora, JetBrains_Mono } from 'next/font/google';
 import type { Metadata, Viewport } from 'next';
 
+import { Navbar } from '@/components/layout/navbar';
+
 const fontSans = Work_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -56,9 +58,14 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			 <body className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased`}>
-        {children}
-      </body>
+			<body
+				className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased`}
+			>
+				<div className="min-h-screen bg-background text-foreground">
+					<Navbar />
+					{children}
+				</div>
+			</body>
 		</html>
 	);
 }
