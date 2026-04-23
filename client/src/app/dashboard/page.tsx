@@ -365,16 +365,6 @@ export default function DashboardPage() {
 							</button>
 						))}
 					</nav>
-
-					<div className="mt-auto px-2">
-						<div className="rounded-xl border border-border/50 bg-background/50 p-4">
-							<p className="text-sm font-medium">Credits Remaining</p>
-							<div className="mt-2 h-2 w-full rounded-full bg-muted">
-								<div className="h-full w-3/4 rounded-full bg-primary" />
-							</div>
-							<p className="mt-2 text-xs text-muted-foreground">15,000 / 20,000 resumes</p>
-						</div>
-					</div>
 				</div>
 			</aside>
 
