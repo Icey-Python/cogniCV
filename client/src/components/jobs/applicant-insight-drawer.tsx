@@ -24,43 +24,24 @@ import {
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 
+import { CircularScoreProgress } from '@/components/jobs/ranked-applicants-table';
+
 interface ApplicantInsightDrawerProps {
 	candidate: RankedCandidate | null;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 }
 
-function ScoreBar({ score }: { score: number }) {
-	const getColor = (s: number) => {
-		if (s >= 90) return 'bg-emerald-500';
-		if (s >= 75) return 'bg-primary';
-		if (s >= 60) return 'bg-amber-500';
-		return 'bg-red-500';
-	};
-
-	return (
-		<div className="flex items-center gap-3">
-			<div className="h-1.5 flex-1 rounded-full bg-muted overflow-hidden">
-				<div
-					className={cn('h-full rounded-full transition-all duration-700', getColor(score))}
-					style={{ width: `${score}%` }}
-				/>
-			</div>
-			<span className="text-sm font-bold tabular-nums w-9 text-right">{score}</span>
-		</div>
-	);
-}
-
 function RankBadge({ rank }: { rank: number }) {
 	if (rank === 1) {
 		return (
-			<div className="flex items-center justify-center size-8 rounded-full bg-amber-50 border border-amber-200 text-amber-600 font-bold text-sm">
+			<div className="flex items-center justify-center size-8 rounded-full bg-white border border-amber-200 text-amber-600 font-bold text-sm">
 				<IconTrophy className="size-4" />
 			</div>
 		);
 	}
 	return (
-		<div className="flex items-center justify-center size-8 rounded-full bg-muted border border-border text-muted-foreground font-bold text-sm">
+		<div className="flex items-center justify-center size-8 rounded-full bg-white border border-border text-muted-foreground font-bold text-sm">
 			{rank}
 		</div>
 	);
@@ -81,11 +62,11 @@ export function ApplicantInsightDrawer({
 
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
-			<SheetContent className="w-full sm:max-w-lg p-0 flex flex-col gap-0" side="right">
+			<SheetContent className="w-full sm:max-w-lg p-0 flex flex-col gap-0 border-l border-border bg-white" side="right">
 				{/* Header */}
-				<div className="flex items-start gap-4 p-6 border-b">
+				<div className="flex items-start gap-4 p-6 border-b border-border bg-white">
 					<div className="relative">
-						<div className="size-14 rounded-xl bg-primary/10 flex items-center justify-center text-lg font-bold text-primary">
+						<div className="size-14 rounded-xl border border-border bg-white flex items-center justify-center text-lg font-bold text-primary">
 							{initials}
 						</div>
 						<div className="absolute -bottom-1 -right-1">
@@ -93,7 +74,7 @@ export function ApplicantInsightDrawer({
 						</div>
 					</div>
 					<div className="flex-1 min-w-0">
-						<SheetTitle className="text-xl">
+						<SheetTitle className="text-xl font-serif">
 							{p.firstName} {p.lastName}
 						</SheetTitle>
 						<SheetDescription className="text-sm mt-0.5">{p.headline}</SheetDescription>
@@ -110,79 +91,67 @@ export function ApplicantInsightDrawer({
 					</div>
 				</div>
 
-				<ScrollArea className="flex-1">
-					<div className="p-6 space-y-6">
-						{/* Match Score */}
-						<div className="rounded-lg border p-5 text-center space-y-1">
-							<p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">AI Match Score</p>
-							<p className={cn('text-5xl font-black tabular-nums', scoreColor)}>{matchScore}</p>
-							<p className="text-xs text-muted-foreground">out of 100</p>
-						</div>
-
-						{/* Score breakdown */}
-						<div className="space-y-3">
-							<h4 className="text-xs font-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-								<IconChartBar className="size-3.5" /> Score Breakdown
-							</h4>
-							<div className="rounded-lg border p-4 space-y-3">
+				<ScrollArea className="flex-1 bg-white">
+					<div className="p-6 space-y-8">
+						{/* Match Score & Breakdown Grid */}
+						<div className="grid grid-cols-2 gap-6">
+							<div className="flex flex-col items-center justify-center rounded-lg border border-border p-6 text-center">
+								<p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-4">Overall Match</p>
+								<div className="scale-150 transform">
+									<CircularScoreProgress score={matchScore} />
+								</div>
+							</div>
+							<div className="grid grid-cols-2 gap-4">
 								{[
-									{ icon: IconBolt, label: 'Skills', score: subScores.skills, weight: '40%' },
-									{ icon: IconBriefcase, label: 'Experience', score: subScores.experience, weight: '30%' },
-									{ icon: IconSchool, label: 'Education', score: subScores.education, weight: '15%' },
-									{ icon: IconClock, label: 'Availability', score: subScores.availability, weight: '15%' },
-								].map(({ icon: Icon, label, score, weight }) => (
-									<div key={label} className="space-y-1">
-										<div className="flex justify-between items-center text-sm">
-											<span className="flex items-center gap-1.5 font-medium">
-												<Icon className="size-3.5 text-muted-foreground" />
-												{label}
-											</span>
-											<span className="text-[11px] text-muted-foreground">{weight}</span>
-										</div>
-										<ScoreBar score={score} />
+									{ label: 'Skills', score: subScores.skills },
+									{ label: 'Experience', score: subScores.experience },
+									{ label: 'Education', score: subScores.education },
+									{ label: 'Availability', score: subScores.availability },
+								].map(({ label, score }) => (
+									<div key={label} className="flex flex-col items-center justify-center rounded-lg border border-border p-3 text-center">
+										<CircularScoreProgress score={score} />
+										<span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mt-2">{label}</span>
 									</div>
 								))}
 							</div>
 						</div>
 
 						{/* AI Recommendation */}
-						<div className="space-y-2">
+						<div className="space-y-3">
 							<h4 className="text-xs font-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-								<IconStar className="size-3.5" /> AI Recommendation
+								<IconStar className="size-3.5 text-primary" /> AI Recommendation
 							</h4>
-							<blockquote className="rounded-lg border-l-4 border-primary bg-primary/5 p-4 text-sm italic leading-relaxed">
+							<blockquote className="border-l-4 border-primary pl-4 py-1 text-sm italic leading-relaxed text-foreground">
 								&ldquo;{recommendation}&rdquo;
 							</blockquote>
 						</div>
 
-						{/* Strengths */}
-						<div className="space-y-2">
-							<h4 className="text-xs font-medium uppercase tracking-wider text-emerald-600 flex items-center gap-1.5">
-								<IconCircleCheck className="size-3.5" /> Strengths
-							</h4>
-							<ul className="space-y-2">
-								{strengths.map((s, i) => (
-									<li key={i} className="flex items-start gap-2 text-sm bg-emerald-50 p-3 rounded-lg border border-emerald-100">
-										<IconCircleCheck className="size-4 text-emerald-500 shrink-0 mt-0.5" />
-										<span>{s}</span>
-									</li>
-								))}
-							</ul>
-						</div>
-
-						{/* Gaps */}
-						<div className="space-y-2">
-							<h4 className="text-xs font-medium uppercase tracking-wider text-amber-600 flex items-center gap-1.5">
-								<IconAlertTriangle className="size-3.5" /> Gaps
-							</h4>
-							<ul className="space-y-2">
-								{gaps.map((g, i) => (
-									<li key={i} className="flex items-start gap-2 text-sm bg-amber-50 p-3 rounded-lg border border-amber-100">
-										<IconAlertTriangle className="size-4 text-amber-500 shrink-0 mt-0.5" />
-										<span>{g}</span>
-									</li>
-								))}
-							</ul>
+						{/* Strengths & Gaps */}
+						<div className="grid gap-6 sm:grid-cols-2">
+							<div className="space-y-3">
+								<h4 className="text-xs font-medium uppercase tracking-wider text-emerald-600 flex items-center gap-1.5">
+									<IconCircleCheck className="size-3.5" /> Strengths
+								</h4>
+								<ul className="space-y-3">
+									{strengths.map((s, i) => (
+										<li key={i} className="flex items-start gap-2 text-sm border-l-2 border-emerald-500 pl-3 py-0.5">
+											<span className="leading-snug">{s}</span>
+										</li>
+									))}
+								</ul>
+							</div>
+							<div className="space-y-3">
+								<h4 className="text-xs font-medium uppercase tracking-wider text-amber-600 flex items-center gap-1.5">
+									<IconAlertTriangle className="size-3.5" /> Gaps
+								</h4>
+								<ul className="space-y-3">
+									{gaps.map((g, i) => (
+										<li key={i} className="flex items-start gap-2 text-sm border-l-2 border-amber-500 pl-3 py-0.5">
+											<span className="leading-snug">{g}</span>
+										</li>
+									))}
+								</ul>
+							</div>
 						</div>
 
 						{/* Skills */}

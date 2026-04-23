@@ -51,11 +51,9 @@ export default function DashboardPage() {
 				<Card className="lg:col-span-2">
 					<CardHeader className="flex flex-row items-center justify-between pb-3">
 						<CardTitle className="text-base">Recent Job Postings</CardTitle>
-						<Button variant="ghost" size="sm" asChild>
-							<Link href="/dashboard/jobs" className="gap-1 text-xs">
-								View all <IconArrowRight className="size-3.5" />
-							</Link>
-						</Button>
+						<Link href="/dashboard/jobs" className="text-sm text-primary font-medium gap-1">
+							View all
+						</Link>
 					</CardHeader>
 					<CardContent className="p-0">
 						<div className="divide-y">

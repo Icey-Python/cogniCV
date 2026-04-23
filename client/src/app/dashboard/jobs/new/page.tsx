@@ -76,7 +76,7 @@ export default function NewJobPage() {
 						<Link href="/dashboard/jobs">Back to Jobs</Link>
 					</Button>
 					<Button asChild>
-						<Link href="/dashboard/jobs">
+						<Link href={jobType === 'internal' ? '/dashboard/jobs/j1' : '/dashboard/jobs/j2/upload'}>
 							{jobType === 'internal' ? (
 								<><IconUsers className="mr-2 size-4" /> View Applicants</>
 							) : (
