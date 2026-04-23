@@ -44,15 +44,6 @@ export default function JobListingsPage() {
 
 			{/* Filters — no background */}
 			<div className="flex flex-col  sm:flex-row gap-3 items-start sm:items-center justify-between">
-				<div className="relative w-full flex-2 sm:max-w-md">
-					<IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-					<Input
-						placeholder="Search jobs..."
-						value={searchQuery}
-						onChange={(e) => setSearchQuery(e.target.value)}
-						className="pl-9"
-					/>
-				</div>
 				<div className="flex items-center gap-2">
 					<Select value={statusFilter} onValueChange={setStatusFilter}>
 						<SelectTrigger className="w-[140px]">
@@ -75,6 +66,15 @@ export default function JobListingsPage() {
 							<SelectItem value="external">External</SelectItem>
 						</SelectContent>
 					</Select>
+				</div>
+				<div className="relative w-full flex-2 sm:max-w-md">
+					<IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+					<Input
+						placeholder="Search jobs..."
+						value={searchQuery}
+						onChange={(e) => setSearchQuery(e.target.value)}
+						className="pl-9"
+					/>
 				</div>
 			</div>
 
