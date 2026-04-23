@@ -19,10 +19,10 @@ export function JobCard({ job }: JobCardProps) {
 		<Link href={`/dashboard/jobs/${job._id}`} className="group block h-full">
 			<Card className="h-full transition-all duration-200 hover:border-primary/40 cursor-pointer">
 				<CardHeader className="pb-3">
-					<CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2">
+					<CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2 font-lora">
 						{job.title}
 					</CardTitle>
-					<p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed mt-1">
+					<p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed my-2">
 						{job.description}
 					</p>
 				</CardHeader>
