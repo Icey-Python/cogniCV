@@ -1,17 +1,25 @@
 import './globals.css';
-import { DM_Sans } from 'next/font/google';
+import { Work_Sans, Lora, JetBrains_Mono } from 'next/font/google';
 import type { Metadata, Viewport } from 'next';
 
-const dmSans = DM_Sans({
-	subsets: ['latin'],
-	display: 'swap',
-	variable: '--font-dm-sans',
-	weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
+const fontSans = Work_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const fontSerif = Lora({
+  subsets: ["latin"],
+  variable: "--font-serif",
+});
+
+const fontMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
 });
 
 export const metadata: Metadata = {
-	title: 'Your wesite title | Goes here for now',
-	description: 'This is a custom description for your website',
+	title: 'cogniCV | AI-powered ATS analyzer for job seekers',
+	description: 'cogniCV is an AI-powered ATS analyzer designed to help job seekers optimize their resumes for Applicant Tracking Systems (ATS). With cogniCV, users can easily upload their resumes and receive detailed feedback on how well their resumes are likely to perform in ATS screenings. The tool provides actionable insights and recommendations to improve resume formatting, keyword usage, and overall content, increasing the chances of getting noticed by recruiters and landing job interviews.',
 	metadataBase: new URL('https://yourwebsite.com'),
 	openGraph: {
 		type: 'website',
@@ -48,7 +56,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={dmSans.className}>{children}</body>
+			 <body className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased`}>
+        {children}
+      </body>
 		</html>
 	);
 }
