@@ -24,6 +24,10 @@ function isActive(pathname: string, href: string): boolean {
 export function Navbar() {
 	const pathname = usePathname();
 
+	if (pathname.startsWith('/dashboard')) {
+		return null;
+	}
+
 	return (
 		<header className="sticky top-0 z-50 border-b border-border/70 bg-background/80 backdrop-blur-xl">
 			<div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8">
