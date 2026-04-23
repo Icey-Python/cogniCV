@@ -2,15 +2,15 @@
 
 import { formatDistanceToNow } from 'date-fns';
 import {
-	BriefcaseBusiness,
-	Building2,
-	CheckCircle2,
-	FileUp,
-	MapPin,
-	Search,
-	Sparkles,
-	X
-} from 'lucide-react';
+	IconBriefcase,
+	IconBuilding,
+	IconCircleCheck,
+	IconFileUpload,
+	IconMapPin,
+	IconSearch,
+	IconSparkles,
+	IconX
+} from '@tabler/icons-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
@@ -68,16 +68,16 @@ function JobDetailDrawer({
 					<p className="mt-2 text-sm text-muted-foreground">{job.company}</p>
 				</div>
 				<Button type="button" variant="ghost" size="icon" onClick={onClose}>
-					<X className="size-4" />
+					<IconX className="size-4" />
 				</Button>
 			</div>
 
 			<div className="grid gap-3 rounded-2xl border border-border/70 bg-card/80 p-4 text-sm">
 				<p className="inline-flex items-center gap-2 text-muted-foreground">
-					<MapPin className="size-4" /> {job.location}
+					<IconMapPin className="size-4" /> {job.location}
 				</p>
 				<p className="inline-flex items-center gap-2 text-muted-foreground">
-					<BriefcaseBusiness className="size-4" /> {job.type} · {job.experienceLevel}
+					<IconBriefcase className="size-4" /> {job.type} · {job.experienceLevel}
 				</p>
 				<p className="text-muted-foreground">Compensation range: {job.salaryRange}</p>
 			</div>
@@ -106,7 +106,7 @@ function JobDetailDrawer({
 					Upload your documents and get analyzed against this job before recruiter review.
 				</p>
 				<Button className="mt-4 w-full" onClick={onApply}>
-					<FileUp className="size-4" /> Apply and upload docs
+					<IconFileUpload className="size-4" /> Apply and upload docs
 				</Button>
 			</div>
 		</div>
@@ -152,7 +152,7 @@ function ApplyModal({
 						<h3 className="mt-2 font-serif text-2xl text-foreground">Apply for {job.title}</h3>
 					</div>
 					<Button type="button" variant="ghost" size="icon" onClick={onClose}>
-						<X className="size-4" />
+						<IconX className="size-4" />
 					</Button>
 				</div>
 
@@ -195,7 +195,7 @@ function ApplyModal({
 				{applyState === 'complete' && (
 					<div className="mt-4 rounded-2xl border border-primary/30 bg-primary/10 p-4">
 						<p className="inline-flex items-center gap-2 font-medium text-foreground">
-							<CheckCircle2 className="size-4 text-primary" /> Application submitted
+							<IconCircleCheck className="size-4 text-primary" /> Application submitted
 						</p>
 						<p className="mt-2 text-sm text-muted-foreground">
 							Your profile is now in the screening queue. Recruiters will see your match score and reasoning insights.
@@ -260,7 +260,7 @@ export default function JobsPage() {
 					<div className="grid gap-6 md:grid-cols-[1.5fr_1fr] md:items-end">
 						<div>
 							<p className="mb-3 inline-flex items-center gap-2 text-sm text-muted-foreground">
-								<Sparkles className="size-4 text-primary" />
+								<IconSparkles className="size-4 text-primary" />
 								Curated roles for AI talent products
 							</p>
 							<h1 className="font-serif text-3xl text-foreground md:text-4xl">
@@ -291,7 +291,7 @@ export default function JobsPage() {
 				<section className="mt-6 rounded-3xl border border-border/70 bg-card/85 p-4 shadow-sm md:p-5">
 					<div className="grid gap-4 lg:grid-cols-[1fr_2fr]">
 						<div className="relative col-span-full lg:col-span-1">
-							<Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+							<IconSearch className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 							<Input
 								value={searchValue}
 								onChange={(e) => setSearchValue(e.target.value)}
@@ -342,7 +342,7 @@ export default function JobsPage() {
 								<div>
 									<h3 className="text-base font-semibold text-foreground md:text-lg">{job.title}</h3>
 									<p className="mt-2 inline-flex items-center gap-2 text-sm text-muted-foreground">
-										<Building2 className="size-4" /> {job.company}
+										<IconBuilding className="size-4" /> {job.company}
 									</p>
 								</div>
 								<Badge variant={getStatusVariant(job.status)}>{job.status}</Badge>
@@ -350,10 +350,10 @@ export default function JobsPage() {
 							<p className="mt-4 line-clamp-2 text-sm text-muted-foreground">{job.summary}</p>
 							<div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
 								<span className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-1">
-									<MapPin className="size-3.5" /> {job.location}
+									<IconMapPin className="size-3.5" /> {job.location}
 								</span>
 								<span className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-1">
-									<BriefcaseBusiness className="size-3.5" /> {job.type}
+									<IconBriefcase className="size-3.5" /> {job.type}
 								</span>
 							</div>
 							<div className="mt-5 flex items-center justify-between text-xs">

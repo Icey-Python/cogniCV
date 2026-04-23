@@ -2,7 +2,7 @@
 //  Update this file with the actual API call to refresh the user data
 
 import { useUserStore } from '@/store/user';
-import { Loader } from 'lucide-react';
+import { IconLoader2 } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
@@ -61,7 +61,7 @@ const withUserAuthRequired = (ChildComponent: React.ComponentType<any>) => {
 		if (isLoading) {
 			return (
 				<div className="absolute bottom-0 left-0 right-0 top-0 z-50 flex h-screen w-screen flex-col items-center justify-center bg-white">
-					<Loader className="animate-spin text-gray-300" size={32} />
+					<IconLoader2 className="animate-spin text-gray-300" size={32} />
 					<p className="text-sm text-gray-600">Loading...</p>
 				</div>
 			);

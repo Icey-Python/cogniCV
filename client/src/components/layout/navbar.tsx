@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BriefcaseBusiness, LayoutDashboard, Sparkles } from 'lucide-react';
+import { IconBriefcase, IconLayoutDashboard, IconSparkles } from '@tabler/icons-react';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -36,7 +36,7 @@ export function Navbar() {
 					className="inline-flex items-center gap-2 rounded-md px-2 py-1 text-foreground transition-colors hover:bg-accent"
 				>
 					<div className="inline-flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-						<Sparkles className="size-4" />
+						<IconSparkles className="size-4" />
 					</div>
 					<span className="font-serif text-xl">CogniCV</span>
 				</Link>
@@ -87,7 +87,7 @@ export function Navbar() {
 						href="/dashboard"
 						className="shrink-0 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground"
 					>
-						<LayoutDashboard className="mr-1 inline-flex size-3.5" />
+						<IconLayoutDashboard className="mr-1 inline-flex size-3.5" />
 						Quick Recruiter
 					</Link>
 				</div>

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Home } from 'lucide-react';
+import { IconArrowLeft, IconHome } from '@tabler/icons-react';
 import { Button, buttonVariants } from '@/components/ui/button';
 
 export const NotFoundComponent = () => {
@@ -161,7 +161,7 @@ export const NotFoundComponent = () => {
 						</p>
 						<div className="mt-6 flex items-center justify-center gap-2">
 							<Button onClick={previousRoute}>
-								<ArrowLeft size={20} /> Back
+								<IconArrowLeft size={20} /> Back
 							</Button>
 							<Link
 								href="/"
@@ -171,7 +171,7 @@ export const NotFoundComponent = () => {
 									})
 								)}
 							>
-								<Home size={20} />
+								<IconHome size={20} />
 								Home
 							</Link>
 						</div>

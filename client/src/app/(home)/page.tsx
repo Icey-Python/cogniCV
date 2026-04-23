@@ -3,13 +3,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-	ArrowRight,
-	BriefcaseBusiness,
-	Building2,
-	LayoutDashboard,
-	MapPin,
-	Sparkles
-} from 'lucide-react';
+	IconArrowRight,
+	IconBriefcase,
+	IconBuilding,
+	IconLayoutDashboard,
+	IconMapPin,
+	IconSparkles
+} from '@tabler/icons-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -34,7 +34,7 @@ export default function Home() {
 						<div className="grid gap-8 md:grid-cols-[1.4fr_1fr] md:items-center">
 							<div>
 								<Badge variant="accent" className="mb-4">
-									<Sparkles className="mr-1 size-3.5" />
+									<IconSparkles className="mr-1 size-3.5" />
 									AI Talent Screening Platform
 								</Badge>
 								<h1 className="font-serif text-4xl leading-tight text-foreground md:text-6xl md:leading-tight">
@@ -48,14 +48,14 @@ export default function Home() {
 								<div className="mt-6 flex flex-wrap gap-3">
 									<Button asChild>
 										<Link href="/jobs" className="gap-2">
-											<BriefcaseBusiness className="size-4" />
+											<IconBriefcase className="size-4" />
 											Browse jobs
-											<ArrowRight className="size-4" />
+											<IconArrowRight className="size-4" />
 										</Link>
 									</Button>
 									<Button asChild variant="outline">
 										<Link href="/dashboard" className="gap-2">
-											<LayoutDashboard className="size-4" />
+											<IconLayoutDashboard className="size-4" />
 											Open recruiter dashboard
 										</Link>
 									</Button>
@@ -124,7 +124,7 @@ export default function Home() {
 							<Button asChild variant="outline">
 								<Link href="/jobs" className="gap-2">
 									See all openings
-									<ArrowRight className="size-4" />
+									<IconArrowRight className="size-4" />
 								</Link>
 							</Button>
 						</div>
@@ -142,7 +142,7 @@ export default function Home() {
 												{job.title}
 											</h3>
 											<p className="mt-2 inline-flex items-center gap-2 text-sm text-muted-foreground">
-												<Building2 className="size-4" />
+												<IconBuilding className="size-4" />
 												{job.company}
 											</p>
 										</div>
@@ -154,11 +154,11 @@ export default function Home() {
 
 									<div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
 										<span className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-1">
-											<MapPin className="size-3.5" />
+											<IconMapPin className="size-3.5" />
 											{job.location}
 										</span>
 										<span className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-1">
-											<BriefcaseBusiness className="size-3.5" />
+											<IconBriefcase className="size-3.5" />
 											{job.type}
 										</span>
 									</div>
