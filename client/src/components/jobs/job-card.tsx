@@ -1,6 +1,7 @@
 import { type Job } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { IconBriefcase, IconMapPin, IconClock, IconUsers, IconArrowRight } from '@tabler/icons-react';
+import { Button } from '@/components/ui/button';
+import { IconBriefcase, IconMapPin, IconClock, IconUsers, IconArrowRight, IconPencil } from '@tabler/icons-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
@@ -18,13 +19,18 @@ export function JobCard({ job }: JobCardProps) {
 	return (
 		<Link href={`/dashboard/jobs/${job._id}`} className="group block h-full">
 			<Card className="h-full transition-all duration-200 hover:border-primary/40 cursor-pointer">
-				<CardHeader className="pb-3">
-					<CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2 font-lora">
-						{job.title}
-					</CardTitle>
-					<p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed my-2">
-						{job.description}
-					</p>
+				<CardHeader className="pb-3 flex flex-row items-start justify-between space-y-0">
+					<div className="flex-1">
+						<CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2 font-lora">
+							{job.title}
+						</CardTitle>
+						<p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed my-2">
+							{job.description}
+						</p>
+					</div>
+						<Link href={`/dashboard/jobs/${job._id}/edit`}>
+							<IconPencil className="size-4 hover:text-primary transition-colors" />
+						</Link>
 				</CardHeader>
 				<CardContent className="pt-0 space-y-4">
 					<div className="flex flex-wrap gap-3 text-xs text-muted-foreground">

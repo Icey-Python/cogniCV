@@ -88,7 +88,7 @@ export default function JobDetailPage() {
 				{job.jobType === 'external' && !showUpload && !uploadComplete && (
 					<Button variant="outline" asChild className="gap-2 shrink-0">
 						<Link href={`/dashboard/jobs/${job._id}/upload`}>
-							<IconUpload className="size-4" /> Upload Applicants
+							<IconUpload className="size-4" /> Import Applications
 						</Link>
 					</Button>
 				)}
@@ -120,7 +120,7 @@ export default function JobDetailPage() {
 						</p>
 						<Button size="sm" asChild className="mt-2 gap-2">
 							<Link href={`/dashboard/jobs/${job._id}/upload`}>
-								<IconUpload className="size-4" /> Upload Applicants
+								<IconUpload className="size-4" /> Import Applications
 							</Link>
 						</Button>
 					</CardContent>

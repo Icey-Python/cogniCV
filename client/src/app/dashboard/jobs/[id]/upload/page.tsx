@@ -19,31 +19,31 @@ export default function JobUploadPage() {
 	}
 
 	return (
-		<div className="max-w-3xl mx-auto space-y-6">
+		<div className="max-w-6xl space-y-6">
 			<div>
-				<h1 className="text-2xl font-semibold">Upload Applicants</h1>
+				<h1 className="text-2xl font-semibold">Import Applications</h1>
 				<p className="text-muted-foreground mt-1">
-					Upload resumes for {job.title}
+					Import Applications for {job.title}
 				</p>
 			</div>
 
 			<Card>
 				<CardHeader>
 					<CardTitle className="text-base flex items-center gap-2">
-						<IconUpload className="size-4" /> Upload Resumes
+						<IconUpload className="size-4" /> Import Applications
 					</CardTitle>
 					<CardDescription>
 						Upload PDF resumes or a CSV. The AI will extract, normalise, and rank all candidates.
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<UploadPanel 
+					<UploadPanel
 						onComplete={() => {
 							// After a short delay, return to the job page
 							setTimeout(() => {
 								router.push(`/dashboard/jobs/${job._id}`);
 							}, 1500);
-						}} 
+						}}
 					/>
 				</CardContent>
 			</Card>
