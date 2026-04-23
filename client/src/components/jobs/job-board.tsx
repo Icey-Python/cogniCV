@@ -19,7 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { mockJobs } from '@/lib/mock-data';
 import { cn } from '@/lib/utils';
-import type { EmploymentType, JobListing, UploadDocumentState } from '@/types/jobs';
+import type { EmploymentType, ExperienceLevel, JobListing, UploadDocumentState } from '@/types/jobs';
 
 type ApplyState = 'idle' | 'submitting' | 'complete';
 
@@ -35,6 +35,15 @@ const employmentFilters: Array<'All' | EmploymentType> = [
 	'Full-time',
 	'Part-time',
 	'Contract'
+];
+
+const experienceLevels: Array<'All' | ExperienceLevel> = [
+	'All',
+	'Entry',
+	'Junior',
+	'Mid',
+	'Senior',
+	'Lead'
 ];
 
 function createInitialDocuments(): UploadDocumentState[] {
@@ -66,6 +75,7 @@ export function JobBoard() {
 	const [searchValue, setSearchValue] = useState('');
 	const [typeFilter, setTypeFilter] = useState<'All' | EmploymentType>('All');
 	const [locationFilter, setLocationFilter] = useState<string>('All');
+	const [experienceFilter, setExperienceFilter] = useState<'All' | ExperienceLevel>('All');
 	const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 	const [isApplyOpen, setIsApplyOpen] = useState(false);
 	const [applyState, setApplyState] = useState<ApplyState>('idle');
@@ -102,10 +112,12 @@ export function JobBoard() {
 			const typeMatch = typeFilter === 'All' || job.type === typeFilter;
 			const locationMatch =
 				locationFilter === 'All' || job.location === locationFilter;
+			const experienceMatch = 
+				experienceFilter === 'All' || job.experienceLevel === experienceFilter;
 
-			return queryMatch && typeMatch && locationMatch;
+			return queryMatch && typeMatch && locationMatch && experienceMatch;
 		});
-	}, [locationFilter, searchValue, typeFilter]);
+	}, [locationFilter, searchValue, typeFilter, experienceFilter]);
 
 	const selectedJob = useMemo(
 		() => mockJobs.find((job) => job.id === selectedJobId),
@@ -204,8 +216,8 @@ export function JobBoard() {
 				</section>
 
 				<section className="mt-6 rounded-3xl border border-border/70 bg-card/85 p-4 shadow-sm md:p-5">
-					<div className="grid gap-4 lg:grid-cols-[1.4fr_1fr_1fr]">
-						<div className="relative">
+					<div className="grid gap-4 lg:grid-cols-[1fr_2fr]">
+						<div className="relative col-span-full lg:col-span-1">
 							<Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 							<Input
 								value={searchValue}
@@ -215,32 +227,48 @@ export function JobBoard() {
 							/>
 						</div>
 
-						<div className="flex flex-wrap gap-2">
-							{employmentFilters.map((filter) => (
-								<Button
-									key={filter}
-									type="button"
-									variant={typeFilter === filter ? 'default' : 'outline'}
-									size="sm"
-									onClick={() => setTypeFilter(filter)}
-								>
-									{filter}
-								</Button>
-							))}
-						</div>
+						<div className="col-span-full lg:col-span-1 flex flex-col gap-3">
+							<div className="flex flex-wrap gap-2">
+								{employmentFilters.map((filter) => (
+									<Button
+										key={filter}
+										type="button"
+										variant={typeFilter === filter ? 'default' : 'outline'}
+										size="sm"
+										onClick={() => setTypeFilter(filter)}
+									>
+										{filter}
+									</Button>
+								))}
+							</div>
 
-						<div className="flex flex-wrap gap-2">
-							{locationFilters.map((location) => (
-								<Button
-									key={location}
-									type="button"
-									variant={locationFilter === location ? 'secondary' : 'outline'}
-									size="sm"
-									onClick={() => setLocationFilter(location)}
-								>
-									{location === 'All' ? 'All locations' : location}
-								</Button>
-							))}
+							<div className="flex flex-wrap gap-2">
+								{experienceLevels.map((level) => (
+									<Button
+										key={level}
+										type="button"
+										variant={experienceFilter === level ? 'default' : 'outline'}
+										size="sm"
+										onClick={() => setExperienceFilter(level)}
+									>
+										{level === 'All' ? 'Experience: All' : level}
+									</Button>
+								))}
+							</div>
+
+							<div className="flex flex-wrap gap-2">
+								{locationFilters.map((location) => (
+									<Button
+										key={location}
+										type="button"
+										variant={locationFilter === location ? 'secondary' : 'outline'}
+										size="sm"
+										onClick={() => setLocationFilter(location)}
+									>
+										{location === 'All' ? 'All locations' : location}
+									</Button>
+								))}
+							</div>
 						</div>
 					</div>
 				</section>

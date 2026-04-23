@@ -5,15 +5,21 @@ import Link from 'next/link';
 import {
 	ArrowRight,
 	BriefcaseBusiness,
+	Building2,
 	LayoutDashboard,
+	MapPin,
 	Sparkles
 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import MyCookieConsent from '../../hooks/use-cookie-consent';
+import { mockJobs } from '@/lib/mock-data';
+import { formatDistanceToNow } from 'date-fns';
 
 export default function Home() {
+	const previewJobs = mockJobs.slice(0, 3);
+
 	return (
 		<>
 			<MyCookieConsent />
@@ -107,6 +113,58 @@ export default function Home() {
 								faster and clearer hiring decisions.
 							</p>
 						</article>
+					</section>
+
+					<section className="mt-12">
+						<div className="flex items-center justify-between mb-6">
+							<div>
+								<h2 className="text-2xl font-semibold text-foreground">Featured Job Openings</h2>
+								<p className="text-sm text-muted-foreground mt-1">Discover some of the latest opportunities available.</p>
+							</div>
+							<Button asChild variant="outline">
+								<Link href="/jobs" className="gap-2">
+									See all openings
+									<ArrowRight className="size-4" />
+								</Link>
+							</Button>
+						</div>
+
+						<div className="grid gap-4 md:grid-cols-3">
+							{previewJobs.map((job) => (
+								<Link
+									key={job.id}
+									href="/jobs"
+									className="group rounded-2xl border border-border/70 bg-card/85 p-5 transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
+								>
+									<div className="flex items-start justify-between gap-3">
+										<div>
+											<h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
+												{job.title}
+											</h3>
+											<p className="mt-2 inline-flex items-center gap-2 text-sm text-muted-foreground">
+												<Building2 className="size-4" />
+												{job.company}
+											</p>
+										</div>
+									</div>
+
+									<p className="mt-4 line-clamp-2 text-sm text-muted-foreground">
+										{job.summary}
+									</p>
+
+									<div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+										<span className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-1">
+											<MapPin className="size-3.5" />
+											{job.location}
+										</span>
+										<span className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-1">
+											<BriefcaseBusiness className="size-3.5" />
+											{job.type}
+										</span>
+									</div>
+								</Link>
+							))}
+						</div>
 					</section>
 				</div>
 			</main>
