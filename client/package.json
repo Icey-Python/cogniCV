@@ -17,6 +17,7 @@
 	},
 	"dependencies": {
 		"@biomejs/biome": "^2.3.12",
+		"@radix-ui/react-label": "^2.1.8",
 		"@radix-ui/react-slot": "^1.2.4",
 		"@tabler/icons-react": "^3.36.1",
 		"axios": "^1.13.3",
