@@ -18,7 +18,6 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import {
-	IconArrowLeft,
 	IconSearch,
 	IconTrophy,
 	IconUsers,
@@ -91,18 +90,7 @@ export default function JobDetailPage() {
 		<div className="space-y-6">
 			{/* Header */}
 			<div className="flex items-start gap-4">
-				<Button variant="outline" size="icon" className="shrink-0 mt-1" asChild>
-					<Link href="/dashboard/jobs"><IconArrowLeft className="size-4" /></Link>
-				</Button>
 				<div className="flex-1 min-w-0">
-					<div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-						<span className={cn('size-2 rounded-full', job.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-400')} />
-						<span>{job.status}</span>
-						<span className="text-border">&middot;</span>
-						<span className="capitalize">{job.jobType}</span>
-						<span className="text-border">&middot;</span>
-						<span>{job.experienceLevel}</span>
-					</div>
 					<h1 className="text-2xl font-semibold">{job.title}</h1>
 					<div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
 						<span className="flex items-center gap-1"><IconBriefcase className="size-4" /> {job.department}</span>
@@ -116,23 +104,6 @@ export default function JobDetailPage() {
 					</Button>
 				)}
 			</div>
-
-			{/* Description */}
-			<Card>
-				<CardHeader className="pb-2">
-					<CardTitle className="text-base">About this role</CardTitle>
-				</CardHeader>
-				<CardContent className="space-y-3">
-					<p className="text-sm text-muted-foreground leading-relaxed">{job.description}</p>
-					<div className="flex flex-wrap gap-1.5">
-						{job.requiredSkills.map((skill) => (
-							<span key={skill} className="text-xs px-2 py-0.5 rounded-md bg-primary/5 text-primary/80 border border-primary/10">
-								{skill}
-							</span>
-						))}
-					</div>
-				</CardContent>
-			</Card>
 
 			{/* Upload panel (external only) */}
 			{job.jobType === 'external' && showUpload && !uploadComplete && (

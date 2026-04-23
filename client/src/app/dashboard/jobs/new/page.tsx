@@ -7,7 +7,6 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-	IconArrowLeft,
 	IconBuilding,
 	IconWorld,
 	IconX,
@@ -97,11 +96,6 @@ export default function NewJobPage() {
 		<div className="max-w-3xl mx-auto space-y-8">
 			{/* Header */}
 			<div className="flex items-center gap-4">
-				<Button variant="outline" size="icon" asChild className="shrink-0">
-					<Link href="/dashboard/jobs">
-						<IconArrowLeft className="size-4" />
-					</Link>
-				</Button>
 				<div className="flex-1">
 					<h1 className="text-2xl font-semibold">Create New Job</h1>
 					<p className="text-muted-foreground mt-1">Follow the steps to set up a new role.</p>

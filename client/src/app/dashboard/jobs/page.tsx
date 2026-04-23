@@ -43,8 +43,8 @@ export default function JobListingsPage() {
 			</div>
 
 			{/* Filters — no background */}
-			<div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-				<div className="relative w-full sm:max-w-xs">
+			<div className="flex flex-col  sm:flex-row gap-3 items-start sm:items-center justify-between">
+				<div className="relative w-full flex-2 sm:max-w-md">
 					<IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
 					<Input
 						placeholder="Search jobs..."
