@@ -1,13 +1,12 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import {
 	ArrowRight,
-	Brain,
 	BriefcaseBusiness,
 	LayoutDashboard,
-	Sparkles,
-	Upload
+	Sparkles
 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +25,7 @@ export default function Home() {
 
 				<div className="relative mx-auto max-w-7xl">
 					<section className="animate-rise-in overflow-hidden rounded-3xl border border-border/70 bg-card/90 p-6 shadow-sm md:p-10">
-						<div className="grid gap-8 md:grid-cols-[1.4fr_1fr] md:items-end">
+						<div className="grid gap-8 md:grid-cols-[1.4fr_1fr] md:items-center">
 							<div>
 								<Badge variant="accent" className="mb-4">
 									<Sparkles className="mr-1 size-3.5" />
@@ -57,27 +56,16 @@ export default function Home() {
 								</div>
 							</div>
 
-							<div className="space-y-3 rounded-2xl border border-border/70 bg-background/80 p-4">
-								<div className="rounded-xl border border-border/70 bg-card/70 p-4">
-									<p className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
-										<Upload className="size-4 text-primary" />
-										Candidate apply flow
-									</p>
-									<p className="mt-2 text-sm text-muted-foreground">
-										Open role details, upload your resume, and submit for AI
-										analysis.
-									</p>
-								</div>
-								<div className="rounded-xl border border-border/70 bg-card/70 p-4">
-									<p className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
-										<Brain className="size-4 text-primary" />
-										Recruiter decision engine
-									</p>
-									<p className="mt-2 text-sm text-muted-foreground">
-										Run screening, compare scores, and inspect strengths and gaps
-										per candidate.
-									</p>
-								</div>
+							<div className="relative overflow-hidden rounded-2xl border border-border/70 bg-background/80 p-3">
+								<Image
+									src="/images/hero-placeholder.svg"
+									alt="Preview illustration of the CogniCV recruiting workflow dashboard"
+									width={1200}
+									height={860}
+									priority
+									className="h-auto w-full rounded-xl border border-border/60 object-cover"
+								/>
+								<div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background/55 to-transparent" />
 							</div>
 						</div>
 					</section>
