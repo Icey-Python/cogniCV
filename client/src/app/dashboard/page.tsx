@@ -49,8 +49,8 @@ export default function DashboardPage() {
 			<div className="grid gap-6 lg:grid-cols-3">
 				{/* Recent Jobs */}
 				<Card className="lg:col-span-2">
-					<CardHeader className="flex flex-row items-center justify-between pb-3">
-						<CardTitle className="text-base">Recent Job Postings</CardTitle>
+					<CardHeader className="flex flex-row items-center justify-between pb-1">
+						<CardTitle className="text-base font-semibold font-lora">Recent Job Postings</CardTitle>
 						<Link href="/dashboard/jobs" className="text-sm text-primary font-medium gap-1">
 							View all
 						</Link>
@@ -84,7 +84,7 @@ export default function DashboardPage() {
 				{/* Top Matches */}
 				<Card>
 					<CardHeader className="pb-3">
-						<CardTitle className="text-base">Top Matches</CardTitle>
+						<CardTitle className="text-base font-semibold font-lora">Top Matches</CardTitle>
 					</CardHeader>
 					<CardContent className="p-0">
 						<div className="divide-y">
