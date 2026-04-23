@@ -1,11 +1,11 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Shirikia API",
+    "title": "My API",
     "version": "v1.0.0",
-    "description": "Shirikia API Docs - provides access to all the features of the Shirikia platform",
+    "description": "\n# My API Documentation\n",
     "license": {
-      "name": "Copyright 2025 Shirikia"
+      "name": "Copyright 2026 My API"
     }
   },
   "servers": [
@@ -582,6 +582,58 @@
   },
   "components": {
     "schemas": {
+      "Job": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "requiredSkills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "experienceLevel": {
+            "type": "string",
+            "enum": [
+              "Entry",
+              "Junior",
+              "Mid",
+              "Senior",
+              "Lead"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "Full-time",
+              "Part-time",
+              "Contract"
+            ]
+          },
+          "location": {
+            "type": "string"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "User": {
         "type": "object",
         "properties": {
