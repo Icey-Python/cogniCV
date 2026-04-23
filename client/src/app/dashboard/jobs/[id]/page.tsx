@@ -86,9 +86,9 @@ export default function JobDetailPage() {
 					</div>
 				</div>
 				{job.jobType === 'external' && !showUpload && !uploadComplete && (
-					<Button variant="outline" asChild className="gap-2 shrink-0">
+					<Button variant="default" asChild className="gap-2 shrink-0">
 						<Link href={`/dashboard/jobs/${job._id}/upload`}>
-							<IconUpload className="size-4" /> Import Applications
+							Import Applications
 						</Link>
 					</Button>
 				)}
