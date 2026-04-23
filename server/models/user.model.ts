@@ -10,8 +10,8 @@ export interface UserDoc extends Document {
 }
 
 export enum UserRole {
-  USER = "user",
   ADMIN = "admin",
+  RECRUITER = "recruiter",
 }
 
 const UserSchema: Schema = new Schema<UserDoc>(
@@ -27,7 +27,7 @@ const UserSchema: Schema = new Schema<UserDoc>(
     role: {
       type: String,
       enum: Object.values(UserRole),
-      default: UserRole.USER,
+      default: UserRole.RECRUITER,
     },
     phone: {
       type: String,

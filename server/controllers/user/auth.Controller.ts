@@ -1,6 +1,6 @@
 import { Logger } from "borgen";
 import { HttpStatusCode } from "axios";
-import User from "../../models/user.model";
+import User, { UserRole } from "../../models/user.model";
 import Account from "../../models/account.model";
 import Session from "../../models/session.model";
 import type { IServerResponse } from "../../types";
@@ -278,6 +278,7 @@ export const createUser = async (
     let newUser = new User({
       name,
       email,
+      role: UserRole.RECRUITER,
     });
 
     let savedUser = await newUser.save();
@@ -314,6 +315,7 @@ export const createUser = async (
           name: savedUser.name,
           email: savedUser.email,
           phone: savedUser.phone,
+          role: savedUser.role,
         },
       },
     });
