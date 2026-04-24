@@ -40,4 +40,4 @@ for (const [key, value] of Object.entries(ENV)) {
   }
 }
 
-export const AllowedOrigins = [...ENV.FRONTEND_URLS.split(",")];
+export const AllowedOrigins = [...ENV.FRONTEND_URLS.split(","), "http://localhost:8001"];

@@ -578,10 +578,428 @@
           }
         }
       }
+    },
+    "/api/v1/applicants/profiles": {
+      "get": {
+        "summary": "Get platform talent profiles",
+        "tags": [
+          "Applicants"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profiles retrieved"
+          }
+        }
+      }
+    },
+    "/api/v1/applicants/jobs/{id}/applicants": {
+      "get": {
+        "summary": "Get all applicants for a job",
+        "tags": [
+          "Applicants"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Applicants retrieved"
+          }
+        }
+      }
+    },
+    "/api/v1/applicants/jobs/{id}/upload/csv": {
+      "post": {
+        "summary": "Upload CSV or Excel file for a job",
+        "tags": [
+          "Applicants"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "File accepted for processing"
+          }
+        }
+      }
+    },
+    "/api/v1/applicants/jobs/{id}/upload/pdf": {
+      "post": {
+        "summary": "Upload multiple PDF resumes for a job",
+        "tags": [
+          "Applicants"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Files accepted for processing"
+          }
+        }
+      }
+    },
+    "/api/v1/jobs": {
+      "post": {
+        "summary": "Create a new job",
+        "tags": [
+          "Jobs"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Job"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Job created successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all jobs for recruiter",
+        "tags": [
+          "Jobs"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Jobs retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/{id}": {
+      "get": {
+        "summary": "Get job by ID",
+        "tags": [
+          "Jobs"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job retrieved successfully"
+          },
+          "404": {
+            "description": "Job not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update job",
+        "tags": [
+          "Jobs"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job updated successfully"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete job",
+        "tags": [
+          "Jobs"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/screening/{id}/trigger": {
+      "post": {
+        "summary": "Trigger AI screening for a job",
+        "tags": [
+          "Screening"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Screening completed successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/screening/{id}/results": {
+      "get": {
+        "summary": "Get latest screening results for a job",
+        "tags": [
+          "Screening"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Screening results retrieved successfully"
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "TalentProfile": {
+        "type": "object",
+        "properties": {
+          "headline": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "level": {
+                  "type": "string",
+                  "enum": [
+                    "Beginner",
+                    "Intermediate",
+                    "Advanced",
+                    "Expert"
+                  ]
+                },
+                "yearsOfExperience": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "experience": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "company": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "startDate": {
+                  "type": "string"
+                },
+                "endDate": {
+                  "type": "string"
+                },
+                "isCurrent": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "availability": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Available",
+                  "Open to Opportunities",
+                  "Not Available"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "Full-time",
+                  "Part-time",
+                  "Contract"
+                ]
+              }
+            }
+          }
+        }
+      },
       "Job": {
         "type": "object",
         "properties": {
@@ -631,6 +1049,47 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "ScreeningResult": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "completed",
+              "failed"
+            ]
+          },
+          "rankedCandidates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "rank": {
+                  "type": "integer"
+                },
+                "candidateId": {
+                  "type": "string"
+                },
+                "matchScore": {
+                  "type": "number"
+                },
+                "reasoning": {
+                  "type": "object",
+                  "properties": {
+                    "recommendation": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },

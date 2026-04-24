@@ -27,7 +27,10 @@ const generateOpenAPISpec = () => {
   const swaggerSpec = swaggerJSDoc({
     failOnErrors: true,
     definition: swaggerDefinition,
-    apis: [path.join(__dirname, "../controllers/**/*Controller.ts")],
+    apis: [
+      path.join(__dirname, "../controllers/**/*Controller.ts"),
+      path.join(__dirname, "../router/**/*.ts"),
+    ],
   });
 
   fs.writeFileSync(

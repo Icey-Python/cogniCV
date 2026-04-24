@@ -5,10 +5,38 @@ import * as ApplicantController from "../../controllers/applicant.Controller";
 
 const router = Router();
 
-// Routes for platform profiles (seeded data)
+/**
+ * @openapi
+ * /api/v1/applicants/profiles:
+ *   get:
+ *     summary: Get platform talent profiles
+ *     tags: [Applicants]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Profiles retrieved
+ */
 router.get("/profiles", authenticate(), ApplicantController.getPlatformTalent);
 
-// Routes for job-specific applicants and uploads
+/**
+ * @openapi
+ * /api/v1/applicants/jobs/{id}/applicants:
+ *   get:
+ *     summary: Get all applicants for a job
+ *     tags: [Applicants]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Applicants retrieved
+ */
 router.get("/jobs/:id/applicants", authenticate(), ApplicantController.getJobApplicants);
 
 /**

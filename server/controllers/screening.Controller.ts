@@ -8,6 +8,36 @@ import { GeminiService } from "../services/gemini.service";
 import type { IServerResponse } from "../types";
 import type { Request, Response } from "express";
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     ScreeningResult:
+ *       type: object
+ *       properties:
+ *         jobId:
+ *           type: string
+ *         status:
+ *           type: string
+ *           enum: [pending, completed, failed]
+ *         rankedCandidates:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               rank:
+ *                 type: integer
+ *               candidateId:
+ *                 type: string
+ *               matchScore:
+ *                 type: number
+ *               reasoning:
+ *                 type: object
+ *                 properties:
+ *                   recommendation:
+ *                     type: string
+ */
+
 import Application from "../models/application.model";
 
 /**
