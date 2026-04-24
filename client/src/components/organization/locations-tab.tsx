@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { IconTrash, IconPlus, IconMapPin, IconGlobe } from '@tabler/icons-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { CountryDropdown } from '@/components/ui/country-dropdown';
 
 type WorkspaceType = 'Remote' | 'Hybrid' | 'On-site';
 
@@ -17,10 +19,7 @@ interface Location {
 	isDefault?: boolean;
 }
 
-const COUNTRIES = [
-	'United States', 'United Kingdom', 'Canada', 'Australia', 'Germany',
-	'France', 'Rwanda', 'Kenya', 'Nigeria', 'South Africa', 'India', 'Japan'
-];
+
 
 export function LocationsTab() {
 	const [locations, setLocations] = useState<Location[]>([
@@ -59,13 +58,10 @@ export function LocationsTab() {
 					<div className="grid gap-4 sm:grid-cols-4 items-end">
 						<div className="grid gap-2">
 							<Label>Country</Label>
-							<select
-								className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-								value={country}
-								onChange={(e) => setCountry(e.target.value)}
-							>
-								{COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
-							</select>
+							<CountryDropdown
+								defaultValue={country}
+								onChange={(c) => setCountry(c.name)}
+							/>
 						</div>
 						<div className="grid gap-2">
 							<Label>City / Town</Label>
@@ -77,15 +73,16 @@ export function LocationsTab() {
 						</div>
 						<div className="grid gap-2">
 							<Label>Workspace Type</Label>
-							<select
-								className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-								value={workspaceType}
-								onChange={(e) => setWorkspaceType(e.target.value as WorkspaceType)}
-							>
-								<option value="Remote">Remote</option>
-								<option value="Hybrid">Hybrid</option>
-								<option value="On-site">On-site</option>
-							</select>
+							<Select value={workspaceType} onValueChange={(v) => setWorkspaceType(v as WorkspaceType)}>
+								<SelectTrigger>
+									<SelectValue placeholder="Select type" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="Remote">Remote</SelectItem>
+									<SelectItem value="Hybrid">Hybrid</SelectItem>
+									<SelectItem value="On-site">On-site</SelectItem>
+								</SelectContent>
+							</Select>
 						</div>
 						<Button onClick={handleAdd} className="gap-2">
 							<IconPlus className="size-4" /> Add
