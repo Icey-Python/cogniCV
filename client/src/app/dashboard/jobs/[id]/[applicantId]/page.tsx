@@ -53,6 +53,7 @@ import {
 	IconLink
 } from '@tabler/icons-react';
 import { JobInfoDrawer } from '@/components/jobs/job-info-drawer';
+import { toast } from 'sonner';
 
 type ApplicantStatus =
 	| 'Under Review'
@@ -280,7 +281,10 @@ export default function ApplicantDetailPage() {
 					<h1 className="font-lora text-3xl">{candidateName}</h1>
 					<div className="flex items-center gap-3">
 						<p className="text-muted-foreground max-w-3xl text-sm">
-							{p.headline}
+						{candidate.profileSource === 'platform'
+							? 'Platform Profile'
+							: 'External Applicant'} | {" "}
+				    	 {p.headline}
 						</p>
 						<button
 							onClick={() => setJobInfoOpen(true)}
@@ -293,27 +297,16 @@ export default function ApplicantDetailPage() {
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
+					<Badge variant="outline" className="font-medium border-primary border-t-0 border-x-0 rounded-none shadown-none py-2.5">
+						{status}
+					</Badge>
 					<Button
-						variant="outline"
-						size="sm"
+						variant="default"
 						onClick={() => setShareModalOpen(true)}
 						className="mr-2 gap-2"
 					>
 						<IconShare className="size-4" /> Share Analysis
 					</Button>
-					<Badge variant="outline" className="bg-white py-1 font-medium">
-						{candidate.profileSource === 'platform' ? (
-							<IconBolt className="mr-1.5 size-3.5 text-blue-600" />
-						) : (
-							<IconPaperclip className="mr-1.5 size-3.5" />
-						)}
-						{candidate.profileSource === 'platform'
-							? 'Platform Profile'
-							: 'External Applicant'}
-					</Badge>
-					<Badge className="text-primary border bg-blue-100 py-1 font-medium hover:bg-blue-100!">
-						{status}
-					</Badge>
 				</div>
 			</div>
 

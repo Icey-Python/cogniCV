@@ -2,6 +2,8 @@ import './globals.css';
 import { Work_Sans, Lora, JetBrains_Mono } from 'next/font/google';
 import type { Metadata, Viewport } from 'next';
 import { QueryProvider } from '@/hooks/query/query-provider';
+import { Toaster } from 'sonner';
+import { IconCheck, IconX, IconInfoCircle, IconAlertTriangle, IconLoader2 } from '@tabler/icons-react';
 
 const fontWorkSans = Work_Sans({
 	subsets: ['latin'],
@@ -62,6 +64,20 @@ export default function RootLayout({
 				className={`${fontWorkSans.className} ${fontLora.variable} ${fontJetBrainsMono.variable} bg-background text-foreground min-h-screen antialiased`}
 			>
 				<QueryProvider>{children}</QueryProvider>
+				<Toaster
+					position="top-center"
+					icons={{
+						success: <IconCheck className="text-primary size-5" />,
+						error: <IconX className="text-primary size-5" />,
+						info: <IconInfoCircle className="text-primary size-5" />,
+						warning: <IconAlertTriangle className="text-primary size-5" />,
+						loading: <IconLoader2 className="text-primary size-5 animate-spin" />
+					}}
+					toastOptions={{
+						className: '',
+						duration: 2000
+					}}
+				/>
 			</body>
 		</html>
 	);
