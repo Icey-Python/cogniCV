@@ -7,6 +7,9 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import dynamic from 'next/dynamic';
+
+const MdxEditor = dynamic(() => import('@/components/ui/mdx-editor'), { ssr: false });
 import {
 	IconBuilding,
 	IconWorld,
@@ -21,12 +24,14 @@ import {
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
-type JobType = 'internal' | 'external';
+type JobType = 'internal' | 'external' | 'ai';
 type EmploymentType = 'Full-time' | 'Part-time' | 'Contract';
 type ExperienceLevel = 'Entry' | 'Junior' | 'Mid' | 'Senior' | 'Lead';
 
 const EMPLOYMENT_TYPES: EmploymentType[] = ['Full-time', 'Part-time', 'Contract'];
 const EXPERIENCE_LEVELS: ExperienceLevel[] = ['Entry', 'Junior', 'Mid', 'Senior', 'Lead'];
+const MOCK_DEPARTMENTS = ['Engineering', 'Design', 'Product', 'Marketing', 'Sales', 'HR', 'Finance'];
+const MOCK_LOCATIONS = ['Worldwide (Remote)', 'Kigali, Rwanda', 'Nairobi, Kenya', 'New York, USA', 'London, UK'];
 
 const STEPS = ['Source', 'Details', 'Requirements'];
 
@@ -37,11 +42,14 @@ export default function NewJobPage() {
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [department, setDepartment] = useState('');
+	const [isCustomDept, setIsCustomDept] = useState(false);
 	const [location, setLocation] = useState('');
+	const [isCustomLocation, setIsCustomLocation] = useState(false);
 	const [employmentType, setEmploymentType] = useState<EmploymentType>('Full-time');
 	const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel>('Mid');
 	const [skills, setSkills] = useState<string[]>([]);
 	const [skillInput, setSkillInput] = useState('');
+	const [focusAreas, setFocusAreas] = useState('');
 	const [created, setCreated] = useState(false);
 
 	const addSkill = () => {
@@ -157,7 +165,7 @@ export default function NewJobPage() {
 								<h2 className="text-lg font-semibold">Application Source</h2>
 								<p className="text-sm text-muted-foreground mt-1">Choose how candidates will be sourced.</p>
 							</div>
-							<div className="grid sm:grid-cols-2 gap-4">
+							<div className="grid sm:grid-cols-3 gap-4">
 								<button
 									type="button"
 									onClick={() => setJobType('internal')}
@@ -190,6 +198,27 @@ export default function NewJobPage() {
 										Upload batch PDF resumes or a CSV from external job boards.
 									</p>
 								</button>
+								<button
+									type="button"
+									onClick={() => {
+										setJobType('ai');
+										router.push('/dashboard/jobs/new/ai-chat');
+									}}
+									className={cn(
+										'rounded-lg border-2 p-6 text-left transition-all',
+										jobType === 'ai'
+											? 'border-primary bg-primary/5'
+											: 'border-border hover:border-primary/40'
+									)}
+								>
+									<div className="flex aspect-square size-10 items-center justify-center rounded-lg bg-primary mb-3 text-primary-foreground">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /><path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2" /><path d="M19 11h2m-1 -1v2" /></svg>
+									</div>
+									<h3 className="font-semibold">Use AI to add new job</h3>
+									<p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+										Chat with our AI assistant to instantly generate the job description and requirements.
+									</p>
+								</button>
 							</div>
 						</div>
 					)}
@@ -208,22 +237,69 @@ export default function NewJobPage() {
 								</div>
 								<div className="grid gap-1.5">
 									<Label htmlFor="description">Job Description <span className="text-destructive">*</span></Label>
-									<Textarea
-										id="description"
-										placeholder="Describe the role, responsibilities, and what success looks like..."
-										className="min-h-[120px]"
-										value={description}
-										onChange={(e) => setDescription(e.target.value)}
+									<MdxEditor
+										markdown={description}
+										onChange={setDescription}
 									/>
 								</div>
 								<div className="grid sm:grid-cols-2 gap-5">
 									<div className="grid gap-1.5">
 										<Label htmlFor="department">Department</Label>
-										<Input id="department" placeholder="e.g. Engineering" value={department} onChange={(e) => setDepartment(e.target.value)} />
+										{!isCustomDept ? (
+											<select
+												id="department"
+												className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+												value={department}
+												onChange={(e) => {
+													if (e.target.value === 'custom') {
+														setIsCustomDept(true);
+														setDepartment('');
+													} else {
+														setDepartment(e.target.value);
+													}
+												}}
+											>
+												<option value="" disabled>Select department</option>
+												{MOCK_DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
+												<option value="custom">Other / Custom...</option>
+											</select>
+										) : (
+											<div className="flex gap-2">
+												<Input id="department" placeholder="Enter department name" value={department} onChange={(e) => setDepartment(e.target.value)} autoFocus />
+												<Button type="button" variant="ghost" size="icon" onClick={() => { setIsCustomDept(false); setDepartment(''); }}>
+													<IconX className="size-4" />
+												</Button>
+											</div>
+										)}
 									</div>
 									<div className="grid gap-1.5">
 										<Label htmlFor="location">Location</Label>
-										<Input id="location" placeholder="e.g. Remote, Nairobi" value={location} onChange={(e) => setLocation(e.target.value)} />
+										{!isCustomLocation ? (
+											<select
+												id="location"
+												className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+												value={location}
+												onChange={(e) => {
+													if (e.target.value === 'custom') {
+														setIsCustomLocation(true);
+														setLocation('');
+													} else {
+														setLocation(e.target.value);
+													}
+												}}
+											>
+												<option value="" disabled>Select location</option>
+												{MOCK_LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
+												<option value="custom">Other / Custom...</option>
+											</select>
+										) : (
+											<div className="flex gap-2">
+												<Input id="location" placeholder="Enter location name" value={location} onChange={(e) => setLocation(e.target.value)} autoFocus />
+												<Button type="button" variant="ghost" size="icon" onClick={() => { setIsCustomLocation(false); setLocation(''); }}>
+													<IconX className="size-4" />
+												</Button>
+											</div>
+										)}
 									</div>
 								</div>
 							</div>
@@ -308,6 +384,16 @@ export default function NewJobPage() {
 											))}
 										</div>
 									)}
+								</div>
+								<div className="grid gap-2">
+									<Label htmlFor="focusAreas">AI Analysis Focus Areas</Label>
+									<Textarea
+										id="focusAreas"
+										placeholder="Enter specific areas you want the AI to focus on when analyzing candidates (e.g., 'Look for strong experience in React and Node.js...')"
+										className="min-h-[100px]"
+										value={focusAreas}
+										onChange={(e) => setFocusAreas(e.target.value)}
+									/>
 								</div>
 							</div>
 						</div>

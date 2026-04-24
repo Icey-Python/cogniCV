@@ -10,6 +10,9 @@ import {
 	IconChartBar,
 	IconChevronRight,
 	IconSparkles,
+	IconUser,
+	IconBuilding,
+	IconSettings
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -27,21 +30,25 @@ import {
 	SidebarMenuSub,
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
-	SidebarRail,
+	SidebarRail
 } from '@/components/ui/sidebar';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger
+} from '@/components/ui/collapsible';
 
 const user = {
 	name: 'Recruiter',
 	email: 'recruiter@cognicv.ai',
-	avatar: '/avatars/recruiter.jpg',
+	avatar: '/avatars/recruiter.jpg'
 };
 
 const navItems = [
 	{
 		title: 'Home',
 		url: '/dashboard',
-		icon: IconHome,
+		icon: IconHome
 	},
 	{
 		title: 'Job Listings',
@@ -49,14 +56,22 @@ const navItems = [
 		icon: IconBriefcase,
 		children: [
 			{ title: 'All Jobs', url: '/dashboard/jobs', icon: IconBriefcase },
-			{ title: 'Create New Job', url: '/dashboard/jobs/new', icon: IconPlus },
-		],
+			{ title: 'Create New Job', url: '/dashboard/jobs/new', icon: IconPlus }
+		]
 	},
 	{
-		title: 'Applicants',
-		url: '/dashboard/applicants',
-		icon: IconUsers,
-	},
+		title: 'Settings',
+		url: '/dashboard/settings',
+		icon: IconSettings,
+		children: [
+			{ title: 'Profile', url: '/dashboard/profile', icon: IconUser },
+			{
+				title: 'Organization',
+				url: '/dashboard/organization',
+				icon: IconBuilding
+			}
+		]
+	}
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -67,13 +82,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			<SidebarHeader>
 				<SidebarMenu>
 					<SidebarMenuItem>
-						<SidebarMenuButton size="lg" className='hover:bg-transparent' asChild>
+						<SidebarMenuButton
+							size="lg"
+							className="hover:bg-transparent"
+							asChild
+						>
 							<Link href="/dashboard">
-								<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+								<div className="bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
 									<IconSparkles className="size-4" />
 								</div>
 								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate text-xl font-semibold font-lora">CogniCV</span>
+									<span className="font-lora truncate text-xl font-semibold">
+										CogniCV
+									</span>
 								</div>
 							</Link>
 						</SidebarMenuButton>
@@ -117,7 +138,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 								>
 									<SidebarMenuItem>
 										<CollapsibleTrigger asChild>
-											<SidebarMenuButton tooltip={item.title} isActive={isActive}>
+											<SidebarMenuButton
+												tooltip={item.title}
+												isActive={isActive}
+											>
 												<item.icon className="size-4" />
 												<span>{item.title}</span>
 												<IconChevronRight className="ml-auto size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />

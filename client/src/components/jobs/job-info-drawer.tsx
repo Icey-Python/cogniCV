@@ -8,6 +8,7 @@ import {
 	SheetDescription
 } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import MarkdownRenderer from '@/components/ui/markdown';
 
 interface JobInfoDrawerProps {
 	job: Job | null;
@@ -38,9 +39,9 @@ export function JobInfoDrawer({ job, open, onOpenChange }: JobInfoDrawerProps) {
 						<h2 className="text-foreground mt-3 text-xl font-semibold">
 							ROLE : {job.title}
 						</h2>
-						<p className="text-muted-foreground -mt-4 text-sm leading-6">
-							{job.description}
-						</p>
+						<div className="text-muted-foreground -mt-4 text-sm leading-6">
+							<MarkdownRenderer content={job.description} />
+						</div>
 
 						<div className="mt-6 grid gap-3 sm:grid-cols-2">
 							<div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
