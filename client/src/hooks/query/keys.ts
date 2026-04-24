@@ -7,5 +7,10 @@ export const queryKeys = {
 		all: ['applicants'] as const,
 		list: (filters?: unknown) => ['applicants', 'list', filters] as const,
 		detail: (id: string) => ['applicants', id] as const
+	},
+	user: {
+		me: ['user', 'me'] as const,
+		all: ['user', 'all'] as const,
+		search: (query: string) => ['user', 'search', query] as const
 	}
 };

@@ -1,19 +1,21 @@
-// API Response Types
-export interface ApiResponse<T = any> {
-	status: 'success' | 'error';
-	message: string;
-	data?: T;
+export enum UserRole {
+	ADMIN = 'admin',
+	RECRUITER = 'recruiter'
 }
-export interface PaginatedResponse<T> {
+
+export interface User {
+	_id: string;
+	name: string;
+	email: string;
+	phone: string;
+	role: UserRole;
+	lastLogin: string;
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface IServerResponse<T = any> {
 	status: 'success' | 'error';
 	message: string;
-	data: T[];
-	pagination: {
-		page: number;
-		limit: number;
-		total: number;
-		totalPages: number;
-		hasNext: boolean;
-		hasPrev: boolean;
-	};
+	data: T;
 }
