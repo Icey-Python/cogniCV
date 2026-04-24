@@ -23,6 +23,9 @@ export const ENV = {
   ADMIN_INITIAL_PASS: process.env.ADMIN_INITIAL_PASS as string,
   ADMIN_INITIAL_EMAIL: process.env.ADMIN_INITIAL_EMAIL as string,
   RESEND_KEY: process.env.RESEND_KEY as string,
+  // AI/Gemini
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY as string,
+  GEMINI_MODEL: process.env.GEMINI_MODEL || "gemini-2.0-flash",
 };
 
 export const isProduction = process.env.NODE_ENV === "production";

@@ -2,6 +2,7 @@ import { Router } from "express";
 import userGroup from "./userGroup";
 import jobGroup from "./jobGroup";
 import applicantGroup from "./applicantGroup";
+import screeningGroup from "./screeningGroup";
 import { HttpStatusCode } from "axios";
 
 const router = Router();
@@ -15,5 +16,6 @@ router.get("/ping", (_, res) => {
 router.use("/user", userGroup);
 router.use("/jobs", jobGroup);
 router.use("/applicants", applicantGroup);
+router.use("/screening", screeningGroup);
 
 export default router;
