@@ -3,9 +3,11 @@ import { Document, Schema, Types, model } from "mongoose";
 export interface ExternalApplicantDoc extends Document {
   jobId: Types.ObjectId;
   source: "csv" | "pdf";
-  rawText?: string; // For PDF text extraction
-  parsedProfile: any; // Mapped to TalentProfile schema
+  rawText?: string;
+  resumeUrl?: string; // Link to R2 storage
+  parsedProfile: any;
   parsingStatus: "success" | "partial" | "failed" | "pending";
+  errorMessage?: string; // For worker failures
   createdAt: Date;
   updatedAt: Date;
 }
@@ -26,13 +28,19 @@ const ExternalApplicantSchema = new Schema<ExternalApplicantDoc>(
     rawText: {
       type: String,
     },
+    resumeUrl: {
+      type: String,
+    },
     parsedProfile: {
-      type: Object, // Structured normalized data
+      type: Object,
     },
     parsingStatus: {
       type: String,
       enum: ["success", "partial", "failed", "pending"],
       default: "pending",
+    },
+    errorMessage: {
+      type: String,
     },
   },
   { timestamps: true }
