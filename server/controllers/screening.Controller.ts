@@ -1,7 +1,8 @@
 import { Logger } from "borgen";
 import { HttpStatusCode } from "axios";
 import Job from "../models/job.model";
-import TalentProfile from "../models/talent.model";
+import { UserRole } from "../models/user.model";
+import Application from "../models/application.model";
 import ScreeningResult from "../models/screening.model";
 import ExternalApplicant from "../models/applicant.model";
 import { GeminiService } from "../services/gemini.service";
@@ -38,8 +39,6 @@ import type { Request, Response } from "express";
  *                     type: string
  */
 
-import Application from "../models/application.model";
-
 /**
  * Trigger AI screening for a job
  */
@@ -57,6 +56,33 @@ export const triggerScreening = async (
         status: "error",
         message: "Job not found",
         data: null,
+      });
+    }
+
+    if (req.user.role !== UserRole.ADMIN && job.createdBy.toString() !== req.user._id) {
+      return res.status(HttpStatusCode.Forbidden).json({
+        status: "error",
+        message: "Access denied to screen this job",
+        data: null,
+      });
+    }
+
+    const [pendingExternalCount, successfulExternalCount, failedExternalCount] =
+      await Promise.all([
+        ExternalApplicant.countDocuments({ jobId, parsingStatus: "pending" }),
+        ExternalApplicant.countDocuments({ jobId, parsingStatus: "success" }),
+        ExternalApplicant.countDocuments({ jobId, parsingStatus: "failed" }),
+      ]);
+
+    if (pendingExternalCount > 0) {
+      return res.status(HttpStatusCode.Conflict).json({
+        status: "error",
+        message: "Resume parsing is still in progress. Please wait before screening.",
+        data: {
+          pending: pendingExternalCount,
+          successful: successfulExternalCount,
+          failed: failedExternalCount,
+        },
       });
     }
 
@@ -82,6 +108,9 @@ export const triggerScreening = async (
     }));
 
     const allCandidates = [...platformMapped, ...externalMapped];
+    const candidateById = new Map(
+      allCandidates.map((candidate: any) => [candidate._id.toString(), candidate])
+    );
 
     if (allCandidates.length === 0) {
       return res.status(HttpStatusCode.BadRequest).json({
@@ -99,26 +128,40 @@ export const triggerScreening = async (
     });
     await screeningRecord.save();
 
-    // 4. Run AI Evaluation (Asynchronous if needed, but for the MVP we can wait or use a background process)
-    // For now, let's keep it in the request cycle for easier debugging
+    // 4. Run AI Evaluation 
     try {
       const aiResults = await GeminiService.evaluateCandidates(job, allCandidates);
 
       // 5. Map AI results back to our schema
-      const rankedCandidates = aiResults.map((result: any) => {
-        const candidate = allCandidates.find(
-          (c) => c._id.toString() === result.candidateId
-        );
+      const rankedCandidates = aiResults
+        .map((result: any) => {
+        const candidate = candidateById.get(String(result.candidateId));
+        if (!candidate) return null;
+
         return {
           rank: result.rank,
-          candidateId: result.candidateId,
-          profileSource: candidate?.source || "platform",
+          candidateId: candidate._id,
+          profileSource: candidate.source,
           matchScore: result.matchScore,
           subScores: result.subScores,
           reasoning: result.reasoning,
           profileSnapshot: candidate,
         };
-      });
+        })
+        .filter((result): result is NonNullable<typeof result> => result !== null);
+
+      const screenedCandidateIds = new Set(
+        rankedCandidates.map((candidate) => candidate.candidateId.toString())
+      );
+
+      if (
+        rankedCandidates.length !== allCandidates.length ||
+        screenedCandidateIds.size !== allCandidates.length
+      ) {
+        throw new Error(
+          `AI returned incomplete or invalid candidate results. Expected ${allCandidates.length}, got ${rankedCandidates.length}.`
+        );
+      }
 
       // 6. Finalize the screening result
       screeningRecord.rankedCandidates = rankedCandidates;
@@ -155,6 +198,24 @@ export const getScreeningResults = async (
 ) => {
   try {
     const { id: jobId } = req.params;
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+      return res.status(HttpStatusCode.NotFound).json({
+        status: "error",
+        message: "Job not found",
+        data: null,
+      });
+    }
+
+    if (req.user.role !== UserRole.ADMIN && job.createdBy.toString() !== req.user._id) {
+      return res.status(HttpStatusCode.Forbidden).json({
+        status: "error",
+        message: "Access denied to view screening results for this job",
+        data: null,
+      });
+    }
+
     const results = await ScreeningResult.find({ jobId })
       .sort({ createdAt: -1 })
       .limit(1); // Get the latest run
