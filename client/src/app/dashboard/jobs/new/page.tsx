@@ -7,6 +7,13 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue
+} from '@/components/ui/select';
 import dynamic from 'next/dynamic';
 
 const MdxEditor = dynamic(() => import('@/components/ui/mdx-editor'), { ssr: false });
@@ -246,23 +253,29 @@ export default function NewJobPage() {
 									<div className="grid gap-1.5">
 										<Label htmlFor="department">Department</Label>
 										{!isCustomDept ? (
-											<select
-												id="department"
-												className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+											<Select
 												value={department}
-												onChange={(e) => {
-													if (e.target.value === 'custom') {
+												onValueChange={(value) => {
+													if (value === 'custom') {
 														setIsCustomDept(true);
 														setDepartment('');
 													} else {
-														setDepartment(e.target.value);
+														setDepartment(value);
 													}
 												}}
 											>
-												<option value="" disabled>Select department</option>
-												{MOCK_DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
-												<option value="custom">Other / Custom...</option>
-											</select>
+												<SelectTrigger id="department">
+													<SelectValue placeholder="Select department" />
+												</SelectTrigger>
+												<SelectContent>
+													{MOCK_DEPARTMENTS.map((d) => (
+														<SelectItem key={d} value={d}>
+															{d}
+														</SelectItem>
+													))}
+													<SelectItem value="custom">Other / Custom...</SelectItem>
+												</SelectContent>
+											</Select>
 										) : (
 											<div className="flex gap-2">
 												<Input id="department" placeholder="Enter department name" value={department} onChange={(e) => setDepartment(e.target.value)} autoFocus />
@@ -275,23 +288,29 @@ export default function NewJobPage() {
 									<div className="grid gap-1.5">
 										<Label htmlFor="location">Location</Label>
 										{!isCustomLocation ? (
-											<select
-												id="location"
-												className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+											<Select
 												value={location}
-												onChange={(e) => {
-													if (e.target.value === 'custom') {
+												onValueChange={(value) => {
+													if (value === 'custom') {
 														setIsCustomLocation(true);
 														setLocation('');
 													} else {
-														setLocation(e.target.value);
+														setLocation(value);
 													}
 												}}
 											>
-												<option value="" disabled>Select location</option>
-												{MOCK_LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
-												<option value="custom">Other / Custom...</option>
-											</select>
+												<SelectTrigger id="location">
+													<SelectValue placeholder="Select location" />
+												</SelectTrigger>
+												<SelectContent>
+													{MOCK_LOCATIONS.map((l) => (
+														<SelectItem key={l} value={l}>
+															{l}
+														</SelectItem>
+													))}
+													<SelectItem value="custom">Other / Custom...</SelectItem>
+												</SelectContent>
+											</Select>
 										) : (
 											<div className="flex gap-2">
 												<Input id="location" placeholder="Enter location name" value={location} onChange={(e) => setLocation(e.target.value)} autoFocus />
