@@ -9,7 +9,22 @@ services:
       - .env
     volumes:
       - minio_data:/data
-    restart: always
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:4.1.2-management
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      # Increase heartbeat timeout for long-running processes
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbit heartbeat 60"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      # Add custom rabbitmq configuration
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    restart: unless-stopped
     networks:
       - app-network
 
@@ -29,9 +44,9 @@ services:
       "
 
 volumes:
-  mongo_data:
-    driver: local
   minio_data:
+    driver: local
+  rabbitmq_data:
     driver: local
 
 networks:
