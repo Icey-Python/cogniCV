@@ -23,6 +23,16 @@ import {
 	SelectValue
 } from '@/components/ui/select';
 import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { copyToClipboard } from '@/lib/utils';
+import {
 	IconArrowLeft,
 	IconBolt,
 	IconBriefcase,
@@ -38,7 +48,9 @@ import {
 	IconPaperclip,
 	IconSparkles,
 	IconTrophy,
-	IconUsers
+	IconUsers,
+	IconShare,
+	IconLink
 } from '@tabler/icons-react';
 import { JobInfoDrawer } from '@/components/jobs/job-info-drawer';
 
@@ -72,16 +84,18 @@ function hasSkill(profileSkills: Skill[], requiredSkill: string) {
 }
 
 export default function ApplicantDetailPage() {
-	const params = useParams<{ id: string }>();
-	const searchParams = useSearchParams();
-	const jobId = searchParams.get('jobId') || undefined;
+	const params = useParams();
+	const jobId = params.id;
+	const applicationId = params.applicantId;
 
 	const entries = useMemo(() => {
 		return Object.entries(MOCK_RANKED_CANDIDATES).flatMap(
 			([entryJobId, candidates]) => {
 				const job = MOCK_JOBS.find((item) => item._id === entryJobId);
 				return candidates
-					.filter((candidate) => candidate.profileSnapshot._id === params.id)
+					.filter(
+						(candidate) => candidate.profileSnapshot._id === applicationId
+					)
 					.map((candidate) => ({
 						jobId: entryJobId,
 						job,
@@ -142,6 +156,10 @@ export default function ApplicantDetailPage() {
 	const [status, setStatus] = useState<ApplicantStatus>('Under Review');
 	const [statusSaved, setStatusSaved] = useState(false);
 	const [jobInfoOpen, setJobInfoOpen] = useState(false);
+	const [shareModalOpen, setShareModalOpen] = useState(false);
+	const [shareType, setShareType] = useState('public');
+	const [sharePassword, setSharePassword] = useState('');
+	const [generatedLink, setGeneratedLink] = useState('');
 
 	const recruiterDraft = useMemo(() => {
 		if (!candidate || !contextJob) {
@@ -243,6 +261,18 @@ export default function ApplicantDetailPage() {
 		);
 	};
 
+	const handleGenerateLink = () => {
+		const baseUrl = window.location.origin;
+		const link = `${baseUrl}/shared/analysis/${candidate.profileSnapshot._id}`;
+		setGeneratedLink(link);
+	};
+
+	const handleCopyLink = () => {
+		if (generatedLink) {
+			copyToClipboard(generatedLink);
+		}
+	};
+
 	return (
 		<div className="space-y-6">
 			<div className="flex flex-wrap items-start justify-between gap-4">
@@ -263,6 +293,14 @@ export default function ApplicantDetailPage() {
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => setShareModalOpen(true)}
+						className="mr-2 gap-2"
+					>
+						<IconShare className="size-4" /> Share Analysis
+					</Button>
 					<Badge variant="outline" className="bg-white py-1 font-medium">
 						{candidate.profileSource === 'platform' ? (
 							<IconBolt className="mr-1.5 size-3.5 text-blue-600" />
@@ -560,6 +598,67 @@ export default function ApplicantDetailPage() {
 				open={jobInfoOpen}
 				onOpenChange={setJobInfoOpen}
 			/>
+			<Dialog open={shareModalOpen} onOpenChange={setShareModalOpen}>
+				<DialogContent className="sm:max-w-md">
+					<DialogHeader>
+						<DialogTitle>Share Analysis</DialogTitle>
+						<DialogDescription>
+							Share this candidate's AI analysis details. Read-only view.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="grid gap-4 py-4">
+						<div className="grid gap-2">
+							<Label>Visibility</Label>
+							<Select
+								value={shareType}
+								onValueChange={(val) => {
+									setShareType(val);
+									setGeneratedLink('');
+								}}
+							>
+								<SelectTrigger>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="public">Public Link</SelectItem>
+									<SelectItem value="protected">Password Protected</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
+						{shareType === 'protected' && (
+							<div className="grid gap-2">
+								<Label htmlFor="password">Password</Label>
+								<Input
+									id="password"
+									type="password"
+									value={sharePassword}
+									onChange={(e) => setSharePassword(e.target.value)}
+									placeholder="Set a password..."
+								/>
+							</div>
+						)}
+						<Button onClick={handleGenerateLink} className="mt-2 w-full">
+							<IconLink className="mr-2 size-4" /> Generate Link
+						</Button>
+						{generatedLink && (
+							<div className="mt-4 flex items-center gap-2">
+								<Input
+									value={generatedLink}
+									readOnly
+									className="bg-muted text-muted-foreground"
+								/>
+								<Button
+									size="icon"
+									onClick={handleCopyLink}
+									className="shrink-0"
+								>
+									<IconCopy className="size-4" />
+								</Button>
+							</div>
+						)}
+					</div>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }

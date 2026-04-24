@@ -106,16 +106,14 @@ export function ApplicantInsightDrawer({
 							>
 								{p.availability.status}
 							</span>
-							<Link
-								href={
-									jobId
-										? `/dashboard/applicants/${p._id}?jobId=${jobId}`
-										: `/dashboard/applicants/${p._id}`
-								}
-								className="text-primary ml-auto text-sm underline underline-offset-2 hover:underline"
-							>
-								Detailed Analysis
-							</Link>
+							{jobId && (
+								<Link
+									href={`/dashboard/jobs/${jobId}/${p._id}`}
+									className="text-primary ml-auto text-sm underline underline-offset-2 hover:underline"
+								>
+									Detailed Analysis
+								</Link>
+							)}
 						</div>
 					</div>
 				</div>

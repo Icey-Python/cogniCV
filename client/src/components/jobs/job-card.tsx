@@ -1,18 +1,18 @@
 import { type Job } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { IconBriefcase, IconMapPin, IconClock, IconUsers, IconArrowRight, IconPencil } from '@tabler/icons-react';
+import { IconBriefcase, IconMapPin, IconClock, IconUsers, IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 interface JobCardProps {
 	job: Job;
 }
 
 const statusDot: Record<Job['status'], string> = {
-	Active: 'bg-emerald-500',
-	Closed: 'bg-slate-400',
-	Draft: 'bg-amber-400',
+	Active: 'border-emerald-500 text-emerald-600',
+	Closed: 'border-slate-400 text-slate-600',
+	Draft: 'border-amber-400 text-amber-600',
 };
 
 export function JobCard({ job }: JobCardProps) {
@@ -28,9 +28,9 @@ export function JobCard({ job }: JobCardProps) {
 							{job.description}
 						</p>
 					</div>
-						<Link href={`/dashboard/jobs/${job._id}/edit`}>
-							<IconPencil className="size-4 hover:text-primary transition-colors" />
-						</Link>
+                    <Badge variant="outline" className={cn('text-xs', statusDot[job.status])}>
+                    {job.status}
+                    </Badge>
 				</CardHeader>
 				<CardContent className="pt-0 space-y-4">
 					<div className="flex flex-wrap gap-3 text-xs text-muted-foreground">

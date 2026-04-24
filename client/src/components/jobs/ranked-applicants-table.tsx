@@ -28,7 +28,7 @@ import {
 export function CircularScoreProgress({ score }: { score: number }) {
 	const color =
 		score >= 90 ? 'text-emerald-500' : score >= 75 ? 'text-primary' : score >= 60 ? 'text-amber-500' : 'text-red-500';
-	
+
 	const radius = 16;
 	const circumference = 2 * Math.PI * radius;
 	const strokeDashoffset = circumference - (score / 100) * circumference;
@@ -154,7 +154,7 @@ export function RankedApplicantsTable({ candidates, onRowClick, showJob = false 
 										</span>
 									</TableCell>
 									<TableCell>
-										<IconChevronRight className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+										<IconChevronRight className="size-4 text-muted-foreground  transition-opacity" />
 									</TableCell>
 								</TableRow>
 							);
@@ -162,7 +162,7 @@ export function RankedApplicantsTable({ candidates, onRowClick, showJob = false 
 					)}
 				</TableBody>
 			</Table>
-			
+
 			{candidates.length > 0 && (
 				<div className="border-t py-2 px-6 flex items-center justify-between">
 					<p className="text-sm text-muted-foreground">
