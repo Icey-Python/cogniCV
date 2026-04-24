@@ -109,12 +109,64 @@ export class GeminiService {
   }
 
   /**
+   * Evaluate job creation chat history
+   */
+  static async evaluateJobCreationChat(messages: { role: string; content: string }[]): Promise<any> {
+    const systemPrompt = `You are an expert technical recruiter assistant helping a user create a new job posting.
+Your goal is to collect the following required fields from the user through a natural conversation:
+1. title (string)
+2. description (string - a brief overview)
+3. requiredSkills (array of strings)
+4. experienceLevel (must be one of: "Entry", "Junior", "Mid", "Senior", "Lead")
+5. type (must be one of: "Full-time", "Part-time", "Contract")
+6. location (string)
+
+The conversation history will be provided.
+Analyze the conversation to determine if ALL 6 required fields have been clearly provided by the user.
+
+You MUST respond in pure JSON format (no markdown, no backticks).
+If any field is missing or unclear, your JSON response must be:
+{
+  "isComplete": false,
+  "nextQuestion": "Friendly conversational question asking for the missing details, one at a time if multiple are missing."
+}
+
+If all fields have been provided, your JSON response must be:
+{
+  "isComplete": true,
+  "jobData": {
+    "title": "...",
+    "description": "...",
+    "requiredSkills": ["...", "..."],
+    "experienceLevel": "...",
+    "type": "...",
+    "location": "..."
+  }
+}
+
+Conversation History:
+${JSON.stringify(messages, null, 2)}`;
+
+    try {
+      const result = await this.model.generateContent(systemPrompt);
+      const response = await result.response;
+      const text = response.text();
+
+      const cleanedJson = this.extractJson(text);
+      return JSON.parse(cleanedJson);
+    } catch (error) {
+      Logger.error({ message: "Error in evaluateJobCreationChat: " + error });
+      throw new Error("Failed to evaluate chat with AI");
+    }
+  }
+
+  /**
    * Extract JSON from a potentially markdown-wrapped string
    */
   private static extractJson(text: string): string {
-    const jsonMatch = text.match(/\[[\s\S]*\]/);
-    if (jsonMatch) {
-      return jsonMatch[0];
+    const match = text.match(/(\[[\s\S]*\]|{[\s\S]*})/);
+    if (match) {
+      return match[0];
     }
     return text.trim();
   }
