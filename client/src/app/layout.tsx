@@ -1,6 +1,7 @@
 import './globals.css';
 import { Work_Sans, Lora, JetBrains_Mono } from 'next/font/google';
 import type { Metadata, Viewport } from 'next';
+import { QueryProvider } from '@/hooks/query/query-provider';
 
 const fontWorkSans = Work_Sans({
 	subsets: ['latin'],
@@ -58,11 +59,9 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body
-				className={`${fontWorkSans.className} ${fontLora.variable} ${fontJetBrainsMono.variable} antialiased`}
+				className={`${fontWorkSans.className} ${fontLora.variable} ${fontJetBrainsMono.variable} bg-background text-foreground min-h-screen antialiased`}
 			>
-				<div className="bg-background text-foreground min-h-screen">
-					{children}
-				</div>
+				<QueryProvider>{children}</QueryProvider>
 			</body>
 		</html>
 	);
