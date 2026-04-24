@@ -26,6 +26,14 @@ export const ENV = {
   // AI/Gemini
   GEMINI_API_KEY: process.env.GEMINI_API_KEY as string,
   GEMINI_MODEL: process.env.GEMINI_MODEL || "gemini-2.0-flash",
+  // RabbitMQ
+  RABBITMQ_URL: process.env.RABBITMQ_URL || "amqp://localhost",
+  // Cloudflare R2
+  R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID as string,
+  R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY as string,
+  R2_ENDPOINT: process.env.R2_ENDPOINT as string,
+  R2_BUCKET_NAME: process.env.R2_BUCKET_NAME as string,
+  R2_PUBLIC_DOMAIN: process.env.R2_PUBLIC_DOMAIN as string,
 };
 
 export const isProduction = process.env.NODE_ENV === "production";

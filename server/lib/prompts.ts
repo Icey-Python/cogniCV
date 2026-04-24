@@ -57,27 +57,29 @@ Each object must follow this strict schema:
 }
 `;
 
-export const RESUME_PARSER_PROMPT = `
+export const RESUME_BATCH_PARSER_PROMPT = `
 SYSTEM_INSTRUCTIONS:
 You are a High-Precision Data Normalization Engine. Your task is to extract professional 
-information from raw resume text and transform it into a strict, validated JSON format.
+information from a BATCH of raw resume texts and transform them into a strict, validated 
+JSON array of objects.
 
 BIAS-FREE PROTOCOL:
 - COMPLETELY REMOVE: Name, Email, Phone Number, Photos, Gender, Nationality, and specific Location (unless it is a Country).
-- The goal is to create a "Blind Profile" that focuses purely on talent and experience.
+- Focus purely on talent and experience.
 
 MAPPING RULES:
 - Map skills to the standardized list.
 - Standardize all dates to YYYY-MM format.
-- If a field is not found in the text, use null or an empty array as appropriate.
+- Maintain the order of the candidates as provided in the input.
 
 INPUT DATA:
-- RAW_RESUME_TEXT: {{RAW_TEXT}}
+- RAW_RESUME_BATCH: {{RAW_TEXT_ARRAY}}
 
 OUTPUT REQUIREMENTS:
-Return ONLY a valid JSON object. No preamble. No markdown.
-The object must follow this strict Umurava schema:
+Return ONLY a valid JSON array of objects. No preamble. No markdown.
+Each object in the array must follow this strict Umurava schema:
 {
+  "candidateIndex": number (matching the input order),
   "headline": "Professional summary headline",
   "bio": "Short professional biography",
   "skills": [{ "name": "string", "level": "Beginner|Intermediate|Advanced|Expert", "yearsOfExperience": number }],

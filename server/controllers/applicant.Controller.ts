@@ -196,8 +196,11 @@ export const uploadCsv = async (req: Request, res: Response<IServerResponse>) =>
   }
 };
 
+import { publishToQueue, RabbitMQQueues } from "../lib/rabbitmq";
+import { uploadToR2 } from "../lib/r2";
+
 /**
- * Upload and process PDF resumes for a job
+ * Upload and process PDF resumes for a job (Industrial-grade Async flow)
  */
 export const uploadPdf = async (req: Request, res: Response<IServerResponse>) => {
   try {
@@ -221,57 +224,64 @@ export const uploadPdf = async (req: Request, res: Response<IServerResponse>) =>
       });
     }
 
-    Logger.info({ message: `Starting parallel parsing for ${files.length} resumes...` });
+    Logger.info({ message: `Received ${files.length} resumes. Initiating R2 upload and queuing...` });
 
-    const results = await Promise.allSettled(
+    // Step 1 & 2: Upload to R2 and create Pending records in parallel
+    const queueResults = await Promise.allSettled(
       files.map(async (file) => {
+        let applicant: InstanceType<typeof ExternalApplicant> | null = null;
+
         try {
-          const parsedProfile = await ParserService.parseResume(file.buffer);
+          // 1. Store original file in Cloudflare R2
+          const resumeUrl = await uploadToR2(file.buffer, file.originalname, file.mimetype);
 
-          const applicant = new ExternalApplicant({
+          // 2. Create database record with "pending" status
+          applicant = new ExternalApplicant({
             jobId,
             source: "pdf",
-            parsedProfile,
-            parsingStatus: "success",
+            resumeUrl,
+            parsingStatus: "pending",
           });
-
           await applicant.save();
-          return { name: file.originalname, status: "success" };
-        } catch (error: any) {
-          const failedApplicant = new ExternalApplicant({
-            jobId,
-            source: "pdf",
-            parsingStatus: "failed",
-          });
-          await failedApplicant.save();
 
-          Logger.error({ message: `Failed to parse ${file.originalname}: ${error.message}` });
-          throw new Error(`${file.originalname}: ${error.message}`);
+          // 3. Publish to RabbitMQ for background AI processing
+          await publishToQueue(RabbitMQQueues.RESUME_INGESTION, {
+            applicantId: applicant._id,
+            resumeUrl,
+            jobId,
+          });
+
+          return { name: file.originalname, status: "queued" };
+        } catch (error: any) {
+          Logger.error({ message: `Failed to queue ${file.originalname}: ${error.message}` });
+
+          if (applicant?._id) {
+            await ExternalApplicant.findByIdAndUpdate(applicant._id, {
+              parsingStatus: "failed",
+              errorMessage: "Failed to queue resume for parsing: " + error.message,
+            });
+          }
+
+          throw error;
         }
       })
     );
 
-    const summary = {
-      total: files.length,
-      succeeded: results.filter((r) => r.status === "fulfilled").length,
-      failed: results.filter((r) => r.status === "rejected").length,
-      details: results.map((r, i) => ({
-        file: files[i].originalname,
-        status: r.status === "fulfilled" ? "success" : "failed",
-        error: r.status === "rejected" ? (r as any).reason : null,
-      })),
-    };
-
-    res.status(HttpStatusCode.Ok).json({
+    // Step 3: Return 202 Accepted immediately
+    res.status(HttpStatusCode.Accepted).json({
       status: "success",
-      message: "Resumes processed",
-      data: summary,
+      message: "Resumes accepted and queued for processing",
+      data: {
+        total: files.length,
+        queued: queueResults.filter((r) => r.status === "fulfilled").length,
+        failed: queueResults.filter((r) => r.status === "rejected").length,
+      },
     });
   } catch (error) {
     Logger.error({ message: "Critical error in uploadPdf: " + error });
     res.status(HttpStatusCode.InternalServerError).json({
       status: "error",
-      message: "Failed to process uploads",
+      message: "Failed to initiate upload pipeline",
       data: null,
     });
   }

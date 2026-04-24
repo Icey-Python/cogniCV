@@ -15,6 +15,7 @@ import { setupWebSocketServer } from "./sockets";
 import generateOpenAPISpec from "./docs/openapi";
 import expressBasicAuth from "express-basic-auth";
 import { apiReference } from "@scalar/express-api-reference";
+import { initRabbitMQ } from "./lib/rabbitmq";
 import { AllowedOrigins, ENV, isDevelopment } from "./lib/environments";
 
 const app = express();
@@ -103,6 +104,10 @@ const startServer = async () => {
   if (isDevelopment) {
     generateOpenAPISpec();
   }
+
+  // Initialize RabbitMQ (this also starts the background worker)
+  await initRabbitMQ();
+
   server.listen(ENV.SERVER_PORT, () => {
     Logger.info({
       message: `Server is listening on port ${ENV.SERVER_PORT}`,
