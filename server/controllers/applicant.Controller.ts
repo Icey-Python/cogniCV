@@ -3,8 +3,60 @@ import { HttpStatusCode } from "axios";
 import Job from "../models/job.model";
 import TalentProfile from "../models/talent.model";
 import ExternalApplicant from "../models/applicant.model";
+import { ParserService } from "../services/parser.service";
 import type { IServerResponse } from "../types";
 import type { Request, Response } from "express";
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     TalentProfile:
+ *       type: object
+ *       properties:
+ *         headline:
+ *           type: string
+ *         bio:
+ *           type: string
+ *         location:
+ *           type: string
+ *         skills:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               level:
+ *                 type: string
+ *                 enum: [Beginner, Intermediate, Advanced, Expert]
+ *               yearsOfExperience:
+ *                 type: number
+ *         experience:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               company:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *               startDate:
+ *                 type: string
+ *               endDate:
+ *                 type: string
+ *               isCurrent:
+ *                 type: boolean
+ *         availability:
+ *           type: object
+ *           properties:
+ *             status:
+ *               type: string
+ *               enum: ["Available", "Open to Opportunities", "Not Available"]
+ *             type:
+ *               type: string
+ *               enum: ["Full-time", "Part-time", "Contract"]
+ */
 
 /**
  * Get all internal platform talent profiles (seeded data)
@@ -62,10 +114,8 @@ export const getJobApplicants = async (
       });
     }
 
-    // For now, we return external applicants associated with this job
-    // and a sample of platform talent as potential applicants
     const externalApplicants = await ExternalApplicant.find({ jobId });
-    const platformTalent = await TalentProfile.find().limit(10); // Placeholder for internal matching
+    const platformTalent = await TalentProfile.find().limit(10);
 
     res.status(HttpStatusCode.Ok).json({
       status: "success",
@@ -91,7 +141,9 @@ export const getJobApplicants = async (
 export const uploadCsv = async (req: Request, res: Response<IServerResponse>) => {
   try {
     const { id: jobId } = req.params;
-    if (!req.file) {
+    const file = req.file as Express.Multer.File;
+
+    if (!file) {
       return res.status(HttpStatusCode.BadRequest).json({
         status: "error",
         message: "No file uploaded",
@@ -99,13 +151,38 @@ export const uploadCsv = async (req: Request, res: Response<IServerResponse>) =>
       });
     }
 
-    // Logic for CSV/Excel parsing will go here in the next step
-    // For now, we acknowledge receipt
-    res.status(HttpStatusCode.Accepted).json({
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(HttpStatusCode.NotFound).json({
+        status: "error",
+        message: "Job not found",
+        data: null,
+      });
+    }
+
+    Logger.info({ message: `Parsing spreadsheet: ${file.originalname}` });
+
+    // 1. Parse Spreadsheet via AI
+    const parsedProfiles = await ParserService.parseSpreadsheet(file.buffer);
+
+    // 2. Save each profile as an ExternalApplicant
+    const savedApplicants = await Promise.all(
+      parsedProfiles.map(async (profile) => {
+        const applicant = new ExternalApplicant({
+          jobId,
+          source: "csv",
+          parsedProfile: profile,
+          parsingStatus: "success",
+        });
+        return await applicant.save();
+      })
+    );
+
+    res.status(HttpStatusCode.Ok).json({
       status: "success",
-      message: "File received and queued for processing",
+      message: `${savedApplicants.length} applicants imported from spreadsheet`,
       data: {
-        fileName: req.file.originalname,
+        total: savedApplicants.length,
         jobId,
       },
     });
@@ -113,7 +190,7 @@ export const uploadCsv = async (req: Request, res: Response<IServerResponse>) =>
     Logger.error({ message: "Error uploading CSV: " + error });
     res.status(HttpStatusCode.InternalServerError).json({
       status: "error",
-      message: "Failed to upload file",
+      message: "Failed to process spreadsheet",
       data: null,
     });
   }
@@ -135,20 +212,66 @@ export const uploadPdf = async (req: Request, res: Response<IServerResponse>) =>
       });
     }
 
-    // Logic for PDF parsing will go here in the next step
-    res.status(HttpStatusCode.Accepted).json({
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(HttpStatusCode.NotFound).json({
+        status: "error",
+        message: "Job not found",
+        data: null,
+      });
+    }
+
+    Logger.info({ message: `Starting parallel parsing for ${files.length} resumes...` });
+
+    const results = await Promise.allSettled(
+      files.map(async (file) => {
+        try {
+          const parsedProfile = await ParserService.parseResume(file.buffer);
+
+          const applicant = new ExternalApplicant({
+            jobId,
+            source: "pdf",
+            parsedProfile,
+            parsingStatus: "success",
+          });
+
+          await applicant.save();
+          return { name: file.originalname, status: "success" };
+        } catch (error: any) {
+          const failedApplicant = new ExternalApplicant({
+            jobId,
+            source: "pdf",
+            parsingStatus: "failed",
+          });
+          await failedApplicant.save();
+
+          Logger.error({ message: `Failed to parse ${file.originalname}: ${error.message}` });
+          throw new Error(`${file.originalname}: ${error.message}`);
+        }
+      })
+    );
+
+    const summary = {
+      total: files.length,
+      succeeded: results.filter((r) => r.status === "fulfilled").length,
+      failed: results.filter((r) => r.status === "rejected").length,
+      details: results.map((r, i) => ({
+        file: files[i].originalname,
+        status: r.status === "fulfilled" ? "success" : "failed",
+        error: r.status === "rejected" ? (r as any).reason : null,
+      })),
+    };
+
+    res.status(HttpStatusCode.Ok).json({
       status: "success",
-      message: `${files.length} files received and queued for processing`,
-      data: {
-        count: files.length,
-        jobId,
-      },
+      message: "Resumes processed",
+      data: summary,
     });
   } catch (error) {
-    Logger.error({ message: "Error uploading PDFs: " + error });
+    Logger.error({ message: "Critical error in uploadPdf: " + error });
     res.status(HttpStatusCode.InternalServerError).json({
       status: "error",
-      message: "Failed to upload files",
+      message: "Failed to process uploads",
       data: null,
     });
   }
