@@ -23,8 +23,7 @@ const MdxEditor = dynamic(() => import('@/components/ui/mdx-editor'), {
 	ssr: false
 });
 import {
-	IconBuilding,
-	IconWorld,
+	IconPencil,
 	IconX,
 	IconPlus,
 	IconCircleCheck,
@@ -37,7 +36,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Job } from '@/hooks/query/jobs/service';
 
-type JobType = 'internal' | 'external' | 'ai';
+type JobType = 'external' | 'ai';
 type EmploymentType = 'Full-time' | 'Part-time' | 'Contract';
 type ExperienceLevel = 'Entry' | 'Junior' | 'Mid' | 'Senior' | 'Lead';
 
@@ -65,7 +64,7 @@ export default function NewJobPage() {
 	const dbLocations = orgData?.data?.locations || [];
 
 	const [step, setStep] = useState(1);
-	const [jobType, setJobType] = useState<JobType>('internal');
+	const [jobType, setJobType] = useState<JobType>('external');
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [department, setDepartment] = useState('');
@@ -90,10 +89,10 @@ export default function NewJobPage() {
 				setEmploymentType(draft.type || 'Full-time');
 				setExperienceLevel(draft.experienceLevel || 'Mid');
 				setSkills(draft.requiredSkills || []);
-				
+
 				// Move to details step automatically if it's an AI draft
 				setStep(2);
-				
+
 				// We don't clear it immediately to allow location matching in the next effect
 			} catch (e) {
 				console.error('Failed to parse AI draft', e);
@@ -109,7 +108,7 @@ export default function NewJobPage() {
 			try {
 				const draft: Job = JSON.parse(draftJson);
 				const matchedLoc = dbLocations.find(
-					l => l.city.toLowerCase() === draft.location?.city?.toLowerCase()
+					(l) => l.city.toLowerCase() === draft.location?.city?.toLowerCase()
 				);
 				if (matchedLoc) {
 					setLocationId(matchedLoc._id);
@@ -180,9 +179,8 @@ export default function NewJobPage() {
 						Job Created Successfully
 					</h2>
 					<p className="text-muted-foreground mx-auto max-w-md">
-						{jobType === 'internal'
-							? 'The CogniCV AI is now scanning platform profiles to find the best matches for this role.'
-							: 'Your external job listing is live. You can now upload candidate resumes to begin the AI screening process.'}
+						Your job listing is live. You can now upload candidate resumes to
+						begin the AI screening process.
 					</p>
 				</div>
 				<div className="flex justify-center gap-4 pt-4">
@@ -264,35 +262,12 @@ export default function NewJobPage() {
 					{step === 1 && (
 						<div className="space-y-6">
 							<div>
-								<h2 className="text-lg font-semibold">Application Source</h2>
+								<h2 className="text-lg font-semibold">Job Creation Method</h2>
 								<p className="text-muted-foreground mt-1 text-sm">
-									Choose how candidates will be sourced.
+									Choose how to create a job.
 								</p>
 							</div>
-							<div className="grid gap-4 sm:grid-cols-3">
-								<button
-									type="button"
-									onClick={() => setJobType('internal')}
-									className={cn(
-										'rounded-lg border-2 p-6 text-left transition-all',
-										jobType === 'internal'
-											? 'border-primary bg-primary/5'
-											: 'border-border hover:border-primary/40'
-									)}
-								>
-									<IconBuilding
-										className={cn(
-											'mb-3 size-7',
-											jobType === 'internal'
-												? 'text-primary'
-												: 'text-muted-foreground'
-										)}
-									/>
-									<h3 className="font-semibold">Internal Platform</h3>
-									<p className="text-muted-foreground mt-1 text-sm leading-relaxed">
-										Match from Umurava's talent pool using structured profiles.
-									</p>
-								</button>
+							<div className="grid gap-4 sm:grid-cols-2">
 								<button
 									type="button"
 									onClick={() => setJobType('external')}
@@ -303,7 +278,7 @@ export default function NewJobPage() {
 											: 'border-border hover:border-primary/40'
 									)}
 								>
-									<IconWorld
+									<IconPencil
 										className={cn(
 											'mb-3 size-7',
 											jobType === 'external'
@@ -311,15 +286,14 @@ export default function NewJobPage() {
 												: 'text-muted-foreground'
 										)}
 									/>
-									<h3 className="font-semibold">External Upload</h3>
+									<h3 className="font-semibold">Manual</h3>
 									<p className="text-muted-foreground mt-1 text-sm leading-relaxed">
-										Upload batch PDF resumes or a CSV from external job boards.
+										Manually enter the job details and requirements.
 									</p>
 								</button>
 								<button
 									type="button"
 									onClick={() => {
-										setJobType('ai');
 										router.push('/dashboard/jobs/new/ai-chat');
 									}}
 									className={cn(
