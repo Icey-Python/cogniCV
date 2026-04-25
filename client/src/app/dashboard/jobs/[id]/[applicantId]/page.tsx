@@ -121,7 +121,7 @@ export default function ApplicantDetailPage() {
 		}
 		return job.requiredSkills.map((requiredSkill) => ({
 			skill: requiredSkill,
-			matched: hasSkill(candidateProfile.skills, requiredSkill)
+			matched: hasSkill(candidateProfile.skills || [], requiredSkill)
 		}));
 	}, [candidateProfile, job]);
 
@@ -144,11 +144,11 @@ export default function ApplicantDetailPage() {
 	const recruiterDraft = useMemo(() => {
 		if (!candidateProfile || !job) return '';
 
-		const candidateName = `${candidateProfile.firstName} ${candidateProfile.lastName}`;
+		const candidateName = `${candidateProfile.firstName || ''} ${candidateProfile.lastName || ''}`.trim() || 'Candidate';
 		const topStrength = rankedEntry?.reasoning.strengths[0] || 'your profile quality';
 		const keyGap = rankedEntry?.reasoning.gaps[0] || 'the final fit details';
 
-		return `Subject: Update on your application for ${job.title}\n\nHi ${candidateProfile.firstName},\n\nThank you for applying for the ${job.title} role. After reviewing your profile, we were especially impressed by ${topStrength.toLowerCase()}.\n\nWe would like to discuss your fit further, including ${keyGap.toLowerCase()}.\n\nIf you are available, please reply with your interview availability for this week.\n\nBest regards,\nHiring Team`;
+		return `Subject: Update on your application for ${job.title}\n\nHi ${candidateProfile.firstName || 'there'},\n\nThank you for applying for the ${job.title} role. After reviewing your profile, we were especially impressed by ${topStrength.toLowerCase()}.\n\nWe would like to discuss your fit further, including ${keyGap.toLowerCase()}.\n\nIf you are available, please reply with your interview availability for this week.\n\nBest regards,\nHiring Team`;
 	}, [candidateProfile, job, rankedEntry]);
 
 	const [customMessage, setCustomMessage] = useState('');
@@ -190,7 +190,7 @@ export default function ApplicantDetailPage() {
 	}
 
 	const p = candidateProfile;
-	const candidateName = `${p.firstName} ${p.lastName}`;
+	const candidateName = `${p.firstName || ''} ${p.lastName || ''}`.trim() || 'Anonymous Applicant';
 	
 	const percentile = (isScreened && rankedEntry)
 		? Math.max(1, Math.round(((peers.length - rankedEntry.rank + 1) / peers.length) * 100))
@@ -224,7 +224,7 @@ export default function ApplicantDetailPage() {
 
 	const handleDownloadProfileJson = () => {
 		createObjectDownload(
-			`${p.firstName.toLowerCase()}-${p.lastName.toLowerCase()}-profile.json`,
+			`${(p.firstName || 'applicant').toLowerCase()}-${(p.lastName || 'profile').toLowerCase()}.json`,
 			JSON.stringify(p, null, 2),
 			'application/json'
 		);
@@ -233,24 +233,24 @@ export default function ApplicantDetailPage() {
 	const handleDownloadExternalResume = () => {
 		const content = [
 			`${candidateName}`,
-			`${p.headline}`,
-			`Location: ${p.location}`,
-			`Email: ${p.email}`,
+			`${p.headline || ''}`,
+			`Location: ${p.location || 'Not specified'}`,
+			`Email: ${p.email || 'Not specified'}`,
 			'',
 			'Experience',
-			...p.experience.map(
+			...(p.experience || []).map(
 				(exp) =>
-					`- ${exp.role} @ ${exp.company} (${exp.startDate} - ${exp.isCurrent ? 'Present' : exp.endDate})\n  ${exp.description}`
+					`- ${exp.role} @ ${exp.company} (${exp.startDate} - ${exp.isCurrent ? 'Present' : exp.endDate || ''})\n  ${exp.description}`
 			),
 			'',
 			'Skills',
-			...p.skills.map(
+			...(p.skills || []).map(
 				(skill) => `- ${skill.name} (${skill.yearsOfExperience} years)`
 			)
 		].join('\n');
 
 		createObjectDownload(
-			`${p.firstName.toLowerCase()}-${p.lastName.toLowerCase()}-resume.txt`,
+			`${(p.firstName || 'applicant').toLowerCase()}-${(p.lastName || 'resume').toLowerCase()}.txt`,
 			content,
 			'text/plain'
 		);
