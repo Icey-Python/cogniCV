@@ -73,6 +73,9 @@ export interface TalentProfile {
 	projects: Project[];
 	availability: Availability;
 	socialLinks?: SocialLinks;
+	source?: 'csv' | 'pdf' | 'xlsx' | 'internal' | 'platform' | 'external';
+	parsingStatus?: 'success' | 'partial' | 'failed' | 'pending';
+	resumeUrl?: string;
 }
 
 // ─── AI Screening Output ──────────────────────────────────────────────────────
@@ -87,12 +90,19 @@ export interface SubScores {
 export interface RankedCandidate {
 	rank: number;
 	candidateId: string;
-	profileSource: 'platform' | 'external';
+	profileSource: 'internal' | 'csv' | 'pdf' | 'xlsx' | 'platform' | 'external';
 	matchScore: number;
-	subScores: SubScores;
-	strengths: string[];
-	gaps: string[];
-	recommendation: string;
+	subScores: {
+		skillMatch: number;
+		experienceRelevance: number;
+		educationalAlignment: number;
+		culturalFit: number;
+	} | SubScores;
+	reasoning: {
+		strengths: string[];
+		gaps: string[];
+		recommendation: string;
+	};
 	profileSnapshot: TalentProfile;
 }
 

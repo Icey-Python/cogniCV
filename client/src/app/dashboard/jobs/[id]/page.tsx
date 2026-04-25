@@ -2,15 +2,16 @@
 
 import { useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
-import { MOCK_RANKED_CANDIDATES } from '@/lib/mock-data';
-import { type RankedCandidate } from '@/types';
-import { useJobQuery } from '@/hooks/query/jobs/queries';
+import { type RankedCandidate, type TalentProfile } from '@/hooks/query/jobs/service';
+import { useJobQuery, useJobApplicantsQuery, useScreeningResultsQuery } from '@/hooks/query/jobs/queries';
+import { useTriggerScreeningMutation } from '@/hooks/query/jobs/mutations';
 import { ApplicantInsightDrawer } from '@/components/jobs/applicant-insight-drawer';
 import { JobInfoDrawer } from '@/components/jobs/job-info-drawer';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { RankedApplicantsTable } from '@/components/jobs/ranked-applicants-table';
+import { SimpleApplicantsTable } from '@/components/jobs/simple-applicants-table';
 import {
 	IconSearch,
 	IconUsers,
@@ -18,48 +19,61 @@ import {
 	IconBriefcase,
 	IconUpload,
 	IconInfoCircle,
-	IconPencilUp,
-	IconPencil
+	IconPlayerPlay,
+	IconLoader2,
+	IconSparkles
 } from '@tabler/icons-react';
 import { FloatingChat } from '@/components/chat/floating-chat';
 import Link from 'next/link';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function JobDetailPage() {
 	const params = useParams<{ id: string }>();
-	const { data, isLoading } = useJobQuery(params.id as string);
-	const job = data?.data;
-	const candidates = MOCK_RANKED_CANDIDATES[params.id] ?? [];
+	const { data: jobData, isLoading: jobLoading } = useJobQuery(params.id as string);
+	const { data: applicantsData, isLoading: applicantsLoading } = useJobApplicantsQuery(params.id as string);
+	const { data: screeningData, isLoading: screeningLoading } = useScreeningResultsQuery(params.id as string);
+	const { mutate: triggerScreening, isPending: screeningPending } = useTriggerScreeningMutation();
+
+	const job = jobData?.data;
+	const allApplicants = useMemo(() => {
+		if (!applicantsData?.data) return [];
+		return [...applicantsData.data.external, ...applicantsData.data.platform];
+	}, [applicantsData]);
+
+	const rankedCandidates = screeningData?.data?.rankedCandidates || [];
 
 	const [search, setSearch] = useState('');
-	const [selectedCandidate, setSelectedCandidate] =
-		useState<RankedCandidate | null>(null);
+	const [selectedCandidate, setSelectedCandidate] = useState<any | null>(null);
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [jobInfoOpen, setJobInfoOpen] = useState(false);
-	const [showUpload, setShowUpload] = useState(false);
-	const [uploadComplete, setUploadComplete] = useState(false);
 
-	const filtered = useMemo(
+	const filteredRanked = useMemo(
 		() =>
-			candidates.filter((c) => {
-				const name =
-					`${c.profileSnapshot.firstName} ${c.profileSnapshot.lastName}`.toLowerCase();
-				const role = c.profileSnapshot.headline.toLowerCase();
-				return (
-					name.includes(search.toLowerCase()) ||
-					role.includes(search.toLowerCase())
-				);
+			rankedCandidates.filter((c) => {
+				const name = `${c.profileSnapshot.firstName} ${c.profileSnapshot.lastName}`.toLowerCase();
+				return name.includes(search.toLowerCase());
 			}),
-		[candidates, search]
+		[rankedCandidates, search]
 	);
 
-	const openDrawer = (candidate: RankedCandidate) => {
+	const filteredUnscreened = useMemo(
+		() =>
+			allApplicants.filter((a) => {
+				const name = `${a.firstName} ${a.lastName}`.toLowerCase();
+				return name.includes(search.toLowerCase());
+			}),
+		[allApplicants, search]
+	);
+
+	const openDrawer = (candidate: any) => {
 		setSelectedCandidate(candidate);
 		setDrawerOpen(true);
 	};
 
-	if (isLoading) {
+	if (jobLoading) {
 		return (
 			<div className="text-muted-foreground flex justify-center py-20">
+				<IconLoader2 className="animate-spin size-6 mr-2" />
 				Loading job details...
 			</div>
 		);
@@ -76,7 +90,8 @@ export default function JobDetailPage() {
 		);
 	}
 
-	const hasApplicants = uploadComplete || candidates.length > 0;
+	const hasApplicants = allApplicants.length > 0;
+	const isScreened = rankedCandidates.length > 0;
 
 	return (
 		<div className="space-y-6">
@@ -103,12 +118,24 @@ export default function JobDetailPage() {
 							{job.location?.country}
 						</span>
 						<span className="flex items-center gap-1">
-							<IconUsers className="size-4" /> 0 applicants
+							<IconUsers className="size-4" /> {allApplicants.length} applicants
 						</span>
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
-					<Button variant='outline' asChild>
+
+					{hasApplicants && !isScreened && (
+						<Button 
+							variant="default" 
+							className="bg-primary hover:bg-primary/90 gap-2"
+							onClick={() => triggerScreening(job._id)}
+							disabled={screeningPending}
+						>
+							{screeningPending ? <IconLoader2 className="animate-spin size-4" /> : <IconPlayerPlay className="size-4" />}
+							Run AI Screening
+						</Button>
+					)}
+        <Button variant='outline' asChild>
 						<Link href={`/dashboard/jobs/${job._id}/edit`}>
 						<IconPencil className="size-4" />
 							Edit
@@ -121,19 +148,36 @@ export default function JobDetailPage() {
 							Import Applications
 						</Link>
 					</Button>
-
 				</div>
 			</div>
 
+			{/* Screening Status Alert */}
+			{hasApplicants && !isScreened && (
+				<Alert className="bg-primary/5 border-primary/20">
+					<IconSparkles className="size-4 text-primary" />
+					<AlertTitle>Applicants Ready</AlertTitle>
+					<AlertDescription className="flex items-center justify-between">
+						<span>You have {allApplicants.length} candidates waiting for analysis. Run the AI screening to rank them by match score.</span>
+						<Button 
+							size="sm" 
+							onClick={() => triggerScreening(job._id)}
+							disabled={screeningPending}
+							className="ml-4"
+						>
+							Start Analysis
+						</Button>
+					</AlertDescription>
+				</Alert>
+			)}
+
 			{/* Empty states */}
-			{!hasApplicants && job.source === 'Internal' && (
+			{!hasApplicants && (
 				<Card className="border-dashed">
 					<CardContent className="space-y-3 py-16 text-center">
 						<IconUsers className="text-muted-foreground mx-auto size-10" />
-						<p className="font-medium">No candidates screened yet</p>
+						<p className="font-medium">No candidates yet</p>
 						<p className="text-muted-foreground mx-auto max-w-sm text-sm">
-							Platform talent profiles matching this role will appear here after
-							AI screening runs.
+							Import applications from our platform or upload CSV/PDF files to begin the recruitment process.
 						</p>
 						<Button size="sm" asChild className="mt-2 gap-2">
 							<Link href={`/dashboard/jobs/${job._id}/add-applicant`}>
@@ -144,31 +188,13 @@ export default function JobDetailPage() {
 				</Card>
 			)}
 
-			{!hasApplicants && job.source === 'External' && !showUpload && (
-				<Card className="border-dashed">
-					<CardContent className="space-y-3 py-16 text-center">
-						<IconUpload className="text-muted-foreground mx-auto size-10" />
-						<p className="font-medium">No applicants uploaded yet</p>
-						<p className="text-muted-foreground mx-auto max-w-sm text-sm">
-							Upload PDF resumes or a CSV to begin the AI screening and ranking
-							process.
-						</p>
-						<Button size="sm" asChild className="mt-2 gap-2">
-							<Link href={`/dashboard/jobs/${job._id}/upload`}>
-								<IconUpload className="size-4" /> Import Applications
-							</Link>
-						</Button>
-					</CardContent>
-				</Card>
-			)}
-
-			{/* Ranking table */}
+			{/* Ranking / Applicant table */}
 			{hasApplicants && (
 				<div className="mt-8 space-y-4">
 					<div className="flex flex-wrap items-center justify-between gap-4">
 						<div>
 							<h2 className="font-work-sans flex items-center gap-2 text-base font-semibold">
-								Top 20 applicants
+								{isScreened ? 'Ranked Candidates' : 'Applicants'} ({isScreened ? filteredRanked.length : filteredUnscreened.length})
 							</h2>
 						</div>
 						<div className="relative">
@@ -182,10 +208,25 @@ export default function JobDetailPage() {
 						</div>
 					</div>
 					<Card>
-						<RankedApplicantsTable
-							candidates={filtered}
-							onRowClick={openDrawer}
-						/>
+						{isScreened ? (
+							<RankedApplicantsTable
+								candidates={filteredRanked}
+								onRowClick={openDrawer}
+							/>
+						) : (
+							<SimpleApplicantsTable
+								applicants={filteredUnscreened}
+								onRowClick={(a) => openDrawer({ 
+									profileSnapshot: a, 
+									matchScore: 0, 
+									rank: 0, 
+									profileSource: a.source,
+									candidateId: a._id || '',
+									subScores: { skills: 0, experience: 0, education: 0, availability: 0 },
+									reasoning: { strengths: [], gaps: [], recommendation: '' }
+								} as any)}
+							/>
+						)}
 					</Card>
 				</div>
 			)}
