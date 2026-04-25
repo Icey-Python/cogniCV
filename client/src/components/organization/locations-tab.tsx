@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,44 +8,52 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { IconTrash, IconPlus, IconMapPin, IconGlobe } from '@tabler/icons-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CountryDropdown } from '@/components/ui/country-dropdown';
-
-type WorkspaceType = 'Remote' | 'Hybrid' | 'On-site';
-
-interface Location {
-	id: string;
-	country: string;
-	city: string;
-	workspaceType: WorkspaceType;
-	isDefault?: boolean;
-}
-
-
+import { useOrganizationQuery } from '@/hooks/query/organization/queries';
+import { useUpdateOrganizationMutation } from '@/hooks/query/organization/mutations';
+import { Location, WorkspaceType } from '@/hooks/query/organization/service';
 
 export function LocationsTab() {
-	const [locations, setLocations] = useState<Location[]>([
-		{ id: '1', country: 'Worldwide', city: 'Anywhere', workspaceType: 'Remote', isDefault: true },
-		{ id: '2', country: 'Rwanda', city: 'Kigali', workspaceType: 'Hybrid' },
-		{ id: '3', country: 'United States', city: 'New York', workspaceType: 'On-site' },
-	]);
+	const { data: orgData, isLoading } = useOrganizationQuery();
+	const updateOrg = useUpdateOrganizationMutation();
+
+	const [locations, setLocations] = useState<Location[]>([]);
 
 	const [country, setCountry] = useState('Rwanda');
 	const [city, setCity] = useState('');
 	const [workspaceType, setWorkspaceType] = useState<WorkspaceType>('Hybrid');
 
+	useEffect(() => {
+		if (orgData?.data?.locations) {
+			setLocations(orgData.data.locations);
+		}
+	}, [orgData]);
+
 	const handleAdd = () => {
 		if (!city.trim() || !country) return;
-		setLocations([...locations, {
-			id: Date.now().toString(),
-			country,
-			city: city.trim(),
-			workspaceType
-		}]);
-		setCity('');
+		const updated = [
+			...locations, 
+			{
+				country,
+				city: city.trim(),
+				workspaceType,
+				isDefault: locations.length === 0
+			}
+		];
+		updateOrg.mutate({ locations: updated }, {
+			onSuccess: () => {
+				setCity('');
+			}
+		});
 	};
 
 	const handleDelete = (id: string) => {
-		setLocations(locations.filter(l => l.id !== id));
+		const updated = locations.filter(l => l._id !== id);
+		updateOrg.mutate({ locations: updated });
 	};
+
+	if (isLoading) {
+		return <div className="p-4 text-center text-muted-foreground">Loading locations...</div>;
+	}
 
 	return (
 		<div className="space-y-6">
@@ -69,11 +77,12 @@ export function LocationsTab() {
 								placeholder="e.g. Kigali"
 								value={city}
 								onChange={(e) => setCity(e.target.value)}
+								disabled={updateOrg.isPending}
 							/>
 						</div>
 						<div className="grid gap-2">
 							<Label>Workspace Type</Label>
-							<Select value={workspaceType} onValueChange={(v) => setWorkspaceType(v as WorkspaceType)}>
+							<Select value={workspaceType} onValueChange={(v) => setWorkspaceType(v as WorkspaceType)} disabled={updateOrg.isPending}>
 								<SelectTrigger>
 									<SelectValue placeholder="Select type" />
 								</SelectTrigger>
@@ -84,7 +93,7 @@ export function LocationsTab() {
 								</SelectContent>
 							</Select>
 						</div>
-						<Button onClick={handleAdd} className="gap-2">
+						<Button onClick={handleAdd} className="gap-2" disabled={updateOrg.isPending}>
 							<IconPlus className="size-4" /> Add
 						</Button>
 					</div>
@@ -97,8 +106,8 @@ export function LocationsTab() {
 				</CardHeader>
 				<CardContent>
 					<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-						{locations.map((loc) => (
-							<div key={loc.id} className="flex flex-col p-4 border rounded-xl bg-background relative group">
+						{locations.map((loc, index) => (
+							<div key={loc._id || index} className="flex flex-col p-4 border rounded-xl bg-background relative group">
 								<div className="flex items-start justify-between mb-2">
 									<div className="flex items-center gap-2 text-primary">
 										{loc.isDefault ? <IconGlobe className="size-5" /> : <IconMapPin className="size-5" />}
@@ -110,7 +119,8 @@ export function LocationsTab() {
 										<Button
 											size="icon"
 											variant="ghost"
-											onClick={() => handleDelete(loc.id)}
+											onClick={() => loc._id && handleDelete(loc._id)}
+											disabled={updateOrg.isPending}
 											className="h-6 w-6 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:text-destructive hover:bg-destructive/10"
 										>
 											<IconTrash className="size-4" />
@@ -129,6 +139,9 @@ export function LocationsTab() {
 								</div>
 							</div>
 						))}
+						{locations.length === 0 && (
+							<p className="text-muted-foreground py-2 col-span-full">No locations found. Add one above.</p>
+						)}
 					</div>
 				</CardContent>
 			</Card>

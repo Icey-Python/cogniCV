@@ -26,3 +26,4 @@ ab:
   _ Added initial recruiter seeding
   _ Updated the env variables, so please check (.env.example) and update it, if needed, using the env variables in the .env file
   _ Integrated user login with email and password
+  \_ Integrated User Profile, and Organization endpoints
