@@ -2,6 +2,7 @@ import axios from "axios";
 import { Logger } from "borgen";
 import { getChannel, RabbitMQQueues } from "./rabbitmq";
 import { ParserService } from "../services/parser.service";
+import { ChromaService } from "../services/chroma.service";
 import TalentProfile from "../models/talent.model";
 import Application from "../models/application.model";
 import amqp from "amqplib";
@@ -38,6 +39,9 @@ export const startWorker = async () => {
       }, BATCH_TIMEOUT_MS);
     }
   });
+
+  // Start the embedding generation consumer
+  startEmbeddingWorker();
 };
 
 const processBatch = async () => {
@@ -124,4 +128,34 @@ const processBatch = async () => {
       channel.ack(msg);
     }
   }
+};
+
+/**
+ * Embedding Generation Worker
+ * Listens for completed screenings and indexes them into ChromaDB
+ */
+const startEmbeddingWorker = () => {
+  const channel = getChannel();
+  if (!channel) return;
+
+  Logger.info({ message: "Embedding Worker listening..." });
+
+  channel.consume(RabbitMQQueues.EMBEDDING_GENERATION, async (msg) => {
+    if (!msg) return;
+
+    try {
+      const { jobId } = JSON.parse(msg.content.toString());
+      Logger.info({ message: `[EmbeddingWorker] Processing job ${jobId}...` });
+
+      await ChromaService.indexJobAnalysis(jobId);
+
+      channel.ack(msg);
+      Logger.info({ message: `[EmbeddingWorker] Successfully indexed job ${jobId}` });
+    } catch (error: any) {
+      Logger.error({ message: `[EmbeddingWorker] Failed: ${error.message}` });
+      // Ack the message to avoid infinite retry loops
+      // The recruiter can re-trigger screening if needed
+      channel.ack(msg);
+    }
+  });
 };

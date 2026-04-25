@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { IconArrowRight, IconSparkles, IconUser } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import MarkdownRenderer from '../ui/markdown';
 
 export interface ChatMessage {
 	id: string;
@@ -23,7 +24,12 @@ interface ChatInterfaceProps {
 	placeholder?: string;
 }
 
-export function ChatInterface({ messages, onSendMessage, isLoading, placeholder = 'Type a message...' }: ChatInterfaceProps) {
+export function ChatInterface({
+	messages,
+	onSendMessage,
+	isLoading,
+	placeholder = 'Type a message...'
+}: ChatInterfaceProps) {
 	const [input, setInput] = useState('');
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -54,12 +60,12 @@ export function ChatInterface({ messages, onSendMessage, isLoading, placeholder 
 	};
 
 	return (
-		<div className="flex flex-col h-full bg-white rounded-xl overflow-hidden">
+		<div className="flex h-full flex-col overflow-hidden rounded-xl bg-white">
 			<div className="flex-1 overflow-y-auto p-4" ref={scrollRef}>
 				<div className="space-y-4 pb-4">
 					{messages.length === 0 && (
-						<div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground mt-20">
-							<div className="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4">
+						<div className="text-muted-foreground mt-20 flex h-full flex-col items-center justify-center text-center">
+							<div className="bg-primary/10 text-primary mb-4 flex size-12 items-center justify-center rounded-full">
 								<IconSparkles className="size-6" />
 							</div>
 							<p className="text-sm">Start chatting with the AI assistant.</p>
@@ -69,56 +75,65 @@ export function ChatInterface({ messages, onSendMessage, isLoading, placeholder 
 						<div
 							key={msg.id}
 							className={cn(
-								'flex gap-3 max-w-[85%]',
+								'flex max-w-[85%] gap-3',
 								msg.role === 'user' ? 'ml-auto flex-row-reverse' : 'mr-auto',
 								msg.component ? 'w-full max-w-[95%]' : ''
 							)}
 						>
 							<div
 								className={cn(
-									'size-8 rounded-full flex shrink-0 items-center justify-center',
+									'flex size-8 shrink-0 items-center justify-center rounded-full',
 									msg.role === 'user'
 										? 'bg-primary text-primary-foreground'
 										: 'bg-primary/10 text-primary'
 								)}
 							>
-								{msg.role === 'user' ? <IconUser className="size-5" /> : <IconSparkles className="size-5" />}
+								{msg.role === 'user' ? (
+									<IconUser className="size-5" />
+								) : (
+									<IconSparkles className="size-5" />
+								)}
 							</div>
 							<div
 								className={cn(
-									'rounded-2xl px-4 py-2.5 text-sm flex flex-col',
+									'flex flex-col rounded-2xl px-4 py-2.5 text-sm',
 									msg.role === 'user'
 										? 'bg-primary text-primary-foreground rounded-tr-sm'
 										: 'bg-muted text-foreground rounded-tl-sm',
 									msg.component && msg.role === 'ai' ? 'min-w-[300px]' : ''
 								)}
 							>
-								<p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
-								{msg.component && (
-									<div className="mt-3">
-										{msg.component}
-									</div>
-								)}
+								<MarkdownRenderer content={msg.content} />
+								{msg.component && <div className="mt-3">{msg.component}</div>}
 							</div>
 						</div>
 					))}
 					{isLoading && (
-						<div className="flex gap-3 max-w-[85%] mr-auto">
-							<div className="size-8 rounded-full bg-primary/10 text-primary flex shrink-0 items-center justify-center">
+						<div className="mr-auto flex max-w-[85%] gap-3">
+							<div className="bg-primary/10 text-primary flex size-8 shrink-0 items-center justify-center rounded-full">
 								<IconSparkles className="size-5" />
 							</div>
-							<div className="rounded-2xl rounded-tl-sm px-4 py-2.5 bg-muted text-foreground flex items-center gap-1.5">
-								<div className="size-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '0ms' }} />
-								<div className="size-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '150ms' }} />
-								<div className="size-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '300ms' }} />
+							<div className="bg-muted text-foreground flex items-center gap-1.5 rounded-2xl rounded-tl-sm px-4 py-2.5">
+								<div
+									className="bg-primary/60 size-1.5 animate-bounce rounded-full"
+									style={{ animationDelay: '0ms' }}
+								/>
+								<div
+									className="bg-primary/60 size-1.5 animate-bounce rounded-full"
+									style={{ animationDelay: '150ms' }}
+								/>
+								<div
+									className="bg-primary/60 size-1.5 animate-bounce rounded-full"
+									style={{ animationDelay: '300ms' }}
+								/>
 							</div>
 						</div>
 					)}
 				</div>
 			</div>
-			
-			<div className="p-4 bg-white/50">
-				<div className="relative flex items-end w-full transition-all">
+
+			<div className="bg-white/50 p-4">
+				<div className="relative flex w-full items-end transition-all">
 					<Textarea
 						ref={textareaRef}
 						value={input}
@@ -131,7 +146,7 @@ export function ChatInterface({ messages, onSendMessage, isLoading, placeholder 
 						}}
 						placeholder={placeholder}
 						disabled={isLoading}
-						className="min-h-[56px] max-h-[200px] w-full resize-none border bg-transparent p-4 pr-14 focus-visible:ring-0 focus-visible:ring-offset-0 leading-relaxed rounded-2xl"
+						className="max-h-[200px] min-h-[56px] w-full resize-none rounded-2xl border bg-transparent p-4 pr-14 leading-relaxed focus-visible:ring-0 focus-visible:ring-offset-0"
 						rows={1}
 					/>
 					<Button
@@ -139,13 +154,13 @@ export function ChatInterface({ messages, onSendMessage, isLoading, placeholder 
 						onClick={() => handleSubmit()}
 						size="icon"
 						disabled={!input.trim() || isLoading}
-						className="absolute right-2 bottom-2 size-10 rounded-xl shrink-0 transition-opacity"
+						className="absolute right-2 bottom-2 size-10 shrink-0 rounded-xl transition-opacity"
 					>
 						<IconArrowRight className="size-5" />
 					</Button>
 				</div>
 				<div className="mt-2 text-center">
-					<p className="text-[10px] text-muted-foreground/60">
+					<p className="text-muted-foreground/60 text-[10px]">
 						AI can make mistakes. Verify important information.
 					</p>
 				</div>

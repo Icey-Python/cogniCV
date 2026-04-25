@@ -4,6 +4,7 @@ import { ENV } from "./environments";
 
 export enum RabbitMQQueues {
   RESUME_INGESTION = "resume_ingestion",
+  EMBEDDING_GENERATION = "embedding_generation",
 }
 
 let connection: ChannelModel | null = null;
@@ -71,6 +72,7 @@ export const initRabbitMQ = async (): Promise<void> => {
     });
 
     await createdChannel.assertQueue(RabbitMQQueues.RESUME_INGESTION, { durable: true });
+    await createdChannel.assertQueue(RabbitMQQueues.EMBEDDING_GENERATION, { durable: true });
     await createdChannel.prefetch(5); // For our batching logic
 
     Logger.info({ message: "RabbitMQ INITIALIZED successfully" });

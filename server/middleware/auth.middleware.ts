@@ -2,16 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { IServerResponse } from "../types";
 import {
   verifyAccessToken,
-  verifyRefreshToken,
-  generateAccessToken,
-  setAuthCookies,
   clearAuthCookies,
   ACCESS_TOKEN_COOKIE,
-  REFRESH_TOKEN_COOKIE,
   TokenPayload,
 } from "../lib/auth-utils";
 import User from "../models/user.model";
-import Session from "../models/session.model";
 import { UserRole } from "../models/user.model";
 
 declare global {
@@ -47,14 +42,13 @@ export const authenticate = (options: AuthOptions = {}) => {
   return async (
     req: Request,
     res: Response<IServerResponse>,
-    next: NextFunction
+    next: NextFunction,
   ) => {
     try {
       const accessToken = req.cookies[ACCESS_TOKEN_COOKIE];
-      const refreshToken = req.cookies[REFRESH_TOKEN_COOKIE];
 
       // Handle missing authentication tokens
-      if (!accessToken && !refreshToken) {
+      if (!accessToken) {
         if (isOptional) {
           return next();
         }
@@ -68,69 +62,16 @@ export const authenticate = (options: AuthOptions = {}) => {
       let tokenPayload: TokenPayload | null = null;
 
       // Try to verify access token
-      if (accessToken) {
-        try {
-          tokenPayload = verifyAccessToken(accessToken);
-        } catch (error) {
-          // Access token expired or invalid, try refresh token
-          if (!refreshToken) {
-            clearAuthCookies(res);
-            if (isOptional) return next();
-            return res.status(401).json({
-              status: "error",
-              message: "Authentication expired",
-              data: null,
-            });
-          }
-        }
-      }
-
-      // If no valid access token but have refresh token, try to refresh
-      if (!tokenPayload && refreshToken) {
-        try {
-          const refreshPayload = verifyRefreshToken(refreshToken);
-
-          // Verify session is still valid in DB
-          const session = await Session.findOne({
-            sessionId: refreshPayload.sessionId,
-            isValid: true,
-          });
-
-          if (!session) {
-            clearAuthCookies(res);
-            if (isOptional) return next();
-            return res.status(401).json({
-              status: "error",
-              message: "Session expired",
-              data: null,
-            });
-          }
-
-          // Generate new access token
-          tokenPayload = {
-            userId: refreshPayload.userId,
-            email: refreshPayload.email,
-            role: refreshPayload.role,
-            sessionId: refreshPayload.sessionId,
-          };
-
-          const newAccessToken = generateAccessToken(tokenPayload);
-
-          // Update cookies with new access token
-          setAuthCookies(res, newAccessToken, refreshToken, true);
-          
-          // Update last activity
-          session.lastActivity = new Date();
-          await session.save();
-        } catch (refreshError) {
-          clearAuthCookies(res);
-          if (isOptional) return next();
-          return res.status(401).json({
-            status: "error",
-            message: "Invalid authentication",
-            data: null,
-          });
-        }
+      try {
+        tokenPayload = verifyAccessToken(accessToken);
+      } catch (error) {
+        clearAuthCookies(res);
+        if (isOptional) return next();
+        return res.status(401).json({
+          status: "error",
+          message: "Authentication expired or invalid",
+          data: null,
+        });
       }
 
       if (!tokenPayload) {

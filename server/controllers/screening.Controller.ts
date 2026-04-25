@@ -6,6 +6,7 @@ import Application from "../models/application.model";
 import ScreeningResult from "../models/screening.model";
 import TalentProfile from "../models/talent.model";
 import { GeminiService } from "../services/gemini.service";
+import { publishToQueue, RabbitMQQueues } from "../lib/rabbitmq";
 import type { IServerResponse } from "../types";
 import type { Request, Response } from "express";
 
@@ -195,6 +196,15 @@ export const triggerScreening = async (
       screeningRecord.rankedCandidates = rankedCandidates;
       screeningRecord.status = "completed";
       await screeningRecord.save();
+
+      // 7. Queue embedding generation for RAG chat (non-blocking)
+      try {
+        await publishToQueue(RabbitMQQueues.EMBEDDING_GENERATION, { jobId });
+        Logger.info({ message: `Queued embedding generation for job ${jobId}` });
+      } catch (embErr) {
+        // Non-critical: screening still succeeds even if embedding queue fails
+        Logger.warn({ message: "Failed to queue embedding generation: " + embErr });
+      }
 
       res.status(HttpStatusCode.Ok).json({
         status: "success",
