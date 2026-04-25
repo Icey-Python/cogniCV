@@ -40,7 +40,22 @@ import type { Request, Response } from "express";
  */
 
 /**
- * Trigger AI screening for a job
+ * @openapi
+ * /api/v1/screening/{id}/trigger:
+ *   post:
+ *     summary: Trigger AI screening for a job
+ *     tags: [Screening]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Screening completed successfully
  */
 export const triggerScreening = async (
   req: Request,
@@ -190,7 +205,22 @@ export const triggerScreening = async (
 };
 
 /**
- * Get screening results for a job
+ * @openapi
+ * /api/v1/screening/{id}/results:
+ *   get:
+ *     summary: Get latest screening results for a job
+ *     tags: [Screening]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Screening results retrieved successfully
  */
 export const getScreeningResults = async (
   req: Request,
