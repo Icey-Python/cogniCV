@@ -79,13 +79,13 @@ export function useAuth(): UseAuthReturn {
 			queryClient.clear();
 
 			// Redirect to login
-			router.push('/login');
+			router.push('/');
 		},
 		onError: (error: any) => {
 			console.error('Logout failed:', error);
 			// Even if logout fails, clear local state
 			queryClient.clear();
-			router.push('/login');
+			router.push('/');
 		}
 	});
 

@@ -108,15 +108,20 @@ export default function JobDetailPage() {
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
+					<Button variant='outline' asChild>
+						<Link href={`/dashboard/jobs/${job._id}/edit`}>
+						<IconPencil className="size-4" />
+							Edit
+						</Link>
+					</Button>
+					
 					<Button variant="default" asChild className="shrink-0 gap-2">
-						<Link href={`/dashboard/jobs/${job._id}/add-applicant`}>
+						<Link href={`/dashboard/jobs/${job._id}/upload`}>
+							<IconUpload className="size-4" />
 							Import Applications
 						</Link>
 					</Button>
 
-					<Button asChild>
-						<Link href={`/dashboard/jobs/${job._id}/edit`}>Edit</Link>
-					</Button>
 				</div>
 			</div>
 
