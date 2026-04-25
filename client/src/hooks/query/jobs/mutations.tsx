@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { JobService, ApplicantService } from './service';
+import { JobService, ApplicantService, ScreeningService } from './service';
 import { queryKeys } from '../keys';
 import { toast } from 'sonner';
 
@@ -47,9 +47,11 @@ export const useDeleteJobMutation = () => {
 };
 
 export const useUploadInternalMutation = () => {
+	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: ApplicantService.uploadInternal,
 		onSuccess: (data) => {
+			queryClient.invalidateQueries({ queryKey: ['applicants', 'job', data.data.jobId] });
 			toast.success(data.message || 'Applicants imported successfully');
 		},
 		onError: (error: any) => {
@@ -59,9 +61,11 @@ export const useUploadInternalMutation = () => {
 };
 
 export const useUploadCsvMutation = () => {
+	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: ApplicantService.uploadCsv,
 		onSuccess: (data) => {
+			queryClient.invalidateQueries({ queryKey: ['applicants', 'job', data.data.jobId] });
 			toast.success(data.message || 'CSV uploaded successfully');
 		},
 		onError: (error: any) => {
@@ -71,13 +75,29 @@ export const useUploadCsvMutation = () => {
 };
 
 export const useUploadPdfMutation = () => {
+	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: ApplicantService.uploadPdf,
 		onSuccess: (data) => {
+			queryClient.invalidateQueries({ queryKey: ['applicants', 'job'] }); // Invalidate all job applicants for now
 			toast.success(`${data.data?.queued ?? 0} resumes queued for processing`);
 		},
 		onError: (error: any) => {
 			toast.error(error.response?.data?.message || 'Error uploading PDFs');
+		}
+	});
+};
+
+export const useTriggerScreeningMutation = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (jobId: string) => ScreeningService.triggerScreening(jobId),
+		onSuccess: (data) => {
+			queryClient.invalidateQueries({ queryKey: ['screening', 'results', data.data.jobId] });
+			toast.success(data.message || 'Screening completed successfully');
+		},
+		onError: (error: any) => {
+			toast.error(error.response?.data?.message || 'Error during screening');
 		}
 	});
 };
