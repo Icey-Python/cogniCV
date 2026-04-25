@@ -3,6 +3,7 @@ import { HttpStatusCode } from "axios";
 import Job from "../models/job.model";
 import TalentProfile from "../models/talent.model";
 import Organization from "../models/organization.model";
+import Application from "../models/application.model";
 import { UserRole } from "../models/user.model";
 import type { IServerResponse } from "../types";
 import type { Request, Response } from "express";
@@ -147,11 +148,22 @@ export const getMyJobs = async (req: Request, res: Response<IServerResponse>) =>
       Job.countDocuments(query),
     ]);
 
+    // Enhance jobs with real applicant counts
+    const jobsWithCount = await Promise.all(
+      jobs.map(async (job) => {
+        const applicantCount = await Application.countDocuments({ jobId: job._id });
+        return {
+          ...job.toObject(),
+          applicantCount,
+        };
+      })
+    );
+
     res.status(HttpStatusCode.Ok).json({
       status: "success",
       message: "Jobs retrieved successfully",
       data: {
-        jobs,
+        jobs: jobsWithCount,
         totalJobs,
         page,
         totalPages: Math.ceil(totalJobs / limit),
@@ -209,10 +221,15 @@ export const getJobById = async (req: Request, res: Response<IServerResponse>) =
       });
     }
 
+    const applicantCount = await Application.countDocuments({ jobId: job._id });
+
     res.status(HttpStatusCode.Ok).json({
       status: "success",
       message: "Job retrieved successfully",
-      data: job,
+      data: {
+        ...job.toObject(),
+        applicantCount,
+      },
     });
   } catch (error) {
     Logger.error({ message: "Error retrieving job: " + error });
@@ -406,11 +423,22 @@ export const searchJobs = async (req: Request, res: Response<IServerResponse>) =
       Job.countDocuments(query),
     ]);
 
+    // Enhance jobs with real applicant counts
+    const jobsWithCount = await Promise.all(
+      jobs.map(async (job) => {
+        const applicantCount = await Application.countDocuments({ jobId: job._id });
+        return {
+          ...job.toObject(),
+          applicantCount,
+        };
+      })
+    );
+
     res.status(HttpStatusCode.Ok).json({
       status: "success",
       message: "Jobs retrieved successfully",
       data: {
-        jobs,
+        jobs: jobsWithCount,
         totalJobs,
         page,
         totalPages: Math.ceil(totalJobs / limit),
@@ -467,4 +495,3 @@ export const getJobAnalytics = async (req: Request, res: Response<IServerRespons
     });
   }
 };
-
