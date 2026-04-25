@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/query/auth/useAuth';
@@ -66,49 +65,55 @@ export default function ProfilePage() {
 				<p className="text-muted-foreground mt-1">Manage your account details and password.</p>
 			</div>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>Personal Information</CardTitle>
-					<CardDescription>Update your basic profile information.</CardDescription>
-				</CardHeader>
-				<CardContent className="space-y-4">
-					<div className="grid gap-2">
-						<Label htmlFor="name">Full Name</Label>
-						<Input id="name" value={name} onChange={(e) => setName(e.target.value)} disabled={updateProfile.isPending} />
+			<div className="space-y-12">
+				<section className="flex flex-col gap-6">
+					<div>
+						<h2 className="text-lg font-semibold">Personal Information</h2>
+						<p className="text-sm text-muted-foreground mt-1">Update your basic profile information and how we should address you.</p>
 					</div>
-					<div className="grid gap-2">
-						<Label htmlFor="email">Email Address</Label>
-						<Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={updateProfile.isPending} />
+					<div className="space-y-4 max-w-xl">
+						<div className="grid gap-2">
+							<Label htmlFor="name">Full Name</Label>
+							<Input id="name" value={name} onChange={(e) => setName(e.target.value)} disabled={updateProfile.isPending} className="h-11" />
+						</div>
+						<div className="grid gap-2">
+							<Label htmlFor="email">Email Address</Label>
+							<Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={updateProfile.isPending} className="h-11" />
+						</div>
+						<div className="pt-2">
+							<Button onClick={handleSaveProfile} disabled={updateProfile.isPending}>
+								{updateProfile.isPending ? 'Saving...' : 'Save Changes'}
+							</Button>
+						</div>
 					</div>
-					<Button className="mt-4" onClick={handleSaveProfile} disabled={updateProfile.isPending}>
-						{updateProfile.isPending ? 'Saving...' : 'Save Changes'}
-					</Button>
-				</CardContent>
-			</Card>
+				</section>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>Change Password</CardTitle>
-					<CardDescription>Update your password to keep your account secure.</CardDescription>
-				</CardHeader>
-				<CardContent className="space-y-4">
-					<div className="grid gap-2">
-						<Label htmlFor="current">Current Password</Label>
-						<Input id="current" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} disabled={updatePassword.isPending} />
+				<section className="flex flex-col gap-6">
+					<div>
+						<h2 className="text-lg font-semibold">Change Password</h2>
+						<p className="text-sm text-muted-foreground mt-1">Update your password to keep your account secure.</p>
 					</div>
-					<div className="grid gap-2">
-						<Label htmlFor="new">New Password</Label>
-						<Input id="new" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} disabled={updatePassword.isPending} />
+					<div className="space-y-4 max-w-xl">
+						<div className="grid gap-2">
+							<Label htmlFor="current">Current Password</Label>
+							<Input id="current" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} disabled={updatePassword.isPending} className="h-11" />
+						</div>
+						<div className="grid gap-2">
+							<Label htmlFor="new">New Password</Label>
+							<Input id="new" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} disabled={updatePassword.isPending} className="h-11" />
+						</div>
+						<div className="grid gap-2">
+							<Label htmlFor="confirm">Confirm New Password</Label>
+							<Input id="confirm" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={updatePassword.isPending} className="h-11" />
+						</div>
+						<div className="pt-2">
+							<Button onClick={handleUpdatePassword} disabled={updatePassword.isPending}>
+								{updatePassword.isPending ? 'Updating...' : 'Update Password'}
+							</Button>
+						</div>
 					</div>
-					<div className="grid gap-2">
-						<Label htmlFor="confirm">Confirm New Password</Label>
-						<Input id="confirm" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={updatePassword.isPending} />
-					</div>
-					<Button className="mt-4" onClick={handleUpdatePassword} disabled={updatePassword.isPending}>
-						{updatePassword.isPending ? 'Updating...' : 'Update Password'}
-					</Button>
-				</CardContent>
-			</Card>
+				</section>
+			</div>
 		</div>
 	);
 }

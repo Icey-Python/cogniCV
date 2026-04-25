@@ -11,14 +11,6 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import {
-	Pagination,
-	PaginationContent,
-	PaginationItem,
-	PaginationLink,
-	PaginationNext,
-	PaginationPrevious,
-} from '@/components/ui/pagination';
-import {
 	IconMapPin,
 	IconBolt,
 	IconPaperclip,
@@ -162,29 +154,6 @@ export function RankedApplicantsTable({ candidates, onRowClick, showJob = false 
 					)}
 				</TableBody>
 			</Table>
-
-			{candidates.length > 0 && (
-				<div className="border-t py-2 px-6 flex items-center justify-between">
-					<p className="text-sm text-muted-foreground">
-						Showing 1-{candidates.length} of {candidates.length} candidates
-					</p>
-					<Pagination className="w-auto mx-0">
-						<PaginationContent>
-							<PaginationItem>
-								<PaginationPrevious href="#" className="pointer-events-none opacity-50" />
-							</PaginationItem>
-							<PaginationItem>
-								<PaginationLink href="#" isActive>
-									1
-								</PaginationLink>
-							</PaginationItem>
-							<PaginationItem>
-								<PaginationNext href="#" className="pointer-events-none opacity-50" />
-							</PaginationItem>
-						</PaginationContent>
-					</Pagination>
-				</div>
-			)}
 		</div>
 	);
 }

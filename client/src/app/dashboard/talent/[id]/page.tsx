@@ -74,7 +74,7 @@ export default function TalentProfilePage() {
 	return (
 		<div className="space-y-8">
 			{/* Header Navigation */}
-			<div className="flex flex-col items-center space-y-6 text-center">
+			<div className="flex flex-col space-y-6">
 				<div className="max-w-3xl space-y-4">
 					<h1 className="font-lora text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
 						{candidateName}
