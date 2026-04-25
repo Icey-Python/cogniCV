@@ -96,7 +96,7 @@ export function RankedApplicantsTable({
 						<TableHead className="hidden md:table-cell">Location</TableHead>
 						<TableHead className="hidden sm:table-cell">Source</TableHead>
 						<TableHead>Score</TableHead>
-						<TableHead className="hidden lg:table-cell">Availability</TableHead>
+						<TableHead className="hidden lg:table-cell">Relevance</TableHead>
 						<TableHead className="w-10" />
 					</TableRow>
 				</TableHeader>
@@ -177,16 +177,10 @@ export function RankedApplicantsTable({
 										<CircularScoreProgress score={candidate.matchScore} />
 									</TableCell>
 									<TableCell className="hidden lg:table-cell">
-										<span
-											className={cn(
-												'text-xs',
-												p.availability?.status === 'Available'
-													? 'text-emerald-600'
-													: 'text-muted-foreground'
-											)}
-										>
-											{p.availability?.status || 'Active'}
-										</span>
+										<CircularScoreProgress 
+											score={candidate.subScores?.relevance ?? 0} 
+											max={20} 
+										/>
 									</TableCell>
 									<TableCell>
 										<IconChevronRight className="text-muted-foreground size-4 transition-opacity" />

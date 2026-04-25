@@ -84,7 +84,7 @@ export interface SubScores {
 	skills: number;
 	experience: number;
 	education: number;
-	availability: number;
+	relevance: number;
 }
 
 export interface RankedCandidate {
@@ -92,12 +92,7 @@ export interface RankedCandidate {
 	candidateId: string;
 	profileSource: 'internal' | 'csv' | 'pdf' | 'xlsx' | 'platform' | 'external';
 	matchScore: number;
-	subScores: {
-		skillMatch: number;
-		experienceRelevance: number;
-		educationalAlignment: number;
-		culturalFit: number;
-	} | SubScores;
+	subScores: SubScores;
 	reasoning: {
 		strengths: string[];
 		gaps: string[];

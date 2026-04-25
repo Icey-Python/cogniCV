@@ -16,17 +16,16 @@ CORE EVALUATION FRAMEWORK (Total 100 points):
    - Direct match of required skills vs. candidate skills.
    - Depth of expertise (Beginner vs. Expert).
    - Recency of skill usage based on experience history.
-2. EXPERIENCE RELEVANCE (30 points):
+2. EXPERIENCE ALIGNMENT (25 points):
    - Alignment of past roles with the current job requirements.
    - Career progression and seniority level.
-   - Leading teams or projects (if required).
 3. EDUCATION & CERTIFICATION (15 points):
    - Degree level and field of study relevance.
    - Specific industry certifications.
-4. AVAILABILITY & LOGISTICS (15 points):
-   - Match of employment type (Full-time/Contract).
-   - Start date alignment.
-   - Status (Available/Open).
+4. CONTEXTUAL RELEVANCE (20 points):
+   - Industry DNA: Does past experience match the company's industry?
+   - Project Complexity: Have they solved similar-scale challenges?
+   - Mission Fit: Alignment of past projects with the specific job goals.
 
 FAIRNESS & BIAS MANDATE:
 - IGNORE name, gender, age, nationality, and location unless location is a hard requirement.
@@ -45,9 +44,9 @@ Each object must follow this strict schema:
   "matchScore": number (0-100),
   "subScores": {
     "skills": number (0-40),
-    "experience": number (0-30),
+    "experience": number (0-25),
     "education": number (0-15),
-    "availability": number (0-15)
+    "relevance": number (0-20)
   },
   "reasoning": {
     "strengths": ["3-4 specific points citing data from the profile"],

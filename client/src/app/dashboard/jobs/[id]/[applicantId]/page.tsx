@@ -148,7 +148,7 @@ export default function ApplicantDetailPage() {
 		const topStrength = rankedEntry?.reasoning.strengths[0] || 'your profile quality';
 		const keyGap = rankedEntry?.reasoning.gaps[0] || 'the final fit details';
 
-		return `Subject: Update on your application for ${job.title}\n\nHi ${candidateProfile.firstName || 'there'},\n\nThank you for applying for the ${job.title} role. After reviewing your profile, we were especially impressed by ${topStrength.toLowerCase()}.\n\nWe would like to discuss your fit further, including ${keyGap.toLowerCase()}.\n\nIf you are available, please reply with your interview availability for this week.\n\nBest regards,\nHiring Team`;
+		return `Subject: Update on your application for ${job.title}\n\nHi ${candidateProfile.firstName || 'there'},\n\nThank you for applying for the ${job.title} role. After reviewing your profile, we were especially impressed by ${topStrength.toLowerCase()}.\n\nWe would like to discuss your fit further, including ${keyGap.toLowerCase()}.\n\nIf you are available, please reply with your potential start date and interview availability for this week.\n\nBest regards,\nHiring Team`;
 	}, [candidateProfile, job, rankedEntry]);
 
 	const [customMessage, setCustomMessage] = useState('');
@@ -205,7 +205,7 @@ export default function ApplicantDetailPage() {
 	] : [
 		'Analysis pending. Run AI screening to see tailored feedback points.',
 		'Focus initial screening on core technical competence and cultural alignment.',
-		'Verify availability and start date expectations.'
+		'Verify role relevance and start date expectations.'
 	];
 
 	const handleAcceptForInterview = () => {
@@ -499,9 +499,9 @@ export default function ApplicantDetailPage() {
 							<div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
 								{[
 									{ label: 'Skills', score: (rankedEntry?.subScores as any)?.skillMatch ?? (rankedEntry?.subScores as any)?.skills ?? 0, max: 40 },
-									{ label: 'Experience', score: (rankedEntry?.subScores as any)?.experienceRelevance ?? (rankedEntry?.subScores as any)?.experience ?? 0, max: 30 },
+									{ label: 'Experience', score: (rankedEntry?.subScores as any)?.experienceAlignment ?? (rankedEntry?.subScores as any)?.experience ?? 0, max: 25 },
 									{ label: 'Education', score: (rankedEntry?.subScores as any)?.educationalAlignment ?? (rankedEntry?.subScores as any)?.education ?? 0, max: 15 },
-									{ label: 'Availability', score: (rankedEntry?.subScores as any)?.culturalFit ?? (rankedEntry?.subScores as any)?.availability ?? 0, max: 15 }
+									{ label: 'Relevance', score: (rankedEntry?.subScores as any)?.relevance ?? 0, max: 20 }
 								].map(({ label, score, max }) => (
 									<div key={label} className="flex flex-col items-center justify-center rounded-lg border bg-gray-50/50 p-4 text-center">
 										<CircularScoreProgress score={score} max={max} />

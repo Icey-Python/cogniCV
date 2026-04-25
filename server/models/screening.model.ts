@@ -4,7 +4,7 @@ export interface IScoreBreakdown {
   skills: number;
   experience: number;
   education: number;
-  availability: number;
+  relevance: number;
 }
 
 export interface IReasoning {
@@ -16,7 +16,7 @@ export interface IReasoning {
 export interface IRankedCandidate {
   rank: number;
   candidateId: Types.ObjectId;
-  profileSource: "platform" | "external";
+  profileSource: "internal" | "pdf" | "csv" | "xlsx";
   matchScore: number;
   subScores: IScoreBreakdown;
   reasoning: IReasoning;
@@ -54,7 +54,7 @@ const ScreeningResultSchema = new Schema<ScreeningResultDoc>(
           skills: { type: Number, required: true },
           experience: { type: Number, required: true },
           education: { type: Number, required: true },
-          availability: { type: Number, required: true },
+          relevance: { type: Number, required: true },
         },
         reasoning: {
           strengths: [String],
