@@ -72,9 +72,12 @@ MAPPING RULES:
 - Map skills to the standardized list.
 - Standardize all dates to YYYY-MM format.
 - INFER YEARS OF EXPERIENCE: If years for a skill are not explicitly stated (e.g., "Java (5 yrs)"), you MUST calculate them by summing the duration of roles in the 'experience' section where that skill was utilized.
+- INFER AVAILABILITY: Look for "Notice Period" or "Immediate Start". If not found, look at the 'isCurrent' field in experience: if true, set status to "Open to Opportunities"; if no current job exists, set status to "Available".
+- CALCULATE START DATE: Use the reference date {{CURRENT_DATE}}. If "Immediate", use today. If "X days notice", calculate the date. Return in YYYY-MM-DD.
 - Maintain the order of the candidates as provided in the input.
 
 INPUT DATA:
+- REFERENCE_DATE: {{CURRENT_DATE}}
 - RAW_RESUME_BATCH: {{RAW_TEXT_ARRAY}}
 
 OUTPUT REQUIREMENTS:
@@ -91,7 +94,12 @@ Each object in the array must follow this strict Umurava schema:
   "experience": [{ "company": "string", "role": "string", "startDate": "string", "endDate": "string", "description": "string", "technologies": ["string"], "isCurrent": boolean }],
   "education": [{ "institution": "string", "degree": "string", "fieldOfStudy": "string", "startYear": number, "endYear": number }],
   "projects": [{ "name": "string", "description": "string", "technologies": ["string"], "role": "string" }],
-  "languages": [{ "name": "string", "proficiency": "Basic|Conversational|Fluent|Native" }]
+  "languages": [{ "name": "string", "proficiency": "Basic|Conversational|Fluent|Native" }],
+  "availability": {
+    "status": "Available|Open to Opportunities|Not Available",
+    "type": "Full-time|Part-time|Contract",
+    "startDate": "string (YYYY-MM-DD or empty)"
+  }
 }
 `;
 

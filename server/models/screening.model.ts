@@ -46,7 +46,7 @@ const ScreeningResultSchema = new Schema<ScreeningResultDoc>(
         candidateId: { type: Schema.Types.ObjectId, required: true },
         profileSource: {
           type: String,
-          enum: ["platform", "external"],
+          enum: ["internal", "pdf", "csv", "xlsx"],
           required: true,
         },
         matchScore: { type: Number, required: true },
