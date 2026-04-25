@@ -123,6 +123,7 @@ export default function JobDetailPage() {
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
+
 					{hasApplicants && !isScreened && (
 						<Button 
 							variant="default" 
@@ -134,13 +135,18 @@ export default function JobDetailPage() {
 							Run AI Screening
 						</Button>
 					)}
-					<Button variant="outline" asChild className="shrink-0 gap-2">
-						<Link href={`/dashboard/jobs/${job._id}/add-applicant`}>
-							<IconUpload className="size-4" /> Import Applications
+        <Button variant='outline' asChild>
+						<Link href={`/dashboard/jobs/${job._id}/edit`}>
+						<IconPencil className="size-4" />
+							Edit
 						</Link>
 					</Button>
-					<Button asChild variant="ghost">
-						<Link href={`/dashboard/jobs/${job._id}/edit`}>Edit</Link>
+					
+					<Button variant="default" asChild className="shrink-0 gap-2">
+						<Link href={`/dashboard/jobs/${job._id}/upload`}>
+							<IconUpload className="size-4" />
+							Import Applications
+						</Link>
 					</Button>
 				</div>
 			</div>

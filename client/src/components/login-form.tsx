@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,6 +17,7 @@ import {
 	FormLabel,
 	FormMessage
 } from '@/components/ui/form';
+import { IconEye, IconEyeOff, IconLoader2 } from '@tabler/icons-react';
 
 const loginSchema = z.object({
 	email: z.email({ message: 'Please enter a valid email address.' }),
@@ -27,6 +29,7 @@ export function LoginForm({
 	...props
 }: React.ComponentPropsWithoutRef<'div'>) {
 	const { login, isLoading } = useAuth();
+	const [showPassword, setShowPassword] = useState(false);
 
 	const form = useForm<z.infer<typeof loginSchema>>({
 		resolver: zodResolver(loginSchema),
@@ -41,13 +44,13 @@ export function LoginForm({
 	};
 
 	return (
-		<div className={cn('flex flex-col gap-6', className)} {...props}>
-			<div className="flex flex-col items-center gap-2 text-center">
-				<h1 className="font-lora text-2xl font-semibold">
-					Login to your account
+		<div className={cn('flex flex-col gap-8', className)} {...props}>
+			<div className="flex flex-col gap-2">
+				<h1 className="text-3xl font-bold text-foreground font-lora">
+					Welcome Back to CogniCV!
 				</h1>
-				<p className="text-muted-foreground text-sm text-balance">
-					Enter your email below to login to your account
+				<p className="text-muted-foreground text-sm">
+					Sign in your account
 				</p>
 			</div>
 
@@ -58,13 +61,14 @@ export function LoginForm({
 						name="email"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Email</FormLabel>
+								<FormLabel className="text-xs text-muted-foreground font-normal">Your Email</FormLabel>
 								<FormControl>
 									<Input
-										placeholder="m@example.com"
+										placeholder="e.g. recruiter@company.com"
 										type="email"
 										{...field}
 										disabled={isLoading}
+										className="h-12 rounded-lg"
 									/>
 								</FormControl>
 								<FormMessage />
@@ -77,38 +81,44 @@ export function LoginForm({
 						name="password"
 						render={({ field }) => (
 							<FormItem>
-								<div className="flex items-center">
-									<FormLabel>Password</FormLabel>
+								<FormLabel className="text-xs text-muted-foreground font-normal">Password</FormLabel>
+								<FormControl>
+									<div className="relative">
+										<Input 
+											type={showPassword ? 'text' : 'password'} 
+											placeholder="••••••••"
+											{...field} 
+											disabled={isLoading} 
+											className="h-12 rounded-lg pr-10"
+										/>
+										<button
+											type="button"
+											onClick={() => setShowPassword(!showPassword)}
+											className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+										>
+											{showPassword ? <IconEyeOff className="size-5" /> : <IconEye className="size-5" />}
+										</button>
+									</div>
+								</FormControl>
+								<div className="flex justify-end mt-2">
 									<Link
 										href="#"
-										className="ml-auto text-sm underline-offset-4 hover:underline"
+										className="text-xs text-muted-foreground hover:text-primary transition-colors"
 									>
-										Forgot your password?
+										Forgot Password?
 									</Link>
 								</div>
-								<FormControl>
-									<Input type="password" {...field} disabled={isLoading} />
-								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
 
-					<Button type="submit" className="w-full" disabled={isLoading}>
+					<Button type="submit" className="w-full h-12 mt-2 rounded-lg text-base" disabled={isLoading}>
 						{isLoading ? 'Logging in...' : 'Login'}
 					</Button>
-
-					<div className="text-muted-foreground text-center text-sm">
-						Don&apos;t have an account?{' '}
-						<Link
-							href="#"
-							className="text-blue-400 underline underline-offset-4"
-						>
-							Sign up
-						</Link>
-					</div>
 				</form>
 			</Form>
 		</div>
 	);
 }
+

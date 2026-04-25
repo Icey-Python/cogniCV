@@ -182,7 +182,6 @@ export default function EditJobPage() {
 			<div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
 				{/* Left column: Main form */}
 				<div className="space-y-6 lg:col-span-2">
-					<Card className="p-8">
 						<div className="space-y-6">
 							<div className="grid gap-2">
 								<Label htmlFor="title">Job Title</Label>
@@ -199,7 +198,7 @@ export default function EditJobPage() {
 								<Textarea
 									id="description"
 									placeholder="Describe the role and responsibilities..."
-									className="min-h-[200px]"
+									className="min-h-[200px] shadow-none"
 									value={description}
 									onChange={(e) => setDescription(e.target.value)}
 								/>
@@ -223,10 +222,8 @@ export default function EditJobPage() {
 								</div>
 							</div>
 						</div>
-					</Card>
 
-					<Card className="p-8">
-						<div className="space-y-6">
+						<div className="space-y-6 pt-8">
 							<div>
 								<h2 className="text-lg font-semibold">Requirements & Terms</h2>
 								<p className="text-muted-foreground mt-1 text-sm">
@@ -244,7 +241,7 @@ export default function EditJobPage() {
 												type="button"
 												onClick={() => setEmploymentType(t)}
 												className={cn(
-													'rounded-md border px-4 py-2 text-sm font-medium transition-all',
+													'rounded-md border px-4 text-sm font-medium transition-all',
 													employmentType === t
 														? 'border-primary bg-primary text-primary-foreground shadow-sm'
 														: 'border-border hover:border-primary/40 bg-white'
@@ -316,7 +313,6 @@ export default function EditJobPage() {
 								</div>
 							</div>
 						</div>
-					</Card>
 				</div>
 
 				{/* Right column: Info & Actions */}
