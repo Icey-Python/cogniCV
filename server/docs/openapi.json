@@ -394,6 +394,152 @@
         }
       }
     },
+    "/api/v1/jobs/search": {
+      "get": {
+        "summary": "Search and filter jobs",
+        "tags": [
+          "Jobs"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search by title or description"
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by status (e.g. Active, Closed)"
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by source (e.g. Internal, External)"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Jobs retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/analytics": {
+      "get": {
+        "summary": "Get dashboard analytics for jobs",
+        "tags": [
+          "Jobs"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Analytics retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/organization": {
+      "get": {
+        "summary": "Get organization settings",
+        "tags": [
+          "Organization"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organization found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update organization settings",
+        "tags": [
+          "Organization"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "departments": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "locations": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Organization updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
     "/api/v1/screening/{id}/trigger": {
       "post": {
         "summary": "Trigger AI screening for a job",
@@ -1041,6 +1187,57 @@
           }
         }
       }
+    },
+    "/api/v1/user/password": {
+      "put": {
+        "summary": "Update user password",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "currentPassword",
+                  "newPassword"
+                ],
+                "properties": {
+                  "currentPassword": {
+                    "type": "string",
+                    "format": "password"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password updated successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1163,6 +1360,23 @@
             ]
           },
           "location": {
+            "type": "object",
+            "properties": {
+              "country": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "workspaceType": {
+                "type": "string"
+              },
+              "isDefault": {
+                "type": "boolean"
+              }
+            }
+          },
+          "aiFocusArea": {
             "type": "string"
           },
           "createdBy": {

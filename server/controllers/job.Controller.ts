@@ -29,6 +29,17 @@ import type { Request, Response } from "express";
  *           type: string
  *           enum: [Full-time, Part-time, Contract]
  *         location:
+ *           type: object
+ *           properties:
+ *             country:
+ *               type: string
+ *             city:
+ *               type: string
+ *             workspaceType:
+ *               type: string
+ *             isDefault:
+ *               type: boolean
+ *         aiFocusArea:
  *           type: string
  *         createdBy:
  *           type: string
@@ -62,7 +73,7 @@ import type { Request, Response } from "express";
  */
 export const createJob = async (req: Request, res: Response<IServerResponse>) => {
   try {
-    const { title, description, requiredSkills, experienceLevel, type, location } = req.body;
+    const { title, description, requiredSkills, experienceLevel, type, location, aiFocusArea } = req.body;
 
     if (!title || !description || !experienceLevel || !type || !location) {
       return res.status(HttpStatusCode.BadRequest).json({
@@ -79,6 +90,7 @@ export const createJob = async (req: Request, res: Response<IServerResponse>) =>
       experienceLevel,
       type,
       location,
+      aiFocusArea,
       createdBy: req.user._id,
     });
 
@@ -325,3 +337,133 @@ export const deleteJob = async (req: Request, res: Response<IServerResponse>) =>
     });
   }
 };
+
+/**
+ * @openapi
+ * /api/v1/jobs/search:
+ *   get:
+ *     summary: Search and filter jobs
+ *     tags: [Jobs]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         description: Search by title or description
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *         description: Filter by status (e.g. Active, Closed)
+ *       - in: query
+ *         name: source
+ *         schema:
+ *           type: string
+ *         description: Filter by source (e.g. Internal, External)
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Jobs retrieved successfully
+ */
+export const searchJobs = async (req: Request, res: Response<IServerResponse>) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    const { q, status, source } = req.query;
+
+    const query: any = req.user.role === UserRole.ADMIN ? {} : { createdBy: req.user._id };
+
+    if (q) {
+      query.$or = [
+        { title: { $regex: q, $options: "i" } },
+        { description: { $regex: q, $options: "i" } }
+      ];
+    }
+    
+    if (status && status !== 'all') {
+      query.status = new RegExp(`^${status}$`, 'i');
+    }
+    
+    if (source && source !== 'all') {
+      query.source = new RegExp(`^${source}$`, 'i');
+    }
+
+    const [jobs, totalJobs] = await Promise.all([
+      Job.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Job.countDocuments(query),
+    ]);
+
+    res.status(HttpStatusCode.Ok).json({
+      status: "success",
+      message: "Jobs retrieved successfully",
+      data: {
+        jobs,
+        totalJobs,
+        page,
+        totalPages: Math.ceil(totalJobs / limit),
+      },
+    });
+  } catch (error) {
+    Logger.error({ message: "Error searching jobs: " + error });
+    res.status(HttpStatusCode.InternalServerError).json({
+      status: "error",
+      message: "Failed to search jobs",
+      data: null,
+    });
+  }
+};
+
+/**
+ * @openapi
+ * /api/v1/jobs/analytics:
+ *   get:
+ *     summary: Get dashboard analytics for jobs
+ *     tags: [Jobs]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Analytics retrieved successfully
+ */
+export const getJobAnalytics = async (req: Request, res: Response<IServerResponse>) => {
+  try {
+    const query: any = req.user.role === UserRole.ADMIN ? {} : { createdBy: req.user._id };
+    
+    const activeJobsQuery = { ...query, status: "Active" };
+    const activeJobsCount = await Job.countDocuments(activeJobsQuery);
+
+    // Mocking Total Candidates and Avg Match Score for now
+    // In the future, this would query the Applicant/Screening models
+    const totalCandidates = 42; 
+    const avgMatchScore = 83;
+
+    res.status(HttpStatusCode.Ok).json({
+      status: "success",
+      message: "Analytics retrieved successfully",
+      data: {
+        activeJobs: activeJobsCount,
+        totalCandidates,
+        avgMatchScore
+      },
+    });
+  } catch (error) {
+    Logger.error({ message: "Error retrieving job analytics: " + error });
+    res.status(HttpStatusCode.InternalServerError).json({
+      status: "error",
+      message: "Failed to retrieve job analytics",
+      data: null,
+    });
+  }
+};
+

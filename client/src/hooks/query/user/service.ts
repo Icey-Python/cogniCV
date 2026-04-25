@@ -13,6 +13,11 @@ export const UserService = {
 		return response.data;
 	},
 
+	updatePassword: async (data: any) => {
+		const response = await apiBase.put<IServerResponse<null>>('/user/password', data);
+		return response.data;
+	},
+
 	updatePhone: async (phone: string) => {
 		const response = await apiBase.put<IServerResponse<{ phone: string }>>(
 			'/user/phone',

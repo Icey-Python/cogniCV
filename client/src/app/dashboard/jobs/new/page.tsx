@@ -14,9 +14,13 @@ import {
 	SelectTrigger,
 	SelectValue
 } from '@/components/ui/select';
+import { useOrganizationQuery } from '@/hooks/query/organization/queries';
+import { useCreateJobMutation } from '@/hooks/query/jobs/mutations';
 import dynamic from 'next/dynamic';
 
-const MdxEditor = dynamic(() => import('@/components/ui/mdx-editor'), { ssr: false });
+const MdxEditor = dynamic(() => import('@/components/ui/mdx-editor'), {
+	ssr: false
+});
 import {
 	IconBuilding,
 	IconWorld,
@@ -26,7 +30,7 @@ import {
 	IconUsers,
 	IconUpload,
 	IconChevronRight,
-	IconChevronLeft,
+	IconChevronLeft
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -35,25 +39,39 @@ type JobType = 'internal' | 'external' | 'ai';
 type EmploymentType = 'Full-time' | 'Part-time' | 'Contract';
 type ExperienceLevel = 'Entry' | 'Junior' | 'Mid' | 'Senior' | 'Lead';
 
-const EMPLOYMENT_TYPES: EmploymentType[] = ['Full-time', 'Part-time', 'Contract'];
-const EXPERIENCE_LEVELS: ExperienceLevel[] = ['Entry', 'Junior', 'Mid', 'Senior', 'Lead'];
-const MOCK_DEPARTMENTS = ['Engineering', 'Design', 'Product', 'Marketing', 'Sales', 'HR', 'Finance'];
-const MOCK_LOCATIONS = ['Worldwide (Remote)', 'Kigali, Rwanda', 'Nairobi, Kenya', 'New York, USA', 'London, UK'];
+const EMPLOYMENT_TYPES: EmploymentType[] = [
+	'Full-time',
+	'Part-time',
+	'Contract'
+];
+const EXPERIENCE_LEVELS: ExperienceLevel[] = [
+	'Entry',
+	'Junior',
+	'Mid',
+	'Senior',
+	'Lead'
+];
 
 const STEPS = ['Source', 'Details', 'Requirements'];
 
 export default function NewJobPage() {
 	const router = useRouter();
+	const { data: orgData } = useOrganizationQuery();
+	const createJob = useCreateJobMutation();
+
+	const dbDepartments = orgData?.data?.departments || [];
+	const dbLocations = orgData?.data?.locations || [];
+
 	const [step, setStep] = useState(1);
 	const [jobType, setJobType] = useState<JobType>('internal');
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [department, setDepartment] = useState('');
-	const [isCustomDept, setIsCustomDept] = useState(false);
-	const [location, setLocation] = useState('');
-	const [isCustomLocation, setIsCustomLocation] = useState(false);
-	const [employmentType, setEmploymentType] = useState<EmploymentType>('Full-time');
-	const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel>('Mid');
+	const [locationId, setLocationId] = useState('');
+	const [employmentType, setEmploymentType] =
+		useState<EmploymentType>('Full-time');
+	const [experienceLevel, setExperienceLevel] =
+		useState<ExperienceLevel>('Mid');
 	const [skills, setSkills] = useState<string[]>([]);
 	const [skillInput, setSkillInput] = useState('');
 	const [focusAreas, setFocusAreas] = useState('');
@@ -67,22 +85,42 @@ export default function NewJobPage() {
 		}
 	};
 
-	const removeSkill = (skill: string) => setSkills((prev) => prev.filter((s) => s !== skill));
+	const removeSkill = (skill: string) =>
+		setSkills((prev) => prev.filter((s) => s !== skill));
 
 	const handleCreate = () => {
-		setCreated(true);
+		const locObj = dbLocations.find((l) => l._id === locationId);
+		if (!locObj) return;
+
+		// We assume frontend enum values match backend
+		createJob.mutate(
+			{
+				title,
+				description,
+				requiredSkills: skills,
+				experienceLevel: experienceLevel as any,
+				type: employmentType as any,
+				location: locObj,
+				aiFocusArea: focusAreas
+			},
+			{
+				onSuccess: () => {
+					setCreated(true);
+				}
+			}
+		);
 	};
 
 	if (created) {
 		return (
-			<div className="max-w-2xl mx-auto text-center space-y-8 py-24">
-				<div className="mx-auto size-24 relative">
-					<div className="absolute inset-0 bg-primary/10 rounded-full animate-ping opacity-20" />
-					<div className="relative size-full rounded-full bg-primary/5 flex items-center justify-center border border-primary/20">
+			<div className="mx-auto max-w-2xl space-y-8 py-24 text-center">
+				<div className="relative mx-auto size-24">
+					<div className="bg-primary/10 absolute inset-0 animate-ping rounded-full opacity-20" />
+					<div className="bg-primary/5 border-primary/20 relative flex size-full items-center justify-center rounded-full border">
 						<svg
 							viewBox="0 0 24 24"
 							fill="none"
-							className="size-12 text-primary"
+							className="text-primary size-12"
 							stroke="currentColor"
 							strokeWidth="3"
 							strokeLinecap="round"
@@ -93,25 +131,18 @@ export default function NewJobPage() {
 					</div>
 				</div>
 				<div className="space-y-2">
-					<h2 className="text-3xl font-semibold font-lora">Job Created Successfully</h2>
-					<p className="text-muted-foreground max-w-md mx-auto">
+					<h2 className="font-lora text-3xl font-semibold">
+						Job Created Successfully
+					</h2>
+					<p className="text-muted-foreground mx-auto max-w-md">
 						{jobType === 'internal'
 							? 'The CogniCV AI is now scanning platform profiles to find the best matches for this role.'
 							: 'Your external job listing is live. You can now upload candidate resumes to begin the AI screening process.'}
 					</p>
 				</div>
 				<div className="flex justify-center gap-4 pt-4">
-					<Button variant="outline" size="lg" asChild className="min-w-[160px]">
-						<Link href="/dashboard/jobs">Back to Dashboard</Link>
-					</Button>
 					<Button size="lg" asChild className="min-w-[160px]">
-						<Link href={jobType === 'internal' ? '/dashboard/jobs/j1' : '/dashboard/jobs/j2/upload'}>
-							{jobType === 'internal' ? (
-								<><IconUsers className="mr-2 size-5" /> View Applicants</>
-							) : (
-								<><IconUpload className="mr-2 size-5" /> Import Applications</>
-							)}
-						</Link>
+						<Link href={'/dashboard/jobs'}>Proceed to Jobs</Link>
 					</Button>
 				</div>
 			</div>
@@ -127,7 +158,9 @@ export default function NewJobPage() {
 			<div className="flex items-center gap-4">
 				<div className="flex-1">
 					<h1 className="text-2xl font-semibold">Create New Job</h1>
-					<p className="text-muted-foreground mt-1">Follow the steps to set up a new role.</p>
+					<p className="text-muted-foreground mt-1">
+						Follow the steps to set up a new role.
+					</p>
 				</div>
 			</div>
 
@@ -138,24 +171,41 @@ export default function NewJobPage() {
 					const isActive = step === stepNum;
 					const isComplete = step > stepNum;
 					return (
-						<div key={label} className="flex items-center flex-1 last:flex-none">
+						<div
+							key={label}
+							className="flex flex-1 items-center last:flex-none"
+						>
 							<div className="flex items-center gap-2">
 								<div
 									className={cn(
-										'size-7 rounded-full flex items-center justify-center text-xs font-semibold transition-colors',
+										'flex size-7 items-center justify-center rounded-full text-xs font-semibold transition-colors',
 										isActive && 'bg-primary text-primary-foreground',
 										isComplete && 'bg-primary/15 text-primary',
 										!isActive && !isComplete && 'bg-muted text-muted-foreground'
 									)}
 								>
-									{isComplete ? <IconCircleCheck className="size-4" /> : stepNum}
+									{isComplete ? (
+										<IconCircleCheck className="size-4" />
+									) : (
+										stepNum
+									)}
 								</div>
-								<span className={cn('text-sm hidden sm:inline', isActive ? 'font-medium' : 'text-muted-foreground')}>
+								<span
+									className={cn(
+										'hidden text-sm sm:inline',
+										isActive ? 'font-medium' : 'text-muted-foreground'
+									)}
+								>
 									{label}
 								</span>
 							</div>
 							{i < STEPS.length - 1 && (
-								<div className={cn('h-px flex-1 mx-3', isComplete ? 'bg-primary/30' : 'bg-border')} />
+								<div
+									className={cn(
+										'mx-3 h-px flex-1',
+										isComplete ? 'bg-primary/30' : 'bg-border'
+									)}
+								/>
 							)}
 						</div>
 					);
@@ -170,9 +220,11 @@ export default function NewJobPage() {
 						<div className="space-y-6">
 							<div>
 								<h2 className="text-lg font-semibold">Application Source</h2>
-								<p className="text-sm text-muted-foreground mt-1">Choose how candidates will be sourced.</p>
+								<p className="text-muted-foreground mt-1 text-sm">
+									Choose how candidates will be sourced.
+								</p>
 							</div>
-							<div className="grid sm:grid-cols-3 gap-4">
+							<div className="grid gap-4 sm:grid-cols-3">
 								<button
 									type="button"
 									onClick={() => setJobType('internal')}
@@ -183,9 +235,16 @@ export default function NewJobPage() {
 											: 'border-border hover:border-primary/40'
 									)}
 								>
-									<IconBuilding className={cn('size-7 mb-3', jobType === 'internal' ? 'text-primary' : 'text-muted-foreground')} />
+									<IconBuilding
+										className={cn(
+											'mb-3 size-7',
+											jobType === 'internal'
+												? 'text-primary'
+												: 'text-muted-foreground'
+										)}
+									/>
 									<h3 className="font-semibold">Internal Platform</h3>
-									<p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+									<p className="text-muted-foreground mt-1 text-sm leading-relaxed">
 										Match from Umurava's talent pool using structured profiles.
 									</p>
 								</button>
@@ -199,9 +258,16 @@ export default function NewJobPage() {
 											: 'border-border hover:border-primary/40'
 									)}
 								>
-									<IconWorld className={cn('size-7 mb-3', jobType === 'external' ? 'text-primary' : 'text-muted-foreground')} />
+									<IconWorld
+										className={cn(
+											'mb-3 size-7',
+											jobType === 'external'
+												? 'text-primary'
+												: 'text-muted-foreground'
+										)}
+									/>
 									<h3 className="font-semibold">External Upload</h3>
-									<p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+									<p className="text-muted-foreground mt-1 text-sm leading-relaxed">
 										Upload batch PDF resumes or a CSV from external job boards.
 									</p>
 								</button>
@@ -218,12 +284,29 @@ export default function NewJobPage() {
 											: 'border-border hover:border-primary/40'
 									)}
 								>
-									<div className="flex aspect-square size-10 items-center justify-center rounded-lg bg-primary mb-3 text-primary-foreground">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /><path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2" /><path d="M19 11h2m-1 -1v2" /></svg>
+									<div className="bg-primary text-primary-foreground mb-3 flex aspect-square size-10 items-center justify-center rounded-lg">
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											strokeWidth="2"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											className="size-6"
+										>
+											<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+											<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+											<path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2" />
+											<path d="M19 11h2m-1 -1v2" />
+										</svg>
 									</div>
 									<h3 className="font-semibold">Use AI to add new job</h3>
-									<p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-										Chat with our AI assistant to instantly generate the job description and requirements.
+									<p className="text-muted-foreground mt-1 text-sm leading-relaxed">
+										Chat with our AI assistant to instantly generate the job
+										description and requirements.
 									</p>
 								</button>
 							</div>
@@ -235,90 +318,60 @@ export default function NewJobPage() {
 						<div className="space-y-6">
 							<div>
 								<h2 className="text-lg font-semibold">Job Details</h2>
-								<p className="text-sm text-muted-foreground mt-1">Provide the core information about this position.</p>
+								<p className="text-muted-foreground mt-1 text-sm">
+									Provide the core information about this position.
+								</p>
 							</div>
 							<div className="grid gap-5">
 								<div className="grid gap-1.5">
-									<Label htmlFor="title">Job Title <span className="text-destructive">*</span></Label>
-									<Input id="title" placeholder="e.g. Senior Frontend Engineer" value={title} onChange={(e) => setTitle(e.target.value)} />
-								</div>
-								<div className="grid gap-1.5">
-									<Label htmlFor="description">Job Description <span className="text-destructive">*</span></Label>
-									<MdxEditor
-										markdown={description}
-										onChange={setDescription}
+									<Label htmlFor="title">
+										Job Title <span className="text-destructive">*</span>
+									</Label>
+									<Input
+										id="title"
+										placeholder="e.g. Senior Frontend Engineer"
+										value={title}
+										onChange={(e) => setTitle(e.target.value)}
 									/>
 								</div>
-								<div className="grid sm:grid-cols-2 gap-5">
+								<div className="grid gap-1.5">
+									<Label htmlFor="description">
+										Job Description <span className="text-destructive">*</span>
+									</Label>
+									<MdxEditor markdown={description} onChange={setDescription} />
+								</div>
+								<div className="grid gap-5 sm:grid-cols-2">
 									<div className="grid gap-1.5">
 										<Label htmlFor="department">Department</Label>
-										{!isCustomDept ? (
-											<Select
-												value={department}
-												onValueChange={(value) => {
-													if (value === 'custom') {
-														setIsCustomDept(true);
-														setDepartment('');
-													} else {
-														setDepartment(value);
-													}
-												}}
-											>
-												<SelectTrigger id="department">
-													<SelectValue placeholder="Select department" />
-												</SelectTrigger>
-												<SelectContent>
-													{MOCK_DEPARTMENTS.map((d) => (
-														<SelectItem key={d} value={d}>
-															{d}
-														</SelectItem>
-													))}
-													<SelectItem value="custom">Other / Custom...</SelectItem>
-												</SelectContent>
-											</Select>
-										) : (
-											<div className="flex gap-2">
-												<Input id="department" placeholder="Enter department name" value={department} onChange={(e) => setDepartment(e.target.value)} autoFocus />
-												<Button type="button" variant="ghost" size="icon" onClick={() => { setIsCustomDept(false); setDepartment(''); }}>
-													<IconX className="size-4" />
-												</Button>
-											</div>
-										)}
+										<Select value={department} onValueChange={setDepartment}>
+											<SelectTrigger id="department">
+												<SelectValue placeholder="Select department" />
+											</SelectTrigger>
+											<SelectContent>
+												{dbDepartments.map((d) => (
+													<SelectItem key={d._id} value={d._id}>
+														{d.name}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
 									</div>
 									<div className="grid gap-1.5">
-										<Label htmlFor="location">Location</Label>
-										{!isCustomLocation ? (
-											<Select
-												value={location}
-												onValueChange={(value) => {
-													if (value === 'custom') {
-														setIsCustomLocation(true);
-														setLocation('');
-													} else {
-														setLocation(value);
-													}
-												}}
-											>
-												<SelectTrigger id="location">
-													<SelectValue placeholder="Select location" />
-												</SelectTrigger>
-												<SelectContent>
-													{MOCK_LOCATIONS.map((l) => (
-														<SelectItem key={l} value={l}>
-															{l}
-														</SelectItem>
-													))}
-													<SelectItem value="custom">Other / Custom...</SelectItem>
-												</SelectContent>
-											</Select>
-										) : (
-											<div className="flex gap-2">
-												<Input id="location" placeholder="Enter location name" value={location} onChange={(e) => setLocation(e.target.value)} autoFocus />
-												<Button type="button" variant="ghost" size="icon" onClick={() => { setIsCustomLocation(false); setLocation(''); }}>
-													<IconX className="size-4" />
-												</Button>
-											</div>
-										)}
+										<Label htmlFor="location">
+											Location <span className="text-destructive">*</span>
+										</Label>
+										<Select value={locationId} onValueChange={setLocationId}>
+											<SelectTrigger id="location">
+												<SelectValue placeholder="Select location" />
+											</SelectTrigger>
+											<SelectContent>
+												{dbLocations.map((l) => (
+													<SelectItem key={l._id} value={l._id}>
+														{l.city}, {l.country} ({l.workspaceType})
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
 									</div>
 								</div>
 							</div>
@@ -330,13 +383,15 @@ export default function NewJobPage() {
 						<div className="space-y-6">
 							<div>
 								<h2 className="text-lg font-semibold">Requirements</h2>
-								<p className="text-sm text-muted-foreground mt-1">This helps the AI accurately match and rank candidates.</p>
+								<p className="text-muted-foreground mt-1 text-sm">
+									This helps the AI accurately match and rank candidates.
+								</p>
 							</div>
 							<div className="grid gap-6">
-								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 									<div className="grid gap-2">
 										<Label>Employment Type</Label>
-										<div className="flex gap-2 flex-wrap">
+										<div className="flex flex-wrap gap-2">
 											{EMPLOYMENT_TYPES.map((t) => (
 												<button
 													key={t}
@@ -356,7 +411,7 @@ export default function NewJobPage() {
 									</div>
 									<div className="grid gap-2">
 										<Label>Experience Level</Label>
-										<div className="flex gap-2 flex-wrap">
+										<div className="flex flex-wrap gap-2">
 											{EXPERIENCE_LEVELS.map((l) => (
 												<button
 													key={l}
@@ -382,21 +437,31 @@ export default function NewJobPage() {
 											placeholder="Type a skill and press Enter"
 											value={skillInput}
 											onChange={(e) => setSkillInput(e.target.value)}
-											onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
+											onKeyDown={(e) =>
+												e.key === 'Enter' && (e.preventDefault(), addSkill())
+											}
 										/>
-										<Button type="button" onClick={addSkill} size="icon" variant="outline">
+										<Button
+											type="button"
+											onClick={addSkill}
+											size="icon"
+											variant="outline"
+										>
 											<IconPlus className="size-4" />
 										</Button>
 									</div>
 									{skills.length > 0 && (
-										<div className="flex flex-wrap gap-2 mt-2">
+										<div className="mt-2 flex flex-wrap gap-2">
 											{skills.map((skill) => (
 												<span
 													key={skill}
-													className="inline-flex items-center gap-1 text-sm px-2.5 py-1 rounded-md bg-primary/10 text-primary border border-primary/15"
+													className="bg-primary/10 text-primary border-primary/15 inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-sm"
 												>
 													{skill}
-													<button onClick={() => removeSkill(skill)} className="hover:text-destructive ml-0.5">
+													<button
+														onClick={() => removeSkill(skill)}
+														className="hover:text-destructive ml-0.5"
+													>
 														<IconX className="size-3" />
 													</button>
 												</span>
@@ -420,7 +485,7 @@ export default function NewJobPage() {
 				</div>
 
 				{/* Footer */}
-				<div className="px-8 py-5 flex justify-between items-center bg-muted/20">
+				<div className="bg-muted/20 flex items-center justify-between px-8 py-5">
 					{step > 1 ? (
 						<Button variant="outline" onClick={prevStep} className="gap-1.5">
 							<IconChevronLeft className="size-4" /> Back
@@ -431,12 +496,24 @@ export default function NewJobPage() {
 						</Button>
 					)}
 					{step < 3 ? (
-						<Button onClick={nextStep} className="gap-1.5" disabled={step === 2 && (!title.trim() || !description.trim())}>
+						<Button
+							onClick={nextStep}
+							className="gap-1.5"
+							disabled={
+								step === 2 &&
+								(!title.trim() || !description.trim() || !locationId)
+							}
+						>
 							Continue <IconChevronRight className="size-4" />
 						</Button>
 					) : (
-						<Button onClick={handleCreate} className="gap-1.5">
-							Create Job <IconCircleCheck className="size-4" />
+						<Button
+							onClick={handleCreate}
+							className="gap-1.5"
+							disabled={createJob.isPending}
+						>
+							{createJob.isPending ? 'Creating...' : 'Create Job'}{' '}
+							<IconCircleCheck className="size-4" />
 						</Button>
 					)}
 				</div>

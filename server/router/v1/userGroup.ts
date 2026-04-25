@@ -21,6 +21,7 @@ router.get(
 );
 router.put("/", authenticate(), ProfileController.updateUser);
 router.put("/phone", authenticate(), ProfileController.updateUserPhone);
+router.put("/password", authenticate(), ProfileController.updatePassword);
 
 // Admin Management routes
 router.get(

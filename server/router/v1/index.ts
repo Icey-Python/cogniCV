@@ -4,6 +4,7 @@ import jobGroup from "./jobGroup";
 import applicantGroup from "./applicantGroup";
 import screeningGroup from "./screeningGroup";
 import chatGroup from "./chatGroup";
+import organizationGroup from "./organizationGroup";
 import { HttpStatusCode } from "axios";
 
 const router = Router();
@@ -19,5 +20,6 @@ router.use("/jobs", jobGroup);
 router.use("/applicants", applicantGroup);
 router.use("/screening", screeningGroup);
 router.use("/chat", chatGroup);
+router.use("/organization", organizationGroup);
 
 export default router;
