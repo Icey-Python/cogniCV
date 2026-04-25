@@ -149,5 +149,3 @@ cogniCV uses a chunked processing model to evaluate candidates efficiently while
 - **File Types**: Currently supports `.pdf` for resume parsing and `.csv` for batch ingestion.
 - **Chunk Size**: The system is tuned to process 10 candidates per AI call to balance speed and evaluation depth.
 - **PDF Quality**: Text extraction quality depends on the underlying PDF structure (scanned images without OCR may fail).
-
-© 2026 cogniCV Team. Built for the Umurava AI Hackathon.
