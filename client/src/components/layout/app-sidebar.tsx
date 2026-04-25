@@ -60,6 +60,11 @@ const navItems = [
 		]
 	},
 	{
+		title: 'Talent Pool',
+		url: '/dashboard/talent',
+		icon: IconUsers
+	},
+	{
 		title: 'Settings',
 		url: '/dashboard/settings',
 		icon: IconSettings,
