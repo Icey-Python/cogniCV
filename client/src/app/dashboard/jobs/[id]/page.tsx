@@ -29,7 +29,9 @@ import {
 } from '@tabler/icons-react';
 import { FloatingChat } from '@/components/chat/floating-chat';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Progress } from '@/components/ui/progress';
 import {
 	Pagination,
 	PaginationContent,
@@ -49,8 +51,14 @@ export default function JobDetailPage() {
 	);
 	const { data: applicantsData, isLoading: applicantsLoading } =
 		useJobApplicantsQuery(params.id as string);
+
+	const [isPolling, setIsPolling] = useState(false);
+	
 	const { data: screeningData, isLoading: screeningLoading } =
-		useScreeningResultsQuery(params.id as string);
+		useScreeningResultsQuery(params.id as string, {
+			refetchInterval: isPolling ? 3000 : false,
+		});
+
 	const { mutate: triggerScreening, isPending: screeningPending } =
 		useTriggerScreeningMutation();
 
@@ -60,7 +68,13 @@ export default function JobDetailPage() {
 		return [...applicantsData.data.external, ...applicantsData.data.platform];
 	}, [applicantsData]);
 
-	const rankedCandidates = screeningData?.data?.rankedCandidates || [];
+	const screeningResult = (screeningData as any)?.data;
+	const rankedCandidates = screeningResult?.rankedCandidates || [];
+	const isScreeningInProgress = screeningPending || screeningResult?.status === 'pending';
+
+	useEffect(() => {
+		setIsPolling(isScreeningInProgress);
+	}, [isScreeningInProgress]);
 
 	const [search, setSearch] = useState('');
 	const [selectedCandidate, setSelectedCandidate] = useState<any | null>(null);
@@ -75,7 +89,7 @@ export default function JobDetailPage() {
 
 	const filteredRanked = useMemo(
 		() =>
-			rankedCandidates.filter((c) => {
+			rankedCandidates.filter((c: any) => {
 				const name =
 					`${c.profileSnapshot.firstName} ${c.profileSnapshot.lastName}`.toLowerCase();
 				return name.includes(search.toLowerCase());
@@ -85,7 +99,7 @@ export default function JobDetailPage() {
 
 	const filteredUnscreened = useMemo(
 		() =>
-			allApplicants.filter((a) => {
+			allApplicants.filter((a: any) => {
 				const name = `${a.firstName} ${a.lastName}`.toLowerCase();
 				return name.includes(search.toLowerCase());
 			}),
@@ -127,6 +141,10 @@ export default function JobDetailPage() {
 
 	const hasApplicants = allApplicants.length > 0;
 	const isScreened = rankedCandidates.length > 0;
+	
+	const progress = screeningResult?.totalCandidates 
+		? Math.round((rankedCandidates.length / screeningResult.totalCandidates) * 100) 
+		: 0;
 
 	return (
 		<div className="space-y-6">
@@ -158,19 +176,23 @@ export default function JobDetailPage() {
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
-					{hasApplicants && !isScreened && (
+					{hasApplicants && (
 						<Button
-							variant="default"
-							className="bg-primary hover:bg-primary/90 gap-2"
+							variant={isScreened ? "outline" : "default"}
+							className={cn(!isScreened && "bg-primary hover:bg-primary/90", "gap-2")}
 							onClick={() => triggerScreening(job._id)}
-							disabled={screeningPending}
+							disabled={isScreeningInProgress}
 						>
-							{screeningPending ? (
+							{isScreeningInProgress ? (
 								<IconLoader2 className="size-4 animate-spin" />
+							) : isScreened ? (
+								<IconSparkles className="size-4 text-primary" />
 							) : (
 								<IconPlayerPlay className="size-4" />
 							)}
-							Run AI Screening
+							{isScreeningInProgress 
+								? `Analyzing (${rankedCandidates.length}/${screeningResult?.totalCandidates || allApplicants.length})` 
+								: isScreened ? "Re-analyze Applicants" : "Run AI Screening"}
 						</Button>
 					)}
 					<Button variant="outline" asChild>
@@ -189,8 +211,27 @@ export default function JobDetailPage() {
 				</div>
 			</div>
 
-			{/* Screening Status Alert */}
-			{hasApplicants && !isScreened && (
+			{/* Screening Status Alert / Progress */}
+			{isScreeningInProgress && (
+				<Alert className="bg-primary/5 border-primary/20">
+					<IconSparkles className="text-primary size-4" />
+					<AlertTitle>AI Screening in Progress</AlertTitle>
+					<AlertDescription className="space-y-3">
+						<p>
+							Analyzing {allApplicants.length} candidates. We're currently processing chunks of applicants to find your best matches.
+						</p>
+						<div className="space-y-1">
+							<div className="flex justify-between text-xs font-medium">
+								<span>Progress: {progress}%</span>
+								<span>{rankedCandidates.length} of {screeningResult?.totalCandidates || allApplicants.length} analyzed</span>
+							</div>
+							<Progress value={progress} className="h-2" />
+						</div>
+					</AlertDescription>
+				</Alert>
+			)}
+
+			{hasApplicants && !isScreened && !isScreeningInProgress && (
 				<Alert className="bg-primary/5 border-primary/20">
 					<IconSparkles className="text-primary size-4" />
 					<AlertTitle>Applicants Ready</AlertTitle>
@@ -202,7 +243,6 @@ export default function JobDetailPage() {
 						<Button
 							size="sm"
 							onClick={() => triggerScreening(job._id)}
-							disabled={screeningPending}
 							className="ml-4"
 						>
 							Start Analysis

@@ -146,6 +146,7 @@ export interface ScreeningResult {
 	jobId: string;
 	status: 'pending' | 'completed' | 'failed';
 	rankedCandidates: RankedCandidate[];
+	totalCandidates: number;
 	error?: string;
 	createdAt: string;
 }

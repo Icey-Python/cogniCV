@@ -26,6 +26,7 @@ export interface IRankedCandidate {
 export interface ScreeningResultDoc extends Document {
   jobId: Types.ObjectId;
   rankedCandidates: IRankedCandidate[];
+  totalCandidates: number;
   status: "pending" | "completed" | "failed";
   error?: string;
   createdAt: Date;
@@ -64,6 +65,7 @@ const ScreeningResultSchema = new Schema<ScreeningResultDoc>(
         profileSnapshot: { type: Object, required: true },
       },
     ],
+    totalCandidates: { type: Number, default: 0 },
     status: {
       type: String,
       enum: ["pending", "completed", "failed"],

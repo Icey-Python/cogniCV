@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { JobService, ApplicantService, ScreeningService, ShareService } from './service';
 import { queryKeys } from '../keys';
 
@@ -39,12 +39,13 @@ export const useJobApplicantsQuery = (jobId: string) => {
 	});
 };
 
-export const useScreeningResultsQuery = (jobId: string) => {
-	return useQuery({
+export const useScreeningResultsQuery = (jobId: string, options?: any) => {
+	return useQuery<any>({
 		queryKey: ['screening', 'results', jobId],
 		queryFn: () => ScreeningService.getScreeningResults(jobId),
 		enabled: !!jobId,
 		retry: false, // Don't retry if not found
+		...options,
 	});
 };
 
