@@ -71,16 +71,16 @@ export default function TalentProfilePage() {
 	};
 
 	return (
-		<div className="space-y-8 max-w-4xl mx-auto">
+		<div className="mx-auto max-w-4xl space-y-8 rounded-lg border px-6 py-16">
 			{/* Header Navigation */}
 			<div className="flex flex-col space-y-6">
 				<div className="space-y-1">
 					<div className="flex items-center justify-between">
-					<h1 className="font-lora text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-						{candidateName}
-					</h1>
+						<h1 className="font-lora text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+							{candidateName}
+						</h1>
 
-					<div className="flex flex-row items-center gap-2">
+						<div className="flex flex-row items-center gap-2">
 							<Dialog
 								open={isShareModalOpen}
 								onOpenChange={setIsShareModalOpen}
@@ -124,9 +124,7 @@ export default function TalentProfilePage() {
 							</Button>
 						</div>
 					</div>
-					<p className="text-sm text-slate-500">
-						{profile.headline}
-					</p>
+					<p className="text-sm text-slate-500">{profile.headline}</p>
 				</div>
 			</div>
 

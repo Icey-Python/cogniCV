@@ -15,16 +15,16 @@ import {
 	IconExternalLink
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import type { 
-	TalentProfile, 
-	Skill, 
-	Experience, 
-	Project, 
-	Education, 
-	Certification 
-} from '@/hooks/query/jobs/service';
+import type {
+	TalentProfile,
+	Skill,
+	Experience,
+	Project,
+	Education,
+	Certification
+} from '@/types';
 
 const LEVEL_COLOR: Record<string, string> = {
 	Expert: 'bg-violet-50 text-violet-700 border-violet-100',
@@ -42,16 +42,14 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 		<div className="flex flex-col gap-6">
 			{/* Bio/About - Moved to Top */}
 			{profile.bio && (
-						<p className="text-muted-foreground leading-relaxed">
-							{profile.bio}
-						</p>
+				<p className="text-muted-foreground leading-relaxed">{profile.bio}</p>
 			)}
 
 			{/* Top Section: Personal Information & Education/Certifications */}
 			<div className="grid gap-12 lg:grid-cols-2">
 				{/* Column 1: Personal Information */}
 				<div>
-					<CardTitle className="font-lora text-lg mb-4">
+					<CardTitle className="font-lora mb-4 text-lg">
 						Personal Information
 					</CardTitle>
 					<div className="space-y-6">
@@ -68,15 +66,19 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 							)}
 							<div className="flex items-center gap-3 text-sm">
 								<IconBriefcase className="size-4 text-slate-400" />
-								<span>{profile.experience?.length || 0} Professional Roles</span>
+								<span>
+									{profile.experience?.length || 0} Professional Roles
+								</span>
 							</div>
 							<div className="flex items-center gap-3 text-sm">
-								<div className={cn(
-									'size-2 rounded-full',
-									profile.availability?.status === 'Available'
-										? 'bg-emerald-500'
-										: 'bg-amber-500'
-								)} />
+								<div
+									className={cn(
+										'size-2 rounded-full',
+										profile.availability?.status === 'Available'
+											? 'bg-emerald-500'
+											: 'bg-amber-500'
+									)}
+								/>
 								<span>{profile.availability?.status || 'Active'}</span>
 							</div>
 
@@ -118,7 +120,7 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 
 						{/* Technical Skills - Border-t removed */}
 						<div className="pt-2">
-							<p className="text-sm font-medium mb-3">Technical Skills</p>
+							<p className="mb-3 text-sm font-medium">Technical Skills</p>
 							<div className="flex flex-wrap gap-2">
 								{profile.skills?.map((skill: Skill) => (
 									<Badge
@@ -147,10 +149,7 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 							</CardTitle>
 							<div className="space-y-4">
 								{profile.education.map((edu: Education, i: number) => (
-									<div
-										key={i}
-										className="bg-card space-y-1 rounded-lg"
-									>
+									<div key={i} className="bg-card space-y-1 rounded-lg">
 										<p className="text-base font-semibold">{edu.degree}</p>
 										<p className="text-muted-foreground text-sm">
 											{edu.institution}
@@ -172,21 +171,23 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 								Certifications
 							</CardTitle>
 							<div className="space-y-3">
-								{profile.certifications.map((cert: Certification, i: number) => (
-									<div key={i} className="flex items-center gap-3">
-										<div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-amber-100 bg-amber-50">
-											<IconCertificate className="size-4 text-amber-600" />
+								{profile.certifications.map(
+									(cert: Certification, i: number) => (
+										<div key={i} className="flex items-center gap-3">
+											<div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-amber-100 bg-amber-50">
+												<IconCertificate className="size-4 text-amber-600" />
+											</div>
+											<div className="min-w-0">
+												<p className="truncate text-xs font-semibold">
+													{cert.name}
+												</p>
+												<p className="text-muted-foreground truncate text-[10px]">
+													{cert.issuer}
+												</p>
+											</div>
 										</div>
-										<div className="min-w-0">
-											<p className="truncate text-xs font-semibold">
-												{cert.name}
-											</p>
-											<p className="text-muted-foreground truncate text-[10px]">
-												{cert.issuer}
-											</p>
-										</div>
-									</div>
-								))}
+									)
+								)}
 							</div>
 						</div>
 					)}
@@ -194,7 +195,7 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 			</div>
 
 			{/* Bottom Section: Experience & Projects */}
-			<div className="grid gap-12 lg:grid-cols-2 mt-4">
+			<div className="mt-4 grid gap-12 lg:grid-cols-2">
 				{/* Column 1: Experience */}
 				<div className="space-y-6">
 					{profile.experience && profile.experience.length > 0 && (
@@ -261,7 +262,7 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 								{profile.projects.map((proj: Project, i: number) => (
 									<div
 										key={i}
-										className="hover:bg-slate-50/50 rounded-xl bg-card p-4 transition-colors"
+										className="bg-card rounded-xl p-4 transition-colors hover:bg-slate-50/50"
 									>
 										<div className="flex items-start justify-between gap-2">
 											<p className="text-base font-semibold">{proj.name}</p>

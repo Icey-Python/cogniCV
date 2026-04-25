@@ -15,7 +15,7 @@ export interface Experience {
 	company: string;
 	role: string;
 	startDate: string;
-	endDate: string;
+	endDate?: string;
 	description: string;
 	technologies: string[];
 	isCurrent: boolean;
@@ -58,20 +58,20 @@ export interface SocialLinks {
 }
 
 export interface TalentProfile {
-	_id: string;
-	firstName: string;
-	lastName: string;
-	email: string;
-	headline: string;
+	_id?: string;
+	firstName?: string;
+	lastName?: string;
+	email?: string;
+	headline?: string;
 	bio?: string;
-	location: string;
-	skills: Skill[];
+	location?: string;
+	skills?: Skill[];
 	languages?: Language[];
-	experience: Experience[];
-	education: Education[];
+	experience?: Experience[];
+	education?: Education[];
 	certifications?: Certification[];
-	projects: Project[];
-	availability: Availability;
+	projects?: Project[];
+	availability?: Availability;
 	socialLinks?: SocialLinks;
 	source?: 'csv' | 'pdf' | 'xlsx' | 'internal' | 'platform' | 'external';
 	parsingStatus?: 'success' | 'partial' | 'failed' | 'pending';
