@@ -2,8 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import { IServerResponse } from "../types";
 import {
   verifyAccessToken,
+  verifyRefreshToken,
+  generateAccessToken,
+  setAuthCookies,
   clearAuthCookies,
   ACCESS_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE,
   TokenPayload,
 } from "../lib/auth-utils";
 import User from "../models/user.model";
@@ -36,24 +40,6 @@ export interface AuthOptions {
 
 /**
  * Unified authentication middleware with configurable options
- * @param options - Authentication configuration options
- * @returns Express middleware function
- *
- * @example
- * // Require authentication, any role
- * router.get('/profile', authenticate(), handler);
- *
- * @example
- * // Require admin role
- * router.get('/admin', authenticate({ roleRequired: UserRole.ADMIN }), handler);
- *
- * @example
- * // Allow multiple roles
- * router.get('/dashboard', authenticate({ roleRequired: [UserRole.ADMIN, UserRole.USER] }), handler);
- *
- * @example
- * // Optional authentication
- * router.get('/public', authenticate({ isOptional: true }), handler);
  */
 export const authenticate = (options: AuthOptions = {}) => {
   const { isOptional = false, roleRequired = "ALL" } = options;
@@ -61,13 +47,14 @@ export const authenticate = (options: AuthOptions = {}) => {
   return async (
     req: Request,
     res: Response<IServerResponse>,
-    next: NextFunction,
+    next: NextFunction
   ) => {
     try {
       const accessToken = req.cookies[ACCESS_TOKEN_COOKIE];
+      const refreshToken = req.cookies[REFRESH_TOKEN_COOKIE];
 
       // Handle missing authentication tokens
-      if (!accessToken) {
+      if (!accessToken && !refreshToken) {
         if (isOptional) {
           return next();
         }
@@ -81,54 +68,79 @@ export const authenticate = (options: AuthOptions = {}) => {
       let tokenPayload: TokenPayload | null = null;
 
       // Try to verify access token
-      try {
-        tokenPayload = verifyAccessToken(accessToken);
-      } catch (error) {
-        clearAuthCookies(res);
-        if (isOptional) {
-          return next();
+      if (accessToken) {
+        try {
+          tokenPayload = verifyAccessToken(accessToken);
+        } catch (error) {
+          // Access token expired or invalid, try refresh token
+          if (!refreshToken) {
+            clearAuthCookies(res);
+            if (isOptional) return next();
+            return res.status(401).json({
+              status: "error",
+              message: "Authentication expired",
+              data: null,
+            });
+          }
         }
-        return res.status(401).json({
-          status: "error",
-          message: "Authentication expired or invalid",
-          data: null,
-        });
+      }
+
+      // If no valid access token but have refresh token, try to refresh
+      if (!tokenPayload && refreshToken) {
+        try {
+          const refreshPayload = verifyRefreshToken(refreshToken);
+
+          // Verify session is still valid in DB
+          const session = await Session.findOne({
+            sessionId: refreshPayload.sessionId,
+            isValid: true,
+          });
+
+          if (!session) {
+            clearAuthCookies(res);
+            if (isOptional) return next();
+            return res.status(401).json({
+              status: "error",
+              message: "Session expired",
+              data: null,
+            });
+          }
+
+          // Generate new access token
+          tokenPayload = {
+            userId: refreshPayload.userId,
+            email: refreshPayload.email,
+            role: refreshPayload.role,
+            sessionId: refreshPayload.sessionId,
+          };
+
+          const newAccessToken = generateAccessToken(tokenPayload);
+
+          // Update cookies with new access token
+          setAuthCookies(res, newAccessToken, refreshToken, true);
+          
+          // Update last activity
+          session.lastActivity = new Date();
+          await session.save();
+        } catch (refreshError) {
+          clearAuthCookies(res);
+          if (isOptional) return next();
+          return res.status(401).json({
+            status: "error",
+            message: "Invalid authentication",
+            data: null,
+          });
+        }
       }
 
       if (!tokenPayload) {
         clearAuthCookies(res);
-        if (isOptional) {
-          return next();
-        }
+        if (isOptional) return next();
         return res.status(401).json({
           status: "error",
-          message: "Invalid authentication",
+          message: "Authentication required",
           data: null,
         });
-      }
-
-      // Verify session is still valid
-      if (tokenPayload.sessionId) {
-        const session = await Session.findOne({
-          sessionId: tokenPayload.sessionId,
-          isValid: true,
-        });
-
-        if (!session) {
-          clearAuthCookies(res);
-          if (isOptional) {
-            return next();
-          }
-          return res.status(401).json({
-            status: "error",
-            message: "Session expired",
-            data: null,
-          });
-        }
-
-        // Update last activity
-        session.lastActivity = new Date();
-        await session.save();
       }
 
       // Get user from database
@@ -136,25 +148,10 @@ export const authenticate = (options: AuthOptions = {}) => {
 
       if (!user) {
         clearAuthCookies(res);
-        if (isOptional) {
-          return next();
-        }
+        if (isOptional) return next();
         return res.status(401).json({
           status: "error",
           message: "User not found",
-          data: null,
-        });
-      }
-
-      // Check if account is enabled (skip if optional and user exists)
-      if ((user as any).enableAccount === false) {
-        clearAuthCookies(res);
-        if (isOptional) {
-          return next();
-        }
-        return res.status(403).json({
-          status: "error",
-          message: "Account is disabled",
           data: null,
         });
       }
@@ -165,12 +162,7 @@ export const authenticate = (options: AuthOptions = {}) => {
         email: user.email,
         name: user.name,
         role: user.role,
-        verified: (user as any).verified,
-        currentStatus: (user as any).currentStatus,
-        profileImage: (user as any).profileImage,
-        location: (user as any).location,
         phone: user.phone,
-        enableAccount: (user as any).enableAccount,
         lastLogin: (user as any).lastLogin,
       };
 
@@ -196,9 +188,7 @@ export const authenticate = (options: AuthOptions = {}) => {
 
       next();
     } catch (error: any) {
-      if (isOptional) {
-        return next();
-      }
+      if (isOptional) return next();
       return res.status(401).json({
         status: "error",
         message: "Invalid authentication",
