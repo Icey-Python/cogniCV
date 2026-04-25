@@ -81,14 +81,29 @@ export default function AddApplicantsPage() {
 		);
 	};
 
+	const [jsonSuccess, setJsonSuccess] = useState('');
+
 	const handleJsonParse = () => {
 		try {
 			const parsed = JSON.parse(jsonInput);
 			const arr = Array.isArray(parsed) ? parsed : [parsed];
+
+			// Basic Schema Validation
+			const isValid = arr.every((p) => p.email && p.firstName && p.lastName);
+			if (!isValid) {
+				setJsonError(
+					'Validation Error: Every profile must have at least an email, firstName, and lastName.'
+				);
+				setJsonSuccess('');
+				return;
+			}
+
 			setSelectedProfiles(arr);
 			setJsonError('');
+			setJsonSuccess(`Successfully parsed ${arr.length} candidate(s).`);
 		} catch {
 			setJsonError('Invalid JSON. Please check the format.');
+			setJsonSuccess('');
 		}
 	};
 
@@ -250,7 +265,10 @@ export default function AddApplicantsPage() {
 										onChange={(e) => setJsonInput(e.target.value)}
 									/>
 									{jsonError && (
-										<p className="text-destructive text-sm">{jsonError}</p>
+										<p className="text-destructive text-sm font-medium">{jsonError}</p>
+									)}
+									{jsonSuccess && (
+										<p className="text-emerald-600 text-sm font-medium">{jsonSuccess}</p>
 									)}
 									<Button onClick={handleJsonParse}>Parse &amp; Preview</Button>
 								</DialogContent>

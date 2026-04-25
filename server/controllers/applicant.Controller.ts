@@ -253,19 +253,23 @@ export const uploadInternal = async (
 
     const saved = await Promise.all(
       profiles.map(async (profile) => {
+        if (!profile.email) return null;
+
         // 1. Find or create talent by email
         let talent = await TalentProfile.findOne({ email: profile.email });
 
+        // Remove ID if provided to prevent duplicate key errors during creation
         delete profile._id;
 
         if (talent) {
-          // Update existing talent with latest data
+          // Update existing talent with all provided fields
           Object.assign(talent, profile, {
             source: "internal",
             parsingStatus: "success",
           });
           await talent.save();
         } else {
+          // Create new profile
           talent = new TalentProfile({
             ...profile,
             source: "internal",
