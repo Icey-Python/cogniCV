@@ -135,9 +135,9 @@ export function ApplicantInsightDrawer({
 									<div className="grid grid-cols-2 gap-4">
 										{[
 											{ label: 'Skills', score: (subScores as any)?.skillMatch ?? (subScores as any)?.skills ?? 0, max: 40 },
-											{ label: 'Experience', score: (subScores as any)?.experienceRelevance ?? (subScores as any)?.experience ?? 0, max: 30 },
+											{ label: 'Experience', score: (subScores as any)?.experienceAlignment ?? (subScores as any)?.experience ?? 0, max: 25 },
 											{ label: 'Education', score: (subScores as any)?.educationalAlignment ?? (subScores as any)?.education ?? 0, max: 15 },
-											{ label: 'Availability', score: (subScores as any)?.culturalFit ?? (subScores as any)?.availability ?? 0, max: 15 }
+											{ label: 'Relevance', score: (subScores as any)?.relevance ?? 0, max: 20 }
 										].map(({ label, score, max }) => (
 											<div
 												key={label}
