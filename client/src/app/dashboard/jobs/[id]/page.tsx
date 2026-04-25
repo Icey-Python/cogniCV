@@ -22,16 +22,15 @@ import {
 	IconBriefcase,
 	IconUpload,
 	IconInfoCircle,
-	IconPlayerPlay,
 	IconLoader2,
 	IconSparkles,
 	IconPencil
 } from '@tabler/icons-react';
 import { FloatingChat } from '@/components/chat/floating-chat';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
+import { motion, AnimatePresence } from 'motion/react';
 import {
 	Pagination,
 	PaginationContent,
@@ -43,6 +42,30 @@ import {
 } from '@/components/ui/pagination';
 
 const ITEMS_PER_PAGE = 10;
+
+const LOADING_MESSAGES = [
+	'Initializing secure AI sandbox for document parsing...',
+	'Scanning candidate resumes for semantic patterns...',
+	'Extracting key skills and technical proficiencies...',
+	'Comparing experience history against role requirements...',
+	'Identifying career progression and leadership signals...',
+	'Cross-referencing tech stacks with industry benchmarks...',
+	'Analyzing project complexity and individual contributions...',
+	'Evaluating educational background and certifications...',
+	'Checking for redundant skills and potential experience gaps...',
+	'Ranking candidates based on multi-dimensional AI matching...',
+	'Generating tailored feedback and recruiter insights...',
+	'Simulating cultural fit based on organizational parameters...',
+	'Synthesizing match reasoning for top-tier candidates...',
+	'Almost there! Finalizing the comprehensive analysis...',
+	'Preparing the high-fidelity match report...'
+];
+
+const formatTime = (seconds: number) => {
+	const mins = Math.floor(seconds / 60);
+	const secs = seconds % 60;
+	return `${mins}:${secs.toString().padStart(2, '0')}`;
+};
 
 export default function JobDetailPage() {
 	const params = useParams<{ id: string }>();
@@ -72,6 +95,51 @@ export default function JobDetailPage() {
 	const rankedCandidates = screeningResult?.rankedCandidates || [];
 	const isScreeningInProgress =
 		screeningPending || screeningResult?.status === 'pending';
+
+	const [messageIndex, setMessageIndex] = useState(0);
+	const [elapsedSeconds, setElapsedSeconds] = useState(0);
+	const [subProgress, setSubProgress] = useState(0);
+
+	useEffect(() => {
+		let messageInterval: any;
+		let timerInterval: any;
+		let subInterval: any;
+
+		if (isScreeningInProgress) {
+			// Cycle messages every 4 seconds
+			messageInterval = setInterval(() => {
+				setMessageIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
+				setSubProgress(0); // Reset smooth filling on message change
+			}, 4000);
+
+			timerInterval = setInterval(() => {
+				setElapsedSeconds((prev) => prev + 1);
+			}, 1000);
+
+			// Smooth filling for the progress bar (increments every 100ms)
+			subInterval = setInterval(() => {
+				setSubProgress((prev) => Math.min(prev + 100 / 40, 100)); // 4000ms / 100ms = 40 steps
+			}, 100);
+		} else {
+			setElapsedSeconds(0);
+			setMessageIndex(0);
+			setSubProgress(0);
+		}
+
+		return () => {
+			clearInterval(messageInterval);
+			clearInterval(timerInterval);
+			clearInterval(subInterval);
+		};
+	}, [isScreeningInProgress]);
+
+	// Calculate simulated progress based on messages
+	const simulatedProgress = useMemo(() => {
+		if (!isScreeningInProgress) return 0;
+		const baseProgress = (messageIndex / LOADING_MESSAGES.length) * 100;
+		const stepProgress = subProgress / LOADING_MESSAGES.length;
+		return Math.min(Math.round(baseProgress + stepProgress), 99); // Cap at 99% until complete
+	}, [isScreeningInProgress, messageIndex, subProgress]);
 
 	useEffect(() => {
 		setIsPolling(isScreeningInProgress);
@@ -144,12 +212,6 @@ export default function JobDetailPage() {
 	const hasApplicants = allApplicants.length > 0;
 	const isScreened = rankedCandidates.length > 0;
 
-	const progress = screeningResult?.totalCandidates
-		? Math.round(
-				(rankedCandidates.length / screeningResult.totalCandidates) * 100
-			)
-		: 0;
-
 	return (
 		<div className="space-y-6">
 			{/* Header */}
@@ -201,21 +263,39 @@ export default function JobDetailPage() {
 				<Alert className="bg-primary/5 border-primary/20">
 					<IconSparkles className="text-primary size-4" />
 					<AlertTitle>AI Screening in Progress</AlertTitle>
-					<AlertDescription className="space-y-3">
-						<p>
-							Analyzing {allApplicants.length} candidates. We're currently
-							processing chunks of applicants to find your best matches.
-						</p>
-						<div className="space-y-1">
-							<div className="flex justify-between text-xs font-medium">
-								<span>Progress: {progress}%</span>
-								<span>
-									{rankedCandidates.length} of{' '}
-									{screeningResult?.totalCandidates || allApplicants.length}{' '}
-									analyzed
-								</span>
+					<AlertDescription className="space-y-4">
+						<div className="flex items-center justify-between">
+							<p className="text-sm">
+								Analyzing {allApplicants.length} candidates. We're currently
+								processing chunks of applicants to find your best matches.
+							</p>
+							<div className="bg-primary/10 text-primary flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-xs font-medium">
+								<div className="size-1.5 animate-pulse rounded-full bg-current" />
+								{formatTime(elapsedSeconds)}
 							</div>
-							<Progress value={progress} className="h-2" />
+						</div>
+
+						<div className="relative h-6 overflow-hidden">
+							<AnimatePresence mode="wait">
+								<motion.p
+									key={messageIndex}
+									initial={{ y: 20, opacity: 0 }}
+									animate={{ y: 0, opacity: 1 }}
+									exit={{ y: -20, opacity: 0 }}
+									transition={{ duration: 0.5, ease: 'easeInOut' }}
+									className="text-primary absolute inset-0 text-sm font-medium italic"
+								>
+									{LOADING_MESSAGES[messageIndex]}
+								</motion.p>
+							</AnimatePresence>
+						</div>
+
+						<div className="space-y-1.5">
+							<div className="text-muted-foreground flex justify-between text-[10px] font-bold tracking-wider uppercase">
+								<span>Progress: {simulatedProgress}%</span>
+								<span>Hiring Pipeline Analysis</span>
+							</div>
+							<Progress value={simulatedProgress} className="h-1.5 shadow-sm" />
 						</div>
 					</AlertDescription>
 				</Alert>
