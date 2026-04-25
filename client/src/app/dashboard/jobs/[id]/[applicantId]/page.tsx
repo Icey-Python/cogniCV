@@ -498,13 +498,13 @@ export default function ApplicantDetailPage() {
 						<CardContent>
 							<div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
 								{[
-									{ label: 'Skills', score: (rankedEntry?.subScores as any)?.skillMatch ?? (rankedEntry?.subScores as any)?.skills ?? 0 },
-									{ label: 'Experience', score: (rankedEntry?.subScores as any)?.experienceRelevance ?? (rankedEntry?.subScores as any)?.experience ?? 0 },
-									{ label: 'Education', score: (rankedEntry?.subScores as any)?.educationalAlignment ?? (rankedEntry?.subScores as any)?.education ?? 0 },
-									{ label: 'Availability', score: (rankedEntry?.subScores as any)?.culturalFit ?? (rankedEntry?.subScores as any)?.availability ?? 0 }
-								].map(({ label, score }) => (
+									{ label: 'Skills', score: (rankedEntry?.subScores as any)?.skillMatch ?? (rankedEntry?.subScores as any)?.skills ?? 0, max: 40 },
+									{ label: 'Experience', score: (rankedEntry?.subScores as any)?.experienceRelevance ?? (rankedEntry?.subScores as any)?.experience ?? 0, max: 30 },
+									{ label: 'Education', score: (rankedEntry?.subScores as any)?.educationalAlignment ?? (rankedEntry?.subScores as any)?.education ?? 0, max: 15 },
+									{ label: 'Availability', score: (rankedEntry?.subScores as any)?.culturalFit ?? (rankedEntry?.subScores as any)?.availability ?? 0, max: 15 }
+								].map(({ label, score, max }) => (
 									<div key={label} className="flex flex-col items-center justify-center rounded-lg border bg-gray-50/50 p-4 text-center">
-										<CircularScoreProgress score={score} />
+										<CircularScoreProgress score={score} max={max} />
 										<span className="text-muted-foreground mt-2 text-[10px] font-medium tracking-wider uppercase">
 											{label}
 										</span>
