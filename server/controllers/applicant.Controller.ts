@@ -59,7 +59,16 @@ import type { Request, Response } from "express";
  */
 
 /**
- * Get all internal platform talent profiles (seeded data)
+ * @openapi
+ * /api/v1/applicants/profiles:
+ *   get:
+ *     summary: Get platform talent profiles
+ *     tags: [Applicants]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Profiles retrieved
  */
 export const getPlatformTalent = async (
   req: Request,
@@ -96,7 +105,22 @@ export const getPlatformTalent = async (
 };
 
 /**
- * Get all applicants for a specific job (Unified: Internal + External)
+ * @openapi
+ * /api/v1/applicants/jobs/{id}/applicants:
+ *   get:
+ *     summary: Get all applicants for a job
+ *     tags: [Applicants]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Applicants retrieved
  */
 export const getJobApplicants = async (
   req: Request,
@@ -136,7 +160,31 @@ export const getJobApplicants = async (
 };
 
 /**
- * Upload and process CSV/Excel for a job
+ * @openapi
+ * /api/v1/applicants/jobs/{id}/upload/csv:
+ *   post:
+ *     summary: Upload CSV or Excel file for a job
+ *     tags: [Applicants]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       202:
+ *         description: File accepted for processing
  */
 export const uploadCsv = async (req: Request, res: Response<IServerResponse>) => {
   try {
@@ -200,7 +248,33 @@ import { publishToQueue, RabbitMQQueues } from "../lib/rabbitmq";
 import { uploadToR2 } from "../lib/r2";
 
 /**
- * Upload and process PDF resumes for a job (Industrial-grade Async flow)
+ * @openapi
+ * /api/v1/applicants/jobs/{id}/upload/pdf:
+ *   post:
+ *     summary: Upload multiple PDF resumes for a job
+ *     tags: [Applicants]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               files:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *     responses:
+ *       202:
+ *         description: Files accepted for processing
  */
 export const uploadPdf = async (req: Request, res: Response<IServerResponse>) => {
   try {

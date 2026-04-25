@@ -3,6 +3,17 @@ import { UserService } from './service';
 import { queryKeys } from '../keys';
 
 /**
+ * Hook to fetch the currently logged in user
+ */
+export const useMeQuery = () => {
+	return useQuery({
+		queryKey: queryKeys.user.me,
+		queryFn: () => UserService.getMe(),
+		retry: 1, // Don't retry endlessly if not logged in
+	});
+};
+
+/**
  * Hook to fetch any user by ID
  * @param id User ID
  */

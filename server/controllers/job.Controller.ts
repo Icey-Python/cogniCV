@@ -41,7 +41,24 @@ import type { Request, Response } from "express";
  */
 
 /**
- * Create a new job
+ * @openapi
+ * /api/v1/jobs:
+ *   post:
+ *     summary: Create a new job
+ *     tags: [Jobs]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Job'
+ *     responses:
+ *       201:
+ *         description: Job created successfully
+ *       400:
+ *         description: Bad request
  */
 export const createJob = async (req: Request, res: Response<IServerResponse>) => {
   try {
@@ -83,7 +100,25 @@ export const createJob = async (req: Request, res: Response<IServerResponse>) =>
 };
 
 /**
- * Get all jobs for the authenticated recruiter
+ * @openapi
+ * /api/v1/jobs:
+ *   get:
+ *     summary: Get all jobs for recruiter
+ *     tags: [Jobs]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Jobs retrieved successfully
  */
 export const getMyJobs = async (req: Request, res: Response<IServerResponse>) => {
   try {
@@ -119,7 +154,24 @@ export const getMyJobs = async (req: Request, res: Response<IServerResponse>) =>
 };
 
 /**
- * Get a single job by ID
+ * @openapi
+ * /api/v1/jobs/{id}:
+ *   get:
+ *     summary: Get job by ID
+ *     tags: [Jobs]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Job retrieved successfully
+ *       404:
+ *         description: Job not found
  */
 export const getJobById = async (req: Request, res: Response<IServerResponse>) => {
   try {
@@ -159,7 +211,22 @@ export const getJobById = async (req: Request, res: Response<IServerResponse>) =
 };
 
 /**
- * Update a job
+ * @openapi
+ * /api/v1/jobs/{id}:
+ *   put:
+ *     summary: Update job
+ *     tags: [Jobs]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Job updated successfully
  */
 export const updateJob = async (req: Request, res: Response<IServerResponse>) => {
   try {
@@ -203,7 +270,22 @@ export const updateJob = async (req: Request, res: Response<IServerResponse>) =>
 };
 
 /**
- * Delete a job
+ * @openapi
+ * /api/v1/jobs/{id}:
+ *   delete:
+ *     summary: Delete job
+ *     tags: [Jobs]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Job deleted successfully
  */
 export const deleteJob = async (req: Request, res: Response<IServerResponse>) => {
   try {

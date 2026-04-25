@@ -12,13 +12,6 @@ export const ENV = {
   API_DOCS_REALM: process.env.API_DOCS_REALM || "your_api_docs",
   // JWT related
   JWT_SECRET: process.env.JWT_SECRET as string,
-  JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET as string,
-  // S3 / Minio related
-  AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY as string,
-  AWS_SECRET: process.env.AWS_SECRET as string,
-  AWS_REGION: process.env.AWS_REGION as string,
-  AWS_S3_ENDPOINT: process.env.AWS_S3_ENDPOINT as string,
-  AWS_S3_BUCKET: process.env.AWS_S3_BUCKET as string,
   // Admin
   ADMIN_INITIAL_PASS: process.env.ADMIN_INITIAL_PASS as string,
   ADMIN_INITIAL_EMAIL: process.env.ADMIN_INITIAL_EMAIL as string,
@@ -48,4 +41,7 @@ for (const [key, value] of Object.entries(ENV)) {
   }
 }
 
-export const AllowedOrigins = [...ENV.FRONTEND_URLS.split(","), "http://localhost:8001"];
+export const AllowedOrigins = [
+  ...ENV.FRONTEND_URLS.split(","),
+  "http://localhost:8001",
+];

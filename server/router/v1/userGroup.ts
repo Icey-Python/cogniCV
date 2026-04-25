@@ -13,29 +13,30 @@ router.post("/login", AuthController.loginUser);
 router.get("/logout", AuthController.logoutUser);
 
 // Profile routes
+router.get("/me", authenticate(), ProfileController.getLoggedInUser);
 router.get(
   "/",
   authenticate({ roleRequired: UserRole.ADMIN }),
-  ProfileController.getUser
+  ProfileController.getUser,
 );
 router.put("/", authenticate(), ProfileController.updateUser);
 router.put("/phone", authenticate(), ProfileController.updateUserPhone);
 
-// Management routes
+// Admin Management routes
 router.get(
   "/all",
   authenticate({ roleRequired: UserRole.ADMIN }),
-  ManagementController.getAllUsers
+  ManagementController.getAllUsers,
 );
 router.delete(
   "/",
   authenticate({ roleRequired: UserRole.ADMIN }),
-  ManagementController.deleteUser
+  ManagementController.deleteUser,
 );
 router.get(
   "/search",
   authenticate({ roleRequired: UserRole.ADMIN }),
-  ManagementController.searchUser
+  ManagementController.searchUser,
 );
 
 export default router;
