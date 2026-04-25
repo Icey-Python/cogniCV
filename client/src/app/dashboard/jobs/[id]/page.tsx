@@ -21,7 +21,8 @@ import {
 	IconInfoCircle,
 	IconPlayerPlay,
 	IconLoader2,
-	IconSparkles
+	IconSparkles,
+	IconPencil
 } from '@tabler/icons-react';
 import { FloatingChat } from '@/components/chat/floating-chat';
 import Link from 'next/link';
