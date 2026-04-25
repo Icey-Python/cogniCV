@@ -11,6 +11,7 @@ export interface IReasoning {
   strengths: string[];
   gaps: string[];
   recommendation: string;
+  suggestedFeedback: string[];
 }
 
 export interface IRankedCandidate {
@@ -60,6 +61,7 @@ const ScreeningResultSchema = new Schema<ScreeningResultDoc>(
           strengths: [String],
           gaps: [String],
           recommendation: { type: String, required: true },
+          suggestedFeedback: [String],
         },
         profileSnapshot: { type: Object, required: true },
       },
