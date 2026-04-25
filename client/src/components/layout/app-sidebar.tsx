@@ -98,7 +98,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 								</div>
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<span className="font-lora truncate text-xl font-semibold">
-										CogniCV
+										cogniCV
 									</span>
 								</div>
 							</Link>

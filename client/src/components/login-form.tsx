@@ -47,7 +47,7 @@ export function LoginForm({
 		<div className={cn('flex flex-col gap-8', className)} {...props}>
 			<div className="flex flex-col gap-2">
 				<h1 className="text-3xl font-bold text-foreground font-lora">
-					Welcome Back to CogniCV!
+					Welcome Back to cogniCV!
 				</h1>
 				<p className="text-muted-foreground text-sm">
 					Sign in your account
@@ -84,11 +84,11 @@ export function LoginForm({
 								<FormLabel className="text-xs text-muted-foreground font-normal">Password</FormLabel>
 								<FormControl>
 									<div className="relative">
-										<Input 
-											type={showPassword ? 'text' : 'password'} 
+										<Input
+											type={showPassword ? 'text' : 'password'}
 											placeholder="••••••••"
-											{...field} 
-											disabled={isLoading} 
+											{...field}
+											disabled={isLoading}
 											className="h-12 rounded-lg pr-10"
 										/>
 										<button
