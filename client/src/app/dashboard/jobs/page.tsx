@@ -100,8 +100,6 @@ export default function JobListingsPage() {
 			) : jobs.length > 0 ? (
 				<div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
 					{jobs.map((job) => {
-						console.log('job', job);
-
 						return <JobCard key={job._id} job={job} />;
 					})}
 				</div>
