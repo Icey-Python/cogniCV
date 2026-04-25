@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import { MOCK_JOBS, MOCK_RANKED_CANDIDATES } from '@/lib/mock-data';
 import type { RankedCandidate, Skill } from '@/types';
+import type { Job as ServiceJob } from '@/hooks/query/jobs/service';
 import { CircularScoreProgress } from '@/components/jobs/ranked-applicants-table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -587,7 +588,7 @@ export default function ApplicantDetailPage() {
 				</div>
 			</div>
 			<JobInfoDrawer
-				job={contextJob ?? null}
+				job={(contextJob as unknown as ServiceJob) ?? null}
 				open={jobInfoOpen}
 				onOpenChange={setJobInfoOpen}
 			/>
