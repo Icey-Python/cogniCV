@@ -97,6 +97,7 @@ export interface RankedCandidate {
 		strengths: string[];
 		gaps: string[];
 		recommendation: string;
+		suggestedFeedback: string[];
 	};
 	profileSnapshot: TalentProfile;
 }

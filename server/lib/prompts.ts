@@ -51,7 +51,12 @@ Each object must follow this strict schema:
   "reasoning": {
     "strengths": ["3-4 specific points citing data from the profile"],
     "gaps": ["2-3 specific missing requirements or risks"],
-    "recommendation": "1-sentence professional hiring verdict"
+    "recommendation": "1-sentence professional hiring verdict",
+    "suggestedFeedback": [
+      "Point 1: The Highlight (Strongest objective match)",
+      "Point 2: The Gap (Critical missing requirement or weakness)",
+      "Point 3: Constructive Advice (Professional suggestion for candidate growth)"
+    ]
   }
 }
 `;

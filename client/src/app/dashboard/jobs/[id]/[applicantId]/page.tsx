@@ -196,17 +196,27 @@ export default function ApplicantDetailPage() {
 		? Math.max(1, Math.round(((peers.length - rankedEntry.rank + 1) / peers.length) * 100))
 		: 0;
 
-	const suggestedFeedback = isScreened && rankedEntry ? [
-		`Highlight ${rankedEntry.reasoning.strengths[0]?.toLowerCase() || 'your strongest fit point'} in the first interview stage.`,
-		rankedEntry.reasoning.gaps[0]
-			? `Validate risk around ${rankedEntry.reasoning.gaps[0].toLowerCase()} with one focused assessment question.`
-			: 'Keep validation focused on team collaboration and delivery ownership.',
-		`Probe readiness for ${job?.experienceLevel || 'the'} role scope with examples of measurable impact.`
-	] : [
-		'Analysis pending. Run AI screening to see tailored feedback points.',
-		'Focus initial screening on core technical competence and cultural alignment.',
-		'Verify role relevance and start date expectations.'
-	];
+	const suggestedFeedback = useMemo(() => {
+		if (isScreened && rankedEntry?.reasoning.suggestedFeedback?.length > 0) {
+			return rankedEntry.reasoning.suggestedFeedback;
+		}
+
+		if (isScreened && rankedEntry) {
+			return [
+				`Highlight ${rankedEntry.reasoning.strengths[0]?.toLowerCase() || 'your strongest fit point'} in the first interview stage.`,
+				rankedEntry.reasoning.gaps[0]
+					? `Validate risk around ${rankedEntry.reasoning.gaps[0].toLowerCase()} with one focused assessment question.`
+					: 'Keep validation focused on team collaboration and delivery ownership.',
+				`Probe readiness for ${job?.experienceLevel || 'the'} role scope with examples of measurable impact.`
+			];
+		}
+
+		return [
+			'Analysis pending. Run AI screening to see tailored feedback points.',
+			'Focus initial screening on core technical competence and cultural alignment.',
+			'Verify role relevance and start date expectations.'
+		];
+	}, [isScreened, rankedEntry, job]);
 
 	const handleAcceptForInterview = () => {
 		setStatus('Accepted for Interview');
