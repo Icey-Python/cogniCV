@@ -1,6 +1,7 @@
 import { apiBase } from '@/lib/config';
 import { IServerResponse } from '@/types/api';
 import { Location } from '../organization/service';
+import { RankedCandidate, TalentProfile } from '@/types';
 
 export enum ExperienceLevel {
 	ENTRY = 'Entry',
@@ -94,29 +95,6 @@ export const JobService = {
 	}
 };
 
-// ─── Talent / Applicant Types ─────────────────────────────────────────────────
-
-export interface TalentProfile {
-	_id?: string;
-	firstName?: string;
-	lastName?: string;
-	email?: string;
-	headline?: string;
-	bio?: string;
-	location?: string;
-	skills?: { name: string; level: string; yearsOfExperience: number }[];
-	languages?: { name: string; proficiency: string }[];
-	experience?: { company: string; role: string; startDate: string; endDate?: string; description?: string; technologies: string[]; isCurrent: boolean }[];
-	education?: { institution: string; degree: string; fieldOfStudy: string; startYear: number; endYear?: number }[];
-	certifications?: { name: string; issuer: string; issueDate: string }[];
-	projects?: { name: string; description: string; technologies: string[]; role: string; link?: string; startDate: string; endDate: string }[];
-	availability?: { status: string; type: string; startDate?: string };
-	socialLinks?: { linkedin?: string; github?: string; portfolio?: string };
-	source?: 'csv' | 'pdf' | 'xlsx' | 'internal';
-	parsingStatus?: 'success' | 'partial' | 'failed' | 'pending';
-	resumeUrl?: string;
-}
-
 // ─── Applicant Service ────────────────────────────────────────────────────────
 
 export const ApplicantService = {
@@ -150,6 +128,34 @@ export const ApplicantService = {
 		const response = await apiBase.post<IServerResponse<{ total: number; queued: number; failed: number }>>(`/applicants/jobs/${jobId}/upload/pdf`, formData, {
 			headers: { 'Content-Type': 'multipart/form-data' },
 		});
+		return response.data;
+	},
+
+	getJobApplicants: async (jobId: string) => {
+		const response = await apiBase.get<IServerResponse<{ external: TalentProfile[]; platform: TalentProfile[] }>>(`/applicants/jobs/${jobId}/applicants`);
+		return response.data;
+	},
+};
+
+// ─── Screening Service ───────────────────────────────────────────────────────
+
+export interface ScreeningResult {
+	_id: string;
+	jobId: string;
+	status: 'pending' | 'completed' | 'failed';
+	rankedCandidates: RankedCandidate[];
+	error?: string;
+	createdAt: string;
+}
+
+export const ScreeningService = {
+	triggerScreening: async (jobId: string) => {
+		const response = await apiBase.post<IServerResponse<ScreeningResult>>(`/screening/${jobId}/trigger`);
+		return response.data;
+	},
+
+	getScreeningResults: async (jobId: string) => {
+		const response = await apiBase.get<IServerResponse<ScreeningResult>>(`/screening/${jobId}/results`);
 		return response.data;
 	},
 };

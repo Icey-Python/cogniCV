@@ -256,6 +256,8 @@ export const uploadInternal = async (
         // 1. Find or create talent by email
         let talent = await TalentProfile.findOne({ email: profile.email });
 
+        delete profile._id;
+
         if (talent) {
           // Update existing talent with latest data
           Object.assign(talent, profile, {

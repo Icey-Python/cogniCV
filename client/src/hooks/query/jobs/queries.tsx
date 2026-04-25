@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { JobService, ApplicantService } from './service';
+import { JobService, ApplicantService, ScreeningService } from './service';
 import { queryKeys } from '../keys';
 
 export const useJobsQuery = (page = 1, limit = 10) => {
@@ -28,6 +28,23 @@ export const useJobQuery = (id: string) => {
 		queryKey: queryKeys.jobs.detail(id),
 		queryFn: () => JobService.getJobById(id),
 		enabled: !!id,
+	});
+};
+
+export const useJobApplicantsQuery = (jobId: string) => {
+	return useQuery({
+		queryKey: ['applicants', 'job', jobId],
+		queryFn: () => ApplicantService.getJobApplicants(jobId),
+		enabled: !!jobId,
+	});
+};
+
+export const useScreeningResultsQuery = (jobId: string) => {
+	return useQuery({
+		queryKey: ['screening', 'results', jobId],
+		queryFn: () => ScreeningService.getScreeningResults(jobId),
+		enabled: !!jobId,
+		retry: false, // Don't retry if not found
 	});
 };
 

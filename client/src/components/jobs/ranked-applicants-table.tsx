@@ -135,7 +135,7 @@ export function RankedApplicantsTable({ candidates, onRowClick, showJob = false 
 									</TableCell>
 									<TableCell className="hidden sm:table-cell">
 										<span className="flex items-center gap-1 text-xs text-muted-foreground">
-											{candidate.profileSource === 'platform' ? (
+											{candidate.profileSource === 'platform' || candidate.profileSource === 'internal' ? (
 												<><IconBolt className="size-3.5 text-primary" /> Platform</>
 											) : (
 												<><IconPaperclip className="size-3.5" /> External</>

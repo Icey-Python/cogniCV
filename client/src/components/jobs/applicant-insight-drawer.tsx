@@ -15,7 +15,8 @@ import {
 	IconTrophy,
 	IconExternalLink,
 	IconStar,
-	IconBolt
+	IconBolt,
+	IconSparkles
 } from '@tabler/icons-react';
 
 import { CircularScoreProgress } from '@/components/jobs/ranked-applicants-table';
@@ -54,23 +55,16 @@ export function ApplicantInsightDrawer({
 	const {
 		profileSnapshot: p,
 		subScores,
-		strengths,
-		gaps,
-		recommendation,
+		reasoning,
 		matchScore,
 		rank,
 		profileSource
 	} = candidate;
-	const initials = `${p.firstName[0]}${p.lastName[0]}`;
 
-	const scoreColor =
-		matchScore >= 90
-			? 'text-emerald-600'
-			: matchScore >= 75
-				? 'text-primary'
-				: matchScore >= 60
-					? 'text-amber-600'
-					: 'text-red-500';
+	const { strengths, gaps, recommendation } = reasoning || { strengths: [], gaps: [], recommendation: '' };
+
+	const isScreened = matchScore > 0;
+	const initials = `${p.firstName?.[0] || ''}${p.lastName?.[0] || ''}`;
 
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
@@ -89,22 +83,22 @@ export function ApplicantInsightDrawer({
 						</SheetDescription>
 						<div className="text-muted-foreground mt-3 flex items-center gap-3 text-xs">
 							<span className="flex items-center gap-1">
-								{profileSource === 'platform' ? (
+								{profileSource === 'internal' || profileSource === 'platform' ? (
 									<IconBolt className="text-primary size-3.5" />
 								) : (
 									<IconExternalLink className="size-3.5" />
 								)}
-								{profileSource === 'platform' ? 'Platform' : 'External'}
+								{profileSource === 'internal' || profileSource === 'platform' ? 'Platform' : 'External'}
 							</span>
 							<span>{p.location}</span>
 							<span
 								className={
-									p.availability.status === 'Available'
+									p.availability?.status === 'Available'
 										? 'text-emerald-600'
 										: ''
 								}
 							>
-								{p.availability.status}
+								{p.availability?.status || 'Active'}
 							</span>
 							{jobId && (
 								<Link
@@ -119,103 +113,123 @@ export function ApplicantInsightDrawer({
 				</div>
 
 				<ScrollArea className="flex-1 bg-white">
-					<div className="space-y-12 p-6">
-						{/* Match Score & Breakdown Grid */}
-						<div className="grid grid-cols-2 gap-4">
-							<div className="flex flex-col items-center justify-center rounded-lg border border-gray-100 bg-gray-50 p-6 text-center">
-								<p className="text-muted-foreground mb-4 text-xs font-medium tracking-wider uppercase">
-									Overall Match
-								</p>
-								<div className="scale-150 transform">
-									<CircularScoreProgress score={matchScore} />
-								</div>
+					<div className="space-y-10 p-6">
+						{!isScreened ? (
+							<div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
+								<IconSparkles className="mx-auto size-8 text-slate-300" />
+								<p className="mt-3 text-sm font-medium text-slate-600">Screening Pending</p>
+								<p className="mt-1 text-xs text-slate-400">Run AI analysis to see match scores and detailed insights for this candidate.</p>
 							</div>
-							<div className="grid grid-cols-2 gap-4">
-								{[
-									{ label: 'Skills', score: subScores.skills },
-									{ label: 'Experience', score: subScores.experience },
-									{ label: 'Education', score: subScores.education },
-									{ label: 'Availability', score: subScores.availability }
-								].map(({ label, score }) => (
-									<div
-										key={label}
-										className="flex flex-col items-center justify-center rounded-lg border border-gray-100 bg-gray-50 p-3 text-center"
-									>
-										<CircularScoreProgress score={score} />
-										<span className="text-muted-foreground mt-2 text-[10px] font-medium tracking-wider uppercase">
-											{label}
-										</span>
+						) : (
+							<>
+								{/* Match Score & Breakdown Grid */}
+								<div className="grid grid-cols-2 gap-4">
+									<div className="flex flex-col items-center justify-center rounded-lg border border-gray-100 bg-gray-50 p-6 text-center">
+										<p className="text-muted-foreground mb-4 text-xs font-medium tracking-wider uppercase">
+											Overall Match
+										</p>
+										<div className="scale-150 transform">
+											<CircularScoreProgress score={matchScore} />
+										</div>
 									</div>
-								))}
-							</div>
-						</div>
+									<div className="grid grid-cols-2 gap-4">
+										{[
+											{ label: 'Skills', score: (subScores as any)?.skillMatch ?? (subScores as any)?.skills ?? 0 },
+											{ label: 'Experience', score: (subScores as any)?.experienceRelevance ?? (subScores as any)?.experience ?? 0 },
+											{ label: 'Education', score: (subScores as any)?.educationalAlignment ?? (subScores as any)?.education ?? 0 },
+											{ label: 'Availability', score: (subScores as any)?.culturalFit ?? (subScores as any)?.availability ?? 0 }
+										].map(({ label, score }) => (
+											<div
+												key={label}
+												className="flex flex-col items-center justify-center rounded-lg border border-gray-100 bg-gray-50 p-3 text-center"
+											>
+												<CircularScoreProgress score={score} />
+												<span className="text-muted-foreground mt-2 text-[10px] font-medium tracking-wider uppercase">
+													{label}
+												</span>
+											</div>
+										))}
+									</div>
+								</div>
 
-						{/* AI Recommendation */}
-						<div className="space-y-3">
-							<h4 className="text-muted-foreground flex items-center gap-1.5 text-sm font-medium tracking-wider uppercase">
-								<IconStar className="text-primary size-3.5" /> AI Recommendation
-							</h4>
-							<blockquote className="border-primary text-foreground border-l-4 bg-gray-50 py-4 pl-4 text-sm leading-relaxed italic">
-								&ldquo;{recommendation}&rdquo;
-							</blockquote>
-						</div>
+								{/* AI Recommendation */}
+								{recommendation && (
+									<div className="space-y-3">
+										<h4 className="text-muted-foreground flex items-center gap-1.5 text-sm font-medium tracking-wider uppercase">
+											<IconStar className="text-primary size-3.5" /> AI Recommendation
+										</h4>
+										<blockquote className="border-primary text-foreground border-l-4 bg-gray-50 py-4 pl-4 text-sm leading-relaxed italic">
+											&ldquo;{recommendation}&rdquo;
+										</blockquote>
+									</div>
+								)}
 
-						{/* Strengths & Gaps */}
-						<div className="flex flex-col gap-4">
-							<div className="space-y-3">
-								<h4 className="flex items-center gap-1.5 text-sm font-medium tracking-wider text-emerald-600 uppercase">
-									<IconCircleCheck className="size-3.5" /> Strengths
-								</h4>
-								<ul className="space-y-3">
-									{strengths.map((s, i) => (
-										<li
-											key={i}
-											className="flex items-start gap-2 border-l-2 border-gray-200 py-0.5 pl-3 text-sm"
-										>
-											<span className="leading-snug">{s}</span>
-										</li>
-									))}
-								</ul>
-							</div>
-							<div className="space-y-3">
-								<h4 className="flex items-center gap-1.5 text-sm font-medium tracking-wider text-amber-600 uppercase">
-									<IconAlertTriangle className="size-3.5" /> Gaps
-								</h4>
-								<ul className="space-y-3">
-									{gaps.map((g, i) => (
-										<li
-											key={i}
-											className="flex items-start gap-2 border-l-2 border-gray-200 py-0.5 pl-3 text-sm"
-										>
-											<span className="leading-snug">{g}</span>
-										</li>
-									))}
-								</ul>
-							</div>
-						</div>
+								{/* Strengths & Gaps */}
+								<div className="flex flex-col gap-4">
+									{strengths && strengths.length > 0 && (
+										<div className="space-y-3">
+											<h4 className="flex items-center gap-1.5 text-sm font-medium tracking-wider text-emerald-600 uppercase">
+												<IconCircleCheck className="size-3.5" /> Strengths
+											</h4>
+											<ul className="space-y-3">
+												{strengths.map((s: string, i: number) => (
+													<li
+														key={i}
+														className="flex items-start gap-2 border-l-2 border-gray-200 py-0.5 pl-3 text-sm"
+													>
+														<span className="leading-snug">{s}</span>
+													</li>
+												))}
+											</ul>
+										</div>
+									)}
+									{gaps && gaps.length > 0 && (
+										<div className="space-y-3">
+											<h4 className="flex items-center gap-1.5 text-sm font-medium tracking-wider text-amber-600 uppercase">
+												<IconAlertTriangle className="size-3.5" /> Gaps
+											</h4>
+											<ul className="space-y-3">
+												{gaps.map((g: string, i: number) => (
+													<li
+														key={i}
+														className="flex items-start gap-2 border-l-2 border-gray-200 py-0.5 pl-3 text-sm"
+													>
+														<span className="leading-snug">{g}</span>
+													</li>
+												))}
+											</ul>
+										</div>
+									)}
+								</div>
+							</>
+						)}
 
 						{/* Skills */}
-						<div className="space-y-2">
-							<h4 className="text-muted-foreground text-sm font-medium tracking-wider uppercase">
-								Skills
-							</h4>
-							<div className="flex flex-wrap gap-2">
-								{p.skills.map((skill) => (
-									<span
-										key={skill.name}
-										className="bg-primary/5 text-primary/80 border-primary/10 rounded-md border px-2 py-0.5 text-xs"
-									>
-										{skill.name}
-										<span className="text-muted-foreground ml-1">
-											{skill.yearsOfExperience}y
+						{p.skills && p.skills.length > 0 && (
+							<div className="space-y-2">
+								<h4 className="text-muted-foreground text-sm font-medium tracking-wider uppercase">
+									Skills
+								</h4>
+								<div className="flex flex-wrap gap-2">
+									{p.skills.map((skill) => (
+										<span
+											key={skill.name}
+											className="bg-primary/5 text-primary/80 border-primary/10 rounded-md border px-2 py-0.5 text-xs"
+										>
+											{skill.name}
+											{skill.yearsOfExperience !== undefined && (
+												<span className="text-muted-foreground ml-1">
+													{skill.yearsOfExperience}y
+												</span>
+											)}
 										</span>
-									</span>
-								))}
+									))}
+								</div>
 							</div>
-						</div>
+						)}
 
 						{/* Experience */}
-						{p.experience.length > 0 && (
+						{p.experience && p.experience.length > 0 && (
 							<div className="space-y-2">
 								<h4 className="text-muted-foreground text-sm font-medium tracking-wider uppercase">
 									Experience
@@ -237,9 +251,11 @@ export function ApplicantInsightDrawer({
 												{exp.company} &middot; {exp.startDate} &ndash;{' '}
 												{exp.isCurrent ? 'Present' : exp.endDate}
 											</p>
-											<p className="text-muted-foreground text-xs leading-relaxed">
-												{exp.description}
-											</p>
+											{exp.description && (
+												<p className="text-muted-foreground text-xs leading-relaxed">
+													{exp.description}
+												</p>
+											)}
 										</div>
 									))}
 								</div>
