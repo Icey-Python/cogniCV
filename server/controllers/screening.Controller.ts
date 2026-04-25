@@ -4,7 +4,7 @@ import Job from "../models/job.model";
 import { UserRole } from "../models/user.model";
 import Application from "../models/application.model";
 import ScreeningResult from "../models/screening.model";
-import ExternalApplicant from "../models/applicant.model";
+import TalentProfile from "../models/talent.model";
 import { GeminiService } from "../services/gemini.service";
 import type { IServerResponse } from "../types";
 import type { Request, Response } from "express";
@@ -82,47 +82,32 @@ export const triggerScreening = async (
       });
     }
 
-    const [pendingExternalCount, successfulExternalCount, failedExternalCount] =
-      await Promise.all([
-        ExternalApplicant.countDocuments({ jobId, parsingStatus: "pending" }),
-        ExternalApplicant.countDocuments({ jobId, parsingStatus: "success" }),
-        ExternalApplicant.countDocuments({ jobId, parsingStatus: "failed" }),
-      ]);
+    const applications = await Application.find({ jobId }).populate("profileId");
 
-    if (pendingExternalCount > 0) {
+    const allCandidates = applications
+      .filter((app: any) => app.profileId)
+      .map((app: any) => ({
+        _id: app.profileId._id,
+        ...app.profileId.toObject(),
+        source: app.profileId.source,
+      }));
+
+    const pendingCount = allCandidates.filter(c => c.parsingStatus === "pending").length;
+    const successfulCount = allCandidates.filter(c => c.parsingStatus === "success").length;
+    const failedCount = allCandidates.filter(c => c.parsingStatus === "failed").length;
+
+    if (pendingCount > 0) {
       return res.status(HttpStatusCode.Conflict).json({
         status: "error",
         message: "Resume parsing is still in progress. Please wait before screening.",
         data: {
-          pending: pendingExternalCount,
-          successful: successfulExternalCount,
-          failed: failedExternalCount,
+          pending: pendingCount,
+          successful: successfulCount,
+          failed: failedCount,
         },
       });
     }
 
-    // 2. Fetch candidates who applied (Platform) and those uploaded (External)
-    const [platformApplications, externalApplicants] = await Promise.all([
-      Application.find({ jobId }).populate("profileId"), // Get actual applicants
-      ExternalApplicant.find({ jobId, parsingStatus: "success" }),
-    ]);
-
-    // Map platform applications to standard AI-ready structure
-    const platformMapped = platformApplications
-      .filter((app) => app.profileId) // Ensure profile exists
-      .map((app: any) => ({
-        ...app.profileId.toObject(),
-        source: "platform",
-      }));
-
-    // Map external candidates (from CSV/PDF) to standard AI-ready structure
-    const externalMapped = externalApplicants.map((ec) => ({
-      _id: ec._id,
-      ...ec.parsedProfile,
-      source: "external",
-    }));
-
-    const allCandidates = [...platformMapped, ...externalMapped];
     const candidateById = new Map(
       allCandidates.map((candidate: any) => [candidate._id.toString(), candidate])
     );

@@ -1,0 +1,2365 @@
+[
+  {
+    "firstName": "Amani",
+    "lastName": "Kigali",
+    "email": "amani.kigali@example.com",
+    "headline": "Senior Fullstack Engineer | React & Go Expert",
+    "bio": "Passionate developer with 8 years of experience building scalable microservices.",
+    "location": "Kigali, Rwanda",
+    "skills": [
+      {
+        "name": "Go",
+        "level": "Expert",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "React",
+        "level": "Advanced",
+        "yearsOfExperience": 6
+      },
+      {
+        "name": "Kubernetes",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "PostgreSQL",
+        "level": "Advanced",
+        "yearsOfExperience": 6
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Kinyarwanda",
+        "proficiency": "Native"
+      },
+      {
+        "name": "French",
+        "proficiency": "Basic"
+      }
+    ],
+    "experience": [
+      {
+        "company": "TechRwanda",
+        "role": "Senior Engineer",
+        "startDate": "2020-01",
+        "endDate": "Present",
+        "description": "Led the migration from monolith to microservices architecture serving 100K+ users.",
+        "technologies": ["Go", "Kubernetes", "PostgreSQL", "Redis"],
+        "isCurrent": true
+      },
+      {
+        "company": "Rwanda Apps",
+        "role": "Software Developer",
+        "startDate": "2017-06",
+        "endDate": "2019-12",
+        "description": "Built mobile-first web applications for local businesses.",
+        "technologies": ["React", "Node.js", "MongoDB"],
+        "isCurrent": false
+      }
+    ],
+    "education": [
+      {
+        "institution": "University of Rwanda",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Science",
+        "startYear": 2012,
+        "endYear": 2016
+      }
+    ],
+    "projects": [
+      {
+        "name": "E-Gov Portal",
+        "description": "Digital services platform for citizens to access government services.",
+        "technologies": ["React", "Go", "PostgreSQL"],
+        "role": "Lead Architect",
+        "link": "https://gov.rw",
+        "startDate": "2021-05",
+        "endDate": "2022-12"
+      }
+    ],
+    "availability": {
+      "status": "Open to Opportunities",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/amani-kigali",
+      "github": "https://github.com/amani-dev"
+    },
+    "_id": "0369cf258be147ad0369cf25"
+  },
+  {
+    "firstName": "Sarah",
+    "lastName": "Chen",
+    "email": "sarah.chen@example.com",
+    "headline": "AI/ML Researcher | Python & PyTorch",
+    "bio": "Specializing in Natural Language Processing and LLM fine-tuning with published research.",
+    "location": "Singapore, Singapore",
+    "skills": [
+      {
+        "name": "Python",
+        "level": "Expert",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "PyTorch",
+        "level": "Advanced",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Machine Learning",
+        "level": "Expert",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "NLP",
+        "level": "Advanced",
+        "yearsOfExperience": 3
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Mandarin",
+        "proficiency": "Native"
+      }
+    ],
+    "experience": [
+      {
+        "company": "DataMind AI",
+        "role": "ML Engineer",
+        "startDate": "2022-06",
+        "endDate": "Present",
+        "description": "Optimizing inference latency for large language models deployed at scale.",
+        "technologies": ["Python", "PyTorch", "Docker", "AWS", "Kubernetes"],
+        "isCurrent": true
+      },
+      {
+        "company": "AI Research Lab",
+        "role": "Research Assistant",
+        "startDate": "2020-09",
+        "endDate": "2022-05",
+        "description": "Conducted research on transformer architectures and attention mechanisms.",
+        "technologies": ["Python", "TensorFlow", "NumPy"],
+        "isCurrent": false
+      }
+    ],
+    "education": [
+      {
+        "institution": "National University of Singapore",
+        "degree": "Masters",
+        "fieldOfStudy": "Artificial Intelligence",
+        "startYear": 2020,
+        "endYear": 2022
+      },
+      {
+        "institution": "Nanyang Technological University",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Science",
+        "startYear": 2016,
+        "endYear": 2020
+      }
+    ],
+    "certifications": [
+      {
+        "name": "Deep Learning Specialization",
+        "issuer": "Coursera",
+        "issueDate": "2020-03"
+      }
+    ],
+    "projects": [
+      {
+        "name": "SummaryBot",
+        "description": "Automatic meeting notes generator using LLM summarization.",
+        "technologies": ["OpenAI API", "FastAPI", "React"],
+        "role": "Researcher",
+        "startDate": "2023-01",
+        "endDate": "2023-04"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Contract",
+      "startDate": "2026-05-01"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/sarah-chen-ai",
+      "github": "https://github.com/sarahchen-ml"
+    },
+    "_id": "7ad0369cf258be147ad0369c"
+  },
+  {
+    "firstName": "John",
+    "lastName": "Okafor",
+    "email": "john.okafor@example.com",
+    "headline": "Junior Frontend Developer",
+    "bio": "Motivated recent graduate eager to build beautiful web experiences.",
+    "location": "Lagos, Nigeria",
+    "skills": [
+      {
+        "name": "JavaScript",
+        "level": "Beginner",
+        "yearsOfExperience": 1
+      },
+      {
+        "name": "CSS",
+        "level": "Intermediate",
+        "yearsOfExperience": 2
+      },
+      {
+        "name": "HTML",
+        "level": "Intermediate",
+        "yearsOfExperience": 2
+      },
+      {
+        "name": "React",
+        "level": "Beginner",
+        "yearsOfExperience": 1
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Igbo",
+        "proficiency": "Native"
+      }
+    ],
+    "experience": [
+      {
+        "company": "Startup Hub Lagos",
+        "role": "Intern",
+        "startDate": "2025-01",
+        "endDate": "2025-04",
+        "description": "Built landing pages and assisted with frontend components.",
+        "technologies": ["HTML", "CSS", "Tailwind", "JavaScript"],
+        "isCurrent": false
+      }
+    ],
+    "education": [
+      {
+        "institution": "Lagos State University",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Information Systems",
+        "startYear": 2021,
+        "endYear": 2025
+      }
+    ],
+    "projects": [
+      {
+        "name": "Portfolio Site",
+        "description": "Personal portfolio website showcasing projects.",
+        "technologies": ["Next.js", "Tailwind CSS"],
+        "role": "Developer",
+        "startDate": "2024-10",
+        "endDate": "2024-11"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/john-okafor"
+    },
+    "_id": "e147ad0369cf258be147ad03"
+  },
+  {
+    "firstName": "Elena",
+    "lastName": "Mwangi",
+    "email": "elena.mwangi@example.com",
+    "headline": "Backend Developer | Node.js & PostgreSQL",
+    "bio": "Backend specialist with strong foundation in RESTful API design and database optimization.",
+    "location": "Nairobi, Kenya",
+    "skills": [
+      {
+        "name": "Node.js",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "PostgreSQL",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Express.js",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Docker",
+        "level": "Beginner",
+        "yearsOfExperience": 1
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Swahili",
+        "proficiency": "Native"
+      }
+    ],
+    "experience": [
+      {
+        "company": "Nairobi Tech Hub",
+        "role": "Backend Developer",
+        "startDate": "2023-03",
+        "endDate": "Present",
+        "description": "Developed APIs for fintech applications serving 50K users.",
+        "technologies": ["Node.js", "Express", "PostgreSQL", "Redis"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Kenyatta University",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Science",
+        "startYear": 2019,
+        "endYear": 2023
+      }
+    ],
+    "projects": [
+      {
+        "name": "Payment Gateway API",
+        "description": "RESTful API for processing mobile money transactions.",
+        "technologies": ["Node.js", "Express", "PostgreSQL"],
+        "role": "Backend Developer",
+        "startDate": "2024-01",
+        "endDate": "2024-06"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/elena-mwangi",
+      "github": "https://github.com/elena-dev"
+    },
+    "_id": "58be147ad0369cf258be147a"
+  },
+  {
+    "firstName": "Marcus",
+    "lastName": "Johnson",
+    "email": "marcus.johnson@example.com",
+    "headline": "DevOps Engineer | Terraform & AWS Expert",
+    "bio": "Infrastructure as Code specialist with expertise in cloud architecture and CI/CD pipelines.",
+    "location": "San Francisco, USA",
+    "skills": [
+      {
+        "name": "Terraform",
+        "level": "Expert",
+        "yearsOfExperience": 6
+      },
+      {
+        "name": "AWS",
+        "level": "Expert",
+        "yearsOfExperience": 7
+      },
+      {
+        "name": "Kubernetes",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "Jenkins",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Native"
+      }
+    ],
+    "experience": [
+      {
+        "company": "CloudScale Inc",
+        "role": "Senior DevOps Engineer",
+        "startDate": "2019-08",
+        "endDate": "Present",
+        "description": "Architected multi-region cloud infrastructure reducing costs by 40%.",
+        "technologies": ["AWS", "Terraform", "Kubernetes", "Ansible"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "University of California Berkeley",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Engineering",
+        "startYear": 2011,
+        "endYear": 2015
+      }
+    ],
+    "certifications": [
+      {
+        "name": "AWS Solutions Architect Professional",
+        "issuer": "AWS",
+        "issueDate": "2021-06"
+      },
+      {
+        "name": "CKA Certified Kubernetes Administrator",
+        "issuer": "CNCF",
+        "issueDate": "2020-11"
+      }
+    ],
+    "projects": [
+      {
+        "name": "Cloud Migration",
+        "description": "Migrated on-premise infrastructure to AWS for a Fortune 500 company.",
+        "technologies": ["AWS", "Terraform", "Kubernetes"],
+        "role": "Lead DevOps",
+        "startDate": "2020-01",
+        "endDate": "2021-06"
+      }
+    ],
+    "availability": {
+      "status": "Open to Opportunities",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/marcus-j-devops",
+      "github": "https://github.com/marcus-j"
+    },
+    "_id": "cf258be147ad0369cf258be1"
+  },
+  {
+    "firstName": "Sophie",
+    "lastName": "Mueller",
+    "email": "sophie.mueller@example.com",
+    "headline": "UI/UX Designer | Figma & Design Systems",
+    "bio": "User-centered designer creating intuitive and beautiful digital experiences.",
+    "location": "Berlin, Germany",
+    "skills": [
+      {
+        "name": "Figma",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "UI Design",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "UX Research",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Adobe XD",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      }
+    ],
+    "languages": [
+      {
+        "name": "German",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      }
+    ],
+    "experience": [
+      {
+        "company": "DesignStudio Berlin",
+        "role": "Senior UX Designer",
+        "startDate": "2021-02",
+        "endDate": "Present",
+        "description": "Led design for B2B SaaS products with 100K+ users.",
+        "technologies": ["Figma", "Sketch", "Principle"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Berlin University of the Arts",
+        "degree": "Masters",
+        "fieldOfStudy": "Design",
+        "startYear": 2017,
+        "endYear": 2019
+      }
+    ],
+    "projects": [
+      {
+        "name": "E-Commerce Redesign",
+        "description": "Complete redesign of shopping experience increasing conversions by 25%.",
+        "technologies": ["Figma", "UserTesting"],
+        "role": "Lead Designer",
+        "startDate": "2022-06",
+        "endDate": "2023-02"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/sophie-mueller",
+      "dribbble": "https://dribbble.com/sophiemueller"
+    },
+    "_id": "369cf258be147ad0369cf258"
+  },
+  {
+    "firstName": "Kwame",
+    "lastName": "Asante",
+    "email": "kwame.asante@example.com",
+    "headline": "Data Analyst | SQL & Visualization",
+    "bio": "Transforming raw data into actionable business insights.",
+    "location": "Accra, Ghana",
+    "skills": [
+      {
+        "name": "SQL",
+        "level": "Beginner",
+        "yearsOfExperience": 2
+      },
+      {
+        "name": "Excel",
+        "level": "Advanced",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Tableau",
+        "level": "Intermediate",
+        "yearsOfExperience": 2
+      },
+      {
+        "name": "Python",
+        "level": "Beginner",
+        "yearsOfExperience": 1
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Twi",
+        "proficiency": "Native"
+      }
+    ],
+    "experience": [
+      {
+        "company": "Ghana Analytics Ltd",
+        "role": "Junior Data Analyst",
+        "startDate": "2024-01",
+        "endDate": "Present",
+        "description": "Created dashboards and reports for executive leadership.",
+        "technologies": ["SQL", "Tableau", "Excel"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "University of Ghana",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Statistics",
+        "startYear": 2020,
+        "endYear": 2024
+      }
+    ],
+    "projects": [
+      {
+        "name": "Sales Dashboard",
+        "description": "Interactive dashboard tracking sales performance across regions.",
+        "technologies": ["Tableau", "SQL"],
+        "role": "Analyst",
+        "startDate": "2024-03",
+        "endDate": "2024-08"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Full-time"
+    },
+    "_id": "ad0369cf258be147ad0369cf"
+  },
+  {
+    "firstName": "Carlos",
+    "lastName": "Silva",
+    "email": "carlos.silva@example.com",
+    "headline": "Mobile Developer | Flutter & Dart",
+    "bio": "Building cross-platform mobile apps with beautiful UIs.",
+    "location": "São Paulo, Brazil",
+    "skills": [
+      {
+        "name": "Flutter",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Dart",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Firebase",
+        "level": "Intermediate",
+        "yearsOfExperience": 2
+      },
+      {
+        "name": "Android",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      }
+    ],
+    "languages": [
+      {
+        "name": "Portuguese",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Spanish",
+        "proficiency": "Conversational"
+      }
+    ],
+    "experience": [
+      {
+        "company": "AppLab Brazil",
+        "role": "Mobile Developer",
+        "startDate": "2022-05",
+        "endDate": "Present",
+        "description": "Developed fintech mobile app with 500K+ downloads.",
+        "technologies": ["Flutter", "Firebase", "REST APIs"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Universidade de São Paulo",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Science",
+        "startYear": 2017,
+        "endYear": 2021
+      }
+    ],
+    "projects": [
+      {
+        "name": " delivery App",
+        "description": "Food delivery application with real-time tracking.",
+        "technologies": ["Flutter", "Firebase", "Google Maps"],
+        "role": "Lead Developer",
+        "startDate": "2023-01",
+        "endDate": "2023-08"
+      }
+    ],
+    "availability": {
+      "status": "Open to Opportunities",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/carlos-silva",
+      "github": "https://github.com/carlos-dev"
+    },
+    "_id": "147ad0369cf258be147ad036"
+  },
+  {
+    "firstName": "Priya",
+    "lastName": "Sharma",
+    "email": "priya.sharma@example.com",
+    "headline": "Cybersecurity Specialist | PenTesting",
+    "bio": "Ethical hacker focused on securing organizations against cyber threats.",
+    "location": "Bangalore, India",
+    "skills": [
+      {
+        "name": "Penetration Testing",
+        "level": "Expert",
+        "yearsOfExperience": 6
+      },
+      {
+        "name": "Network Security",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "Kali Linux",
+        "level": "Expert",
+        "yearsOfExperience": 6
+      },
+      {
+        "name": "Metasploit",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Hindi",
+        "proficiency": "Native"
+      }
+    ],
+    "experience": [
+      {
+        "company": "SecureTech India",
+        "role": "Security Consultant",
+        "startDate": "2020-03",
+        "endDate": "Present",
+        "description": "Conducted security audits for Fortune 500 companies.",
+        "technologies": ["Kali Linux", "Burp Suite", "Wireshark"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "IIT Delhi",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Science",
+        "startYear": 2013,
+        "endYear": 2017
+      }
+    ],
+    "certifications": [
+      {
+        "name": "OSCP Certified",
+        "issuer": "Offensive Security",
+        "issueDate": "2019-08"
+      },
+      {
+        "name": "CEH Certified",
+        "issuer": "EC-Council",
+        "issueDate": "2018-05"
+      }
+    ],
+    "projects": [
+      {
+        "name": "Bank Security Audit",
+        "description": "Comprehensive security assessment for major Indian bank.",
+        "technologies": ["Kali Linux", "Nessus"],
+        "role": "Lead Auditor",
+        "startDate": "2021-06",
+        "endDate": "2021-09"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Contract"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/priya-sharma-sec"
+    },
+    "_id": "8be147ad0369cf258be147ad"
+  },
+  {
+    "firstName": "Oliver",
+    "lastName": "Brown",
+    "email": "oliver.brown@example.com",
+    "headline": "QA Engineer | Selenium & Automation",
+    "bio": "Ensuring software quality through automated testing frameworks.",
+    "location": "London, UK",
+    "skills": [
+      {
+        "name": "Selenium",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "Java",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "TestNG",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "Jira",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Native"
+      }
+    ],
+    "experience": [
+      {
+        "company": "QualityFirst Ltd",
+        "role": "Senior QA Engineer",
+        "startDate": "2021-01",
+        "endDate": "Present",
+        "description": "Built automation framework reducing test time by 60%.",
+        "technologies": ["Selenium", "Java", "TestNG", "Jenkins"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "University of Manchester",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Software Engineering",
+        "startYear": 2016,
+        "endYear": 2020
+      }
+    ],
+    "projects": [
+      {
+        "name": "Automation Framework",
+        "description": "Created reusable Selenium framework for regression testing.",
+        "technologies": ["Selenium", "Java", "Maven"],
+        "role": "QA Lead",
+        "startDate": "2022-01",
+        "endDate": "2022-07"
+      }
+    ],
+    "availability": {
+      "status": "Open to Opportunities",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/oliver-brown-qa"
+    },
+    "_id": "f258be147ad0369cf258be14"
+  },
+  {
+    "firstName": "Chen",
+    "lastName": "Wei",
+    "email": "chen.wei@example.com",
+    "headline": "Backend Developer | Python & Django",
+    "bio": "Building robust backend systems with Python and Django.",
+    "location": "Johannesburg, South Africa",
+    "skills": [
+      {
+        "name": "Python",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Django",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "REST APIs",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "PostgreSQL",
+        "level": "Intermediate",
+        "yearsOfExperience": 2
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Mandarin",
+        "proficiency": "Native"
+      },
+      {
+        "name": "Zulu",
+        "proficiency": "Basic"
+      }
+    ],
+    "experience": [
+      {
+        "company": "TechCape Solutions",
+        "role": "Backend Developer",
+        "startDate": "2022-09",
+        "endDate": "Present",
+        "description": "Developed APIs for e-commerce platforms.",
+        "technologies": ["Python", "Django", "PostgreSQL", "Docker"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "University of Cape Town",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Science",
+        "startYear": 2018,
+        "endYear": 2022
+      }
+    ],
+    "projects": [
+      {
+        "name": "E-Commerce API",
+        "description": "RESTful API for online retail platform.",
+        "technologies": ["Django", "REST Framework", "PostgreSQL"],
+        "role": "Backend Developer",
+        "startDate": "2023-02",
+        "endDate": "2023-07"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/chen-wei",
+      "github": "https://github.com/chenwei-dev"
+    },
+    "_id": "69cf258be147ad0369cf258b"
+  },
+  {
+    "firstName": "Ahmed",
+    "lastName": "Hassan",
+    "email": "ahmed.hassan@example.com",
+    "headline": "Fullstack Developer | MERN Stack",
+    "bio": "Building end-to-end web applications with modern JavaScript technologies.",
+    "location": "Cairo, Egypt",
+    "skills": [
+      {
+        "name": "React",
+        "level": "Beginner",
+        "yearsOfExperience": 2
+      },
+      {
+        "name": "Node.js",
+        "level": "Beginner",
+        "yearsOfExperience": 1
+      },
+      {
+        "name": "MongoDB",
+        "level": "Beginner",
+        "yearsOfExperience": 1
+      },
+      {
+        "name": "Express.js",
+        "level": "Beginner",
+        "yearsOfExperience": 1
+      }
+    ],
+    "languages": [
+      {
+        "name": "Arabic",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      }
+    ],
+    "experience": [
+      {
+        "company": "Cairo Tech Startup",
+        "role": "Junior Developer",
+        "startDate": "2024-06",
+        "endDate": "Present",
+        "description": "Built frontend components and REST endpoints.",
+        "technologies": ["React", "Node.js", "MongoDB"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Cairo University",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Science",
+        "startYear": 2020,
+        "endYear": 2024
+      }
+    ],
+    "projects": [
+      {
+        "name": "Task Manager App",
+        "description": "Fullstack task management application.",
+        "technologies": ["React", "Node.js", "MongoDB"],
+        "role": "Developer",
+        "startDate": "2024-01",
+        "endDate": "2024-04"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/ahmed-hassan",
+      "github": "https://github.com/ahmedh"
+    },
+    "_id": "d0369cf258be147ad0369cf2"
+  },
+  {
+    "firstName": "Fatima",
+    "lastName": "Al-Rashid",
+    "email": "fatima.alrashid@example.com",
+    "headline": "Cloud Architect | Azure Expert",
+    "bio": "Designing scalable cloud solutions for enterprise applications.",
+    "location": "Toronto, Canada",
+    "skills": [
+      {
+        "name": "Azure",
+        "level": "Expert",
+        "yearsOfExperience": 7
+      },
+      {
+        "name": "Cloud Architecture",
+        "level": "Expert",
+        "yearsOfExperience": 6
+      },
+      {
+        "name": "Terraform",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "DevOps",
+        "level": "Advanced",
+        "yearsOfExperience": 6
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Arabic",
+        "proficiency": "Native"
+      }
+    ],
+    "experience": [
+      {
+        "company": "CloudTech Canada",
+        "role": "Cloud Architect",
+        "startDate": "2019-04",
+        "endDate": "Present",
+        "description": "Designed cloud Solutions for 50+ enterprise clients.",
+        "technologies": ["Azure", "Terraform", "AWS", "GCP"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "University of Toronto",
+        "degree": "Masters",
+        "fieldOfStudy": "Cloud Computing",
+        "startYear": 2017,
+        "endYear": 2019
+      }
+    ],
+    "certifications": [
+      {
+        "name": "Azure Solutions Architect Expert",
+        "issuer": "Microsoft",
+        "issueDate": "2020-03"
+      }
+    ],
+    "projects": [
+      {
+        "name": "Enterprise Cloud Migration",
+        "description": "Led migration of 200+ servers to Azure.",
+        "technologies": ["Azure", "Terraform"],
+        "role": "Lead Architect",
+        "startDate": "2021-01",
+        "endDate": "2022-06"
+      }
+    ],
+    "availability": {
+      "status": "Open to Opportunities",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/fatima-alrashid"
+    },
+    "_id": "47ad0369cf258be147ad0369"
+  },
+  {
+    "firstName": "Ravi",
+    "lastName": "Patel",
+    "email": "ravi.patel@example.com",
+    "headline": "Blockchain Developer | Solidity",
+    "bio": "Building decentralized applications and smart contracts.",
+    "location": "Tallinn, Estonia",
+    "skills": [
+      {
+        "name": "Solidity",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "Ethereum",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "Web3.js",
+        "level": "Advanced",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Smart Contracts",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Hindi",
+        "proficiency": "Native"
+      }
+    ],
+    "experience": [
+      {
+        "company": "BlockFin Labs",
+        "role": "Blockchain Developer",
+        "startDate": "2022-01",
+        "endDate": "Present",
+        "description": "Developed DeFi protocols with $100M+ TVL.",
+        "technologies": ["Solidity", "Ethereum", "Hardhat"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Tallinn University of Technology",
+        "degree": "Masters",
+        "fieldOfStudy": "Blockchain Technology",
+        "startYear": 2020,
+        "endYear": 2022
+      }
+    ],
+    "projects": [
+      {
+        "name": "DeFi Protocol",
+        "description": "Decentralized exchange protocol with automated market making.",
+        "technologies": ["Solidity", "Ethereum", "Web3"],
+        "role": "Lead Developer",
+        "startDate": "2022-06",
+        "endDate": "2023-03"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Contract"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/ravi-patel",
+      "github": "https://github.com/ravi-blockchain"
+    },
+    "_id": "be147ad0369cf258be147ad0"
+  },
+  {
+    "firstName": "Michael",
+    "lastName": "Thompson",
+    "email": "michael.thompson@example.com",
+    "headline": "Product Manager | Agile & Strategy",
+    "bio": "Driving product strategy and delivering user-centric solutions.",
+    "location": "New York, USA",
+    "skills": [
+      {
+        "name": "Product Management",
+        "level": "Expert",
+        "yearsOfExperience": 8
+      },
+      {
+        "name": "Agile",
+        "level": "Expert",
+        "yearsOfExperience": 7
+      },
+      {
+        "name": "Jira",
+        "level": "Expert",
+        "yearsOfExperience": 6
+      },
+      {
+        "name": "Roadmap Planning",
+        "level": "Expert",
+        "yearsOfExperience": 6
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Native"
+      }
+    ],
+    "experience": [
+      {
+        "company": "TechCorp USA",
+        "role": "Senior Product Manager",
+        "startDate": "2019-06",
+        "endDate": "Present",
+        "description": "Led product roadmap for B2B SaaS platform with $50M ARR.",
+        "technologies": ["Jira", "Confluence", "Figma"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Stanford University",
+        "degree": "MBA",
+        "fieldOfStudy": "Business",
+        "startYear": 2013,
+        "endYear": 2015
+      }
+    ],
+    "projects": [
+      {
+        "name": "SaaS Platform Launch",
+        "description": "Launched B2B platform from 0 to $50M ARR.",
+        "technologies": ["Jira", "Mixpanel"],
+        "role": "Product Lead",
+        "startDate": "2020-01",
+        "endDate": "2023-12"
+      }
+    ],
+    "availability": {
+      "status": "Open to Opportunities",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/michael-thompson-pm"
+    },
+    "_id": "258be147ad0369cf258be147"
+  },
+  {
+    "firstName": "Yuki",
+    "lastName": "Tanaka",
+    "email": "yuki.tanaka@example.com",
+    "headline": "Embedded Systems Engineer | C++",
+    "bio": "Developing firmware for IoT devices and embedded systems.",
+    "location": "Tokyo, Japan",
+    "skills": [
+      {
+        "name": "C++",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "Embedded Systems",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "RTOS",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Arduino",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      }
+    ],
+    "languages": [
+      {
+        "name": "Japanese",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      }
+    ],
+    "experience": [
+      {
+        "company": "IoT Innovations Japan",
+        "role": "Embedded Engineer",
+        "startDate": "2021-04",
+        "endDate": "Present",
+        "description": "Developed firmware for smart home devices.",
+        "technologies": ["C++", "RTOS", "ESP32"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Tokyo Institute of Technology",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Electrical Engineering",
+        "startYear": 2016,
+        "endYear": 2020
+      }
+    ],
+    "projects": [
+      {
+        "name": "Smart Home Hub",
+        "description": "IoT hub connecting 100+ smart devices.",
+        "technologies": ["C++", "ESP32", "MQTT"],
+        "role": "Firmware Lead",
+        "startDate": "2022-01",
+        "endDate": "2023-01"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/yuki-tanaka",
+      "github": "https://github.com/yuki-embedded"
+    },
+    "_id": "9cf258be147ad0369cf258be"
+  },
+  {
+    "firstName": "Lucas",
+    "lastName": "Martin",
+    "email": "lucas.martin@example.com",
+    "headline": "Game Developer | Unity & C#",
+    "bio": "Creating immersive gaming experiences with Unity.",
+    "location": "Lyon, France",
+    "skills": [
+      {
+        "name": "Unity",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "C#",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Game Design",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "3D Modeling",
+        "level": "Beginner",
+        "yearsOfExperience": 2
+      }
+    ],
+    "languages": [
+      {
+        "name": "French",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      }
+    ],
+    "experience": [
+      {
+        "company": "GameForge Studio",
+        "role": "Game Developer",
+        "startDate": "2023-02",
+        "endDate": "Present",
+        "description": "Developing mobile games with 1M+ downloads.",
+        "technologies": ["Unity", "C#", "Blender"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Gobelins Paris",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Game Development",
+        "startYear": 2019,
+        "endYear": 2023
+      }
+    ],
+    "projects": [
+      {
+        "name": "Adventure Quest",
+        "description": "Mobile adventure game with procedural generation.",
+        "technologies": ["Unity", "C#"],
+        "role": "Lead Developer",
+        "startDate": "2023-05",
+        "endDate": "2024-02"
+      }
+    ],
+    "availability": {
+      "status": "Open to Opportunities",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/lucas-martin-game",
+      "github": "https://github.com/lucasgames"
+    },
+    "_id": "0369cf258be147ada369cf25"
+  },
+  {
+    "firstName": "Emily",
+    "lastName": "Wong",
+    "email": "emily.wong@example.com",
+    "headline": "Marketing Technologist | SEO & Analytics",
+    "bio": "Data-driven marketer with technical SEO expertise.",
+    "location": "Sydney, Australia",
+    "skills": [
+      {
+        "name": "SEO",
+        "level": "Beginner",
+        "yearsOfExperience": 2
+      },
+      {
+        "name": "Google Analytics",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Python",
+        "level": "Beginner",
+        "yearsOfExperience": 1
+      },
+      {
+        "name": "Data Analysis",
+        "level": "Intermediate",
+        "yearsOfExperience": 2
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Native"
+      },
+      {
+        "name": "Mandarin",
+        "proficiency": "Conversational"
+      }
+    ],
+    "experience": [
+      {
+        "company": "Digital Growth Agency",
+        "role": "Marketing Technologist",
+        "startDate": "2024-03",
+        "endDate": "Present",
+        "description": "Implementing SEO strategies for B2B clients.",
+        "technologies": ["Google Analytics", "Python", "SQL"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "University of Sydney",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Marketing",
+        "startYear": 2020,
+        "endYear": 2024
+      }
+    ],
+    "projects": [
+      {
+        "name": "SEO Performance Dashboard",
+        "description": "Automated dashboard tracking keyword rankings.",
+        "technologies": ["Python", "Google Search Console"],
+        "role": "Analyst",
+        "startDate": "2024-06",
+        "endDate": "2024-09"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/emily-wong"
+    },
+    "_id": "7ad0369cf258be147ad0369c"
+  },
+  {
+    "firstName": "Diego",
+    "lastName": "Rodriguez",
+    "email": "diego.rodriguez@example.com",
+    "headline": "Ruby on Rails Developer",
+    "bio": "Building robust web applications with Rails and Ruby.",
+    "location": "Buenos Aires, Argentina",
+    "skills": [
+      {
+        "name": "Ruby",
+        "level": "Expert",
+        "yearsOfExperience": 6
+      },
+      {
+        "name": "Ruby on Rails",
+        "level": "Expert",
+        "yearsOfExperience": 6
+      },
+      {
+        "name": "PostgreSQL",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "RSpec",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      }
+    ],
+    "languages": [
+      {
+        "name": "Spanish",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      }
+    ],
+    "experience": [
+      {
+        "company": "Rails Factory",
+        "role": "Senior Ruby Developer",
+        "startDate": "2020-08",
+        "endDate": "Present",
+        "description": "Built SaaS platforms serving 10K+ users.",
+        "technologies": ["Ruby", "Rails", "PostgreSQL", "Redis"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Universidad de Buenos Aires",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Science",
+        "startYear": 2013,
+        "endYear": 2018
+      }
+    ],
+    "projects": [
+      {
+        "name": "Project Management Tool",
+        "description": "Agile project management SaaS platform.",
+        "technologies": ["Rails", "React", "PostgreSQL"],
+        "role": "Lead Developer",
+        "startDate": "2021-01",
+        "endDate": "2022-06"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Contract"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/diego-rodriguez",
+      "github": "https://github.com/diego-rails"
+    },
+    "_id": "e147ad0369cf258be147ad03"
+  },
+  {
+    "firstName": "Tadesse",
+    "lastName": "Bekele",
+    "email": "tadesse.bekele@example.com",
+    "headline": "Android Developer | Kotlin",
+    "bio": "Building native Android applications with modern architecture.",
+    "location": "Addis Ababa, Ethiopia",
+    "skills": [
+      {
+        "name": "Kotlin",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "Android",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "Jetpack Compose",
+        "level": "Intermediate",
+        "yearsOfExperience": 2
+      },
+      {
+        "name": "Firebase",
+        "level": "Advanced",
+        "yearsOfExperience": 3
+      }
+    ],
+    "languages": [
+      {
+        "name": "Amharic",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      }
+    ],
+    "experience": [
+      {
+        "company": "EthioTech Apps",
+        "role": "Android Developer",
+        "startDate": "2021-09",
+        "endDate": "Present",
+        "description": "Developed apps with 100K+ downloads.",
+        "technologies": ["Kotlin", "Jetpack Compose", "Firebase"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Addis Ababa University",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Engineering",
+        "startYear": 2016,
+        "endYear": 2020
+      }
+    ],
+    "projects": [
+      {
+        "name": "Mobile Banking App",
+        "description": "Secure banking application for unbanked populations.",
+        "technologies": ["Kotlin", "Jetpack Compose", "Firebase"],
+        "role": "Lead Developer",
+        "startDate": "2022-03",
+        "endDate": "2023-02"
+      }
+    ],
+    "availability": {
+      "status": "Open to Opportunities",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/tadesse-bekele",
+      "github": "https://github.com/tadesse"
+    },
+    "_id": "58be147ad0369cf258be147a"
+  },
+  {
+    "firstName": "Sofia",
+    "lastName": "Garcia",
+    "email": "sofia.garcia@example.com",
+    "headline": "iOS Developer | Swift",
+    "bio": "Creating elegant iOS applications with SwiftUI.",
+    "location": "Mexico City, Mexico",
+    "skills": [
+      {
+        "name": "Swift",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "iOS",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "SwiftUI",
+        "level": "Intermediate",
+        "yearsOfExperience": 2
+      },
+      {
+        "name": "Xcode",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      }
+    ],
+    "languages": [
+      {
+        "name": "Spanish",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      }
+    ],
+    "experience": [
+      {
+        "company": "AppleDev Mexico",
+        "role": "iOS Developer",
+        "startDate": "2023-01",
+        "endDate": "Present",
+        "description": "Building consumer iOS apps for Latin American market.",
+        "technologies": ["Swift", "SwiftUI", "Combine"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Tecnológico de Monterrey",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Science",
+        "startYear": 2018,
+        "endYear": 2022
+      }
+    ],
+    "projects": [
+      {
+        "name": "Health Tracker App",
+        "description": "Fitness tracking app with health API integration.",
+        "technologies": ["Swift", "SwiftUI", "HealthKit"],
+        "role": "Lead Developer",
+        "startDate": "2023-04",
+        "endDate": "2024-01"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/sofia-garcia-ios",
+      "github": "https://github.com/sofia-ios"
+    },
+    "_id": "cf258be147ad0369cf258be1"
+  },
+  {
+    "firstName": "Omar",
+    "lastName": "Hussein",
+    "email": "omar.hussein@example.com",
+    "headline": "AI Engineer | TensorFlow & Deep Learning",
+    "bio": "Designing and deploying production ML models.",
+    "location": "Dubai, UAE",
+    "skills": [
+      {
+        "name": "TensorFlow",
+        "level": "Expert",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "Deep Learning",
+        "level": "Expert",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "Computer Vision",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "Python",
+        "level": "Expert",
+        "yearsOfExperience": 6
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Arabic",
+        "proficiency": "Native"
+      }
+    ],
+    "experience": [
+      {
+        "company": "AI Tech Gulf",
+        "role": "Senior AI Engineer",
+        "startDate": "2020-05",
+        "endDate": "Present",
+        "description": "Deployed computer vision models for smart city projects.",
+        "technologies": ["TensorFlow", "Python", "Keras", "OpenCV"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Khalifa University",
+        "degree": "Masters",
+        "fieldOfStudy": "Artificial Intelligence",
+        "startYear": 2018,
+        "endYear": 2020
+      }
+    ],
+    "certifications": [
+      {
+        "name": "TensorFlow Developer Certificate",
+        "issuer": "Google",
+        "issueDate": "2021-02"
+      }
+    ],
+    "projects": [
+      {
+        "name": "Smart City Vision",
+        "description": "Computer vision system for traffic management.",
+        "technologies": ["TensorFlow", "OpenCV", "Python"],
+        "role": "Lead AI Engineer",
+        "startDate": "2021-06",
+        "endDate": "2022-12"
+      }
+    ],
+    "availability": {
+      "status": "Open to Opportunities",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/omar-hussein-ai",
+      "github": "https://github.com/omar-ai"
+    },
+    "_id": "369cf258be147ad0369cf258"
+  },
+  {
+    "firstName": "Nina",
+    "lastName": "Petrova",
+    "email": "nina.petrova@example.com",
+    "headline": "Data Scientist | R & Machine Learning",
+    "bio": "Extracting insights from complex datasets using statistical modeling.",
+    "location": "Moscow, Russia",
+    "skills": [
+      {
+        "name": "R",
+        "level": "Expert",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "Machine Learning",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "Statistics",
+        "level": "Expert",
+        "yearsOfExperience": 6
+      },
+      {
+        "name": "Python",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      }
+    ],
+    "languages": [
+      {
+        "name": "Russian",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      }
+    ],
+    "experience": [
+      {
+        "company": "DataInsights Russia",
+        "role": "Data Scientist",
+        "startDate": "2021-03",
+        "endDate": "Present",
+        "description": "Built predictive models for retail analytics.",
+        "technologies": ["R", "Python", "scikit-learn"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Moscow State University",
+        "degree": "Masters",
+        "fieldOfStudy": "Statistics",
+        "startYear": 2017,
+        "endYear": 2019
+      }
+    ],
+    "projects": [
+      {
+        "name": "Customer Churn Prediction",
+        "description": "ML model reducing churn by 15%.",
+        "technologies": ["R", "XGBoost"],
+        "role": "Data Scientist",
+        "startDate": "2022-01",
+        "endDate": "2022-08"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/nina-petrova"
+    },
+    "_id": "ad0369cf258be147ad0369cf"
+  },
+  {
+    "firstName": "Jakob",
+    "lastName": "Andersen",
+    "email": "jakob.andersen@example.com",
+    "headline": "Rust Developer | Systems Programming",
+    "bio": "Building high-performance systems with Rust.",
+    "location": "Copenhagen, Denmark",
+    "skills": [
+      {
+        "name": "Rust",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "Systems Programming",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "WebAssembly",
+        "level": "Intermediate",
+        "yearsOfExperience": 2
+      },
+      {
+        "name": "C",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      }
+    ],
+    "languages": [
+      {
+        "name": "Danish",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      }
+    ],
+    "experience": [
+      {
+        "company": "Nordic Systems",
+        "role": "Rust Developer",
+        "startDate": "2022-07",
+        "endDate": "Present",
+        "description": "Developing high-performance networking tools.",
+        "technologies": ["Rust", "Tokio", "WebAssembly"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Technical University of Denmark",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Science",
+        "startYear": 2017,
+        "endYear": 2021
+      }
+    ],
+    "projects": [
+      {
+        "name": "Wasm HTTP Server",
+        "description": "High-performance web server in WebAssembly.",
+        "technologies": ["Rust", "WebAssembly"],
+        "role": "Lead Developer",
+        "startDate": "2023-02",
+        "endDate": "2023-11"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Contract"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/jakob-andersen",
+      "github": "https://github.com/jakob-rust"
+    },
+    "_id": "147ad0369cf258be147ad036"
+  },
+  {
+    "firstName": "Anita",
+    "lastName": "Nair",
+    "email": "anita.nair@example.com",
+    "headline": "Technical Writer | Documentation",
+    "bio": "Creating clear and comprehensive technical documentation.",
+    "location": "Kochi, India",
+    "skills": [
+      {
+        "name": "Technical Writing",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "Markdown",
+        "level": "Expert",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "API Documentation",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "Git",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Malayalam",
+        "proficiency": "Native"
+      }
+    ],
+    "experience": [
+      {
+        "company": "DocuTech India",
+        "role": "Senior Technical Writer",
+        "startDate": "2020-04",
+        "endDate": "Present",
+        "description": "Creating documentation for enterprise software.",
+        "technologies": ["Markdown", "Docusaurus", "Swagger"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Cochin University",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Science",
+        "startYear": 2013,
+        "endYear": 2017
+      }
+    ],
+    "projects": [
+      {
+        "name": "API Documentation Portal",
+        "description": "Comprehensive developer docs portal.",
+        "technologies": ["Docusaurus", "OpenAPI"],
+        "role": "Lead Writer",
+        "startDate": "2021-08",
+        "endDate": "2022-04"
+      }
+    ],
+    "availability": {
+      "status": "Open to Opportunities",
+      "type": "Part-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/anita-nair"
+    },
+    "_id": "8be147ad0369cf258be147ad"
+  },
+  {
+    "firstName": "Hiroshi",
+    "lastName": "Yamamoto",
+    "email": "hiroshi.yamamoto@example.com",
+    "headline": "Database Administrator | PostgreSQL & DBA",
+    "bio": "Ensuring database performance, security, and reliability.",
+    "location": "Osaka, Japan",
+    "skills": [
+      {
+        "name": "PostgreSQL",
+        "level": "Expert",
+        "yearsOfExperience": 7
+      },
+      {
+        "name": "Database Administration",
+        "level": "Expert",
+        "yearsOfExperience": 8
+      },
+      {
+        "name": "MySQL",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "Backup & Recovery",
+        "level": "Expert",
+        "yearsOfExperience": 6
+      }
+    ],
+    "languages": [
+      {
+        "name": "Japanese",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Conversational"
+      }
+    ],
+    "experience": [
+      {
+        "company": "Japan Database Services",
+        "role": "Senior DBA",
+        "startDate": "2018-06",
+        "endDate": "Present",
+        "description": "Managing mission-critical databases for financial sector.",
+        "technologies": ["PostgreSQL", "MySQL", "Oracle"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Osaka University",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Information Systems",
+        "startYear": 2009,
+        "endYear": 2013
+      }
+    ],
+    "certifications": [
+      {
+        "name": "PostgreSQL Professional",
+        "issuer": "PostgreSQL Global",
+        "issueDate": "2020-09"
+      }
+    ],
+    "projects": [
+      {
+        "name": "Database Migration",
+        "description": "Migrated legacy DB to PostgreSQL with zero downtime.",
+        "technologies": ["PostgreSQL"],
+        "role": "Lead DBA",
+        "startDate": "2021-01",
+        "endDate": "2021-12"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Contract"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/hiroshi-yamamoto-dba"
+    },
+    "_id": "f258be147ad0369cf258be14"
+  },
+  {
+    "firstName": "Zoe",
+    "lastName": "Mitchell",
+    "email": "zoe.mitchell@example.com",
+    "headline": "Site Reliability Engineer | SRE",
+    "bio": "Building reliable and scalable infrastructure systems.",
+    "location": "Seattle, USA",
+    "skills": [
+      {
+        "name": "SRE",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "Go",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Prometheus",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "Grafana",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": "Native"
+      }
+    ],
+    "experience": [
+      {
+        "company": "ReliableCloud Inc",
+        "role": "SRE Engineer",
+        "startDate": "2021-09",
+        "endDate": "Present",
+        "description": "Maintaining 99.99% uptime for cloud services.",
+        "technologies": ["Go", "Prometheus", "Grafana", "Kubernetes"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "University of Washington",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Science",
+        "startYear": 2015,
+        "endYear": 2019
+      }
+    ],
+    "projects": [
+      {
+        "name": "Observability Platform",
+        "description": "Built end-to-end monitoring and alerting system.",
+        "technologies": ["Prometheus", "Grafana", "Go"],
+        "role": "SRE Lead",
+        "startDate": "2022-03",
+        "endDate": "2023-01"
+      }
+    ],
+    "availability": {
+      "status": "Open to Opportunities",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/zoe-mitchell-sre",
+      "github": "https://github.com/zoe-sre"
+    },
+    "_id": "69cf258be147ad0369cf258b"
+  },
+  {
+    "firstName": "Luis",
+    "lastName": "Fernandez",
+    "email": "luis.fernandez@example.com",
+    "headline": "Vue.js Developer | Frontend Specialist",
+    "bio": "Creating reactive web applications with Vue 3 and modern tooling.",
+    "location": "Madrid, Spain",
+    "skills": [
+      {
+        "name": "Vue.js",
+        "level": "Advanced",
+        "yearsOfExperience": 4
+      },
+      {
+        "name": "JavaScript",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "TypeScript",
+        "level": "Intermediate",
+        "yearsOfExperience": 3
+      },
+      {
+        "name": "Nuxt.js",
+        "level": "Intermediate",
+        "yearsOfExperience": 2
+      }
+    ],
+    "languages": [
+      {
+        "name": "Spanish",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      }
+    ],
+    "experience": [
+      {
+        "company": "VueCraft Studios",
+        "role": "Frontend Developer",
+        "startDate": "2022-04",
+        "endDate": "Present",
+        "description": "Building interactive web applications.",
+        "technologies": ["Vue.js", "TypeScript", "Pinia"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Universidad Politécnica de Madrid",
+        "degree": "Bachelors",
+        "fieldOfStudy": "Computer Science",
+        "startYear": 2017,
+        "endYear": 2021
+      }
+    ],
+    "projects": [
+      {
+        "name": "E-Learning Platform",
+        "description": "Interactive learning platform with real-time collaboration.",
+        "technologies": ["Vue.js", "Nuxt.js", "Firebase"],
+        "role": "Frontend Lead",
+        "startDate": "2023-01",
+        "endDate": "2023-10"
+      }
+    ],
+    "availability": {
+      "status": "Available",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/luis-fernandez-vue",
+      "github": "https://github.com/luis-vue"
+    },
+    "_id": "d0369cf258be147ad0369cf2"
+  },
+  {
+    "firstName": "Amara",
+    "lastName": "Diallo",
+    "email": "amara.diallo@example.com",
+    "headline": "Head of Engineering | Leadership",
+    "bio": "Leading engineering teams to build impactful products.",
+    "location": "Dakar, Senegal",
+    "skills": [
+      {
+        "name": "Engineering Management",
+        "level": "Expert",
+        "yearsOfExperience": 8
+      },
+      {
+        "name": "Java",
+        "level": "Advanced",
+        "yearsOfExperience": 6
+      },
+      {
+        "name": "Spring Boot",
+        "level": "Advanced",
+        "yearsOfExperience": 5
+      },
+      {
+        "name": "Team Building",
+        "level": "Expert",
+        "yearsOfExperience": 6
+      }
+    ],
+    "languages": [
+      {
+        "name": "French",
+        "proficiency": "Fluent"
+      },
+      {
+        "name": "Wolof",
+        "proficiency": "Native"
+      },
+      {
+        "name": "English",
+        "proficiency": "Fluent"
+      }
+    ],
+    "experience": [
+      {
+        "company": "TechAfrica",
+        "role": "Head of Engineering",
+        "startDate": "2019-02",
+        "endDate": "Present",
+        "description": "Leading 30+ engineers buildingfintech solutions.",
+        "technologies": ["Java", "Spring Boot", "Kubernetes"],
+        "isCurrent": true
+      }
+    ],
+    "education": [
+      {
+        "institution": "Cheikh Anta Diop University",
+        "degree": "Masters",
+        "fieldOfStudy": "Computer Engineering",
+        "startYear": 2011,
+        "endYear": 2013
+      }
+    ],
+    "certifications": [
+      {
+        "name": "Certified Engineering Manager",
+        "issuer": "IEEE",
+        "issueDate": "2019-11"
+      }
+    ],
+    "projects": [
+      {
+        "name": "Mobile Money Platform",
+        "description": "Led team building payment platform serving 5M users.",
+        "technologies": ["Java", "Spring Boot"],
+        "role": "Engineering Lead",
+        "startDate": "2019-06",
+        "endDate": "2021-12"
+      }
+    ],
+    "availability": {
+      "status": "Open to Opportunities",
+      "type": "Full-time"
+    },
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/in/amara-diallo"
+    },
+    "_id": "47ad0369cf258be147ad0369"
+  }
+]

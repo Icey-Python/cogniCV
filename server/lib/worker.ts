@@ -2,7 +2,8 @@ import axios from "axios";
 import { Logger } from "borgen";
 import { getChannel, RabbitMQQueues } from "./rabbitmq";
 import { ParserService } from "../services/parser.service";
-import ExternalApplicant from "../models/applicant.model";
+import TalentProfile from "../models/talent.model";
+import Application from "../models/application.model";
 import amqp from "amqplib";
 
 const BATCH_SIZE = 5;
@@ -61,26 +62,61 @@ const processBatch = async () => {
     );
 
     const parsedProfiles = await ParserService.parseResumeBatch(buffers);
-    const updatedApplicantIds = new Set<string>();
+    const updatedTalentIds = new Set<string>();
 
     await Promise.all(
       parsedProfiles.map(async (profile: any) => {
         const originalData = taskData[profile.candidateIndex];
         if (!originalData) return;
-        updatedApplicantIds.add(String(originalData.applicantId));
+        updatedTalentIds.add(String(originalData.talentId));
 
-        await ExternalApplicant.findByIdAndUpdate(originalData.applicantId, {
-          parsedProfile: profile,
-          parsingStatus: "success",
-        });
+        // 1. Check if another talent profile exists with this email
+        const existingTalent = await TalentProfile.findOne({ email: profile.email });
+
+        if (existingTalent && String(existingTalent._id) !== String(originalData.talentId)) {
+          Logger.info({ message: `Deduplicating talent: Found existing profile for ${profile.email}` });
+
+          // Update existing talent with latest parsed data
+          Object.assign(existingTalent, profile, { parsingStatus: "success" });
+          await existingTalent.save();
+
+          // Check if an application already exists for this existing talent and job
+          const duplicateApplication = await Application.findOne({
+            jobId: originalData.jobId,
+            profileId: existingTalent._id,
+          });
+
+          if (duplicateApplication) {
+            // Already applied! Just delete the temporary application and placeholder talent
+            await Application.findOneAndDelete({
+              jobId: originalData.jobId,
+              profileId: originalData.talentId,
+            });
+          } else {
+            // New application for existing talent: Update the temporary application link
+            await Application.findOneAndUpdate(
+              { jobId: originalData.jobId, profileId: originalData.talentId },
+              { profileId: existingTalent._id }
+            );
+          }
+
+          // Delete the temporary placeholder talent
+          await TalentProfile.findByIdAndDelete(originalData.talentId);
+        } else {
+          // 2. Normal update for the placeholder talent
+          await TalentProfile.findByIdAndUpdate(originalData.talentId, {
+            ...profile,
+            parsingStatus: "success",
+          });
+        }
       })
     );
 
     await Promise.all(
       taskData
-        .filter((data) => !updatedApplicantIds.has(String(data.applicantId)))
+        .filter((data) => !updatedTalentIds.has(String(data.talentId)))
         .map((data) =>
-          ExternalApplicant.findByIdAndUpdate(data.applicantId, {
+          TalentProfile.findByIdAndUpdate(data.talentId, {
             parsingStatus: "failed",
             errorMessage: "AI parser did not return a result for this resume",
           })
@@ -98,7 +134,7 @@ const processBatch = async () => {
       const attempt = getProcessingAttempt(msg) + 1;
 
       if (attempt < MAX_PROCESSING_ATTEMPTS) {
-        await ExternalApplicant.findByIdAndUpdate(task.applicantId, {
+        await TalentProfile.findByIdAndUpdate(task.talentId, {
           parsingStatus: "pending",
           errorMessage: `Retrying resume parsing (${attempt}/${MAX_PROCESSING_ATTEMPTS}): ${error.message}`,
         });
@@ -111,7 +147,7 @@ const processBatch = async () => {
           },
         });
       } else {
-        await ExternalApplicant.findByIdAndUpdate(task.applicantId, {
+        await TalentProfile.findByIdAndUpdate(task.talentId, {
           parsingStatus: "failed",
           errorMessage: "Batch processing error after retries: " + error.message,
         });
@@ -123,7 +159,7 @@ const processBatch = async () => {
 };
 
 const parseTaskMessage = (msg: amqp.ConsumeMessage): {
-  applicantId: string;
+  talentId: string;
   resumeUrl: string;
   jobId: string;
 } => {
