@@ -74,7 +74,7 @@ import type { Request, Response } from "express";
  */
 export const getPlatformTalent = async (
   req: Request,
-  res: Response<IServerResponse>
+  res: Response<IServerResponse>,
 ) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
@@ -125,7 +125,10 @@ const readMockTalent = (): any[] => {
  *       200:
  *         description: Mock profiles retrieved
  */
-export const getMockTalent = async (req: Request, res: Response<IServerResponse>) => {
+export const getMockTalent = async (
+  req: Request,
+  res: Response<IServerResponse>,
+) => {
   try {
     const profiles = readMockTalent();
     res.status(HttpStatusCode.Ok).json({
@@ -163,7 +166,10 @@ export const getMockTalent = async (req: Request, res: Response<IServerResponse>
  *       404:
  *         description: Profile not found
  */
-export const getMockTalentById = async (req: Request, res: Response<IServerResponse>) => {
+export const getMockTalentById = async (
+  req: Request,
+  res: Response<IServerResponse>,
+) => {
   try {
     const { id } = req.params;
     const profiles = readMockTalent();
@@ -220,7 +226,10 @@ export const getMockTalentById = async (req: Request, res: Response<IServerRespo
  *       200:
  *         description: Internal profiles imported
  */
-export const uploadInternal = async (req: Request, res: Response<IServerResponse>) => {
+export const uploadInternal = async (
+  req: Request,
+  res: Response<IServerResponse>,
+) => {
   try {
     const { id: jobId } = req.params;
     const { profiles } = req.body as { profiles: any[] };
@@ -249,7 +258,10 @@ export const uploadInternal = async (req: Request, res: Response<IServerResponse
 
         if (talent) {
           // Update existing talent with latest data
-          Object.assign(talent, profile, { source: "internal", parsingStatus: "success" });
+          Object.assign(talent, profile, {
+            source: "internal",
+            parsingStatus: "success",
+          });
           await talent.save();
         } else {
           talent = new TalentProfile({
@@ -272,7 +284,7 @@ export const uploadInternal = async (req: Request, res: Response<IServerResponse
         }
 
         return talent;
-      })
+      }),
     );
 
     res.status(HttpStatusCode.Ok).json({
@@ -310,7 +322,7 @@ export const uploadInternal = async (req: Request, res: Response<IServerResponse
  */
 export const getJobApplicants = async (
   req: Request,
-  res: Response<IServerResponse>
+  res: Response<IServerResponse>,
 ) => {
   try {
     const { id: jobId } = req.params;
@@ -324,14 +336,20 @@ export const getJobApplicants = async (
       });
     }
 
-    const applications = await Application.find({ jobId }).populate("profileId");
+    const applications = await Application.find({ jobId }).populate(
+      "profileId",
+    );
 
     const externalApplicants = applications
-      .filter((app: any) => app.profileId && app.profileId.source !== "internal")
+      .filter(
+        (app: any) => app.profileId && app.profileId.source !== "internal",
+      )
       .map((app: any) => app.profileId);
-      
+
     const platformTalent = applications
-      .filter((app: any) => app.profileId && app.profileId.source === "internal")
+      .filter(
+        (app: any) => app.profileId && app.profileId.source === "internal",
+      )
       .map((app: any) => app.profileId);
 
     res.status(HttpStatusCode.Ok).json({
@@ -379,7 +397,10 @@ export const getJobApplicants = async (
  *       202:
  *         description: File accepted for processing
  */
-export const uploadCsv = async (req: Request, res: Response<IServerResponse>) => {
+export const uploadCsv = async (
+  req: Request,
+  res: Response<IServerResponse>,
+) => {
   try {
     const { id: jobId } = req.params;
     const file = req.file as Express.Multer.File;
@@ -414,7 +435,10 @@ export const uploadCsv = async (req: Request, res: Response<IServerResponse>) =>
 
         if (talent) {
           // Update existing talent with latest data
-          Object.assign(talent, profile, { source: "csv", parsingStatus: "success" });
+          Object.assign(talent, profile, {
+            source: "csv",
+            parsingStatus: "success",
+          });
           await talent.save();
         } else {
           talent = new TalentProfile({
@@ -440,7 +464,7 @@ export const uploadCsv = async (req: Request, res: Response<IServerResponse>) =>
         }
 
         return talent;
-      })
+      }),
     );
 
     res.status(HttpStatusCode.Ok).json({
@@ -493,7 +517,10 @@ import { uploadToR2 } from "../lib/r2";
  *       202:
  *         description: Files accepted for processing
  */
-export const uploadPdf = async (req: Request, res: Response<IServerResponse>) => {
+export const uploadPdf = async (
+  req: Request,
+  res: Response<IServerResponse>,
+) => {
   try {
     const { id: jobId } = req.params;
     const files = req.files as Express.Multer.File[];
@@ -515,7 +542,9 @@ export const uploadPdf = async (req: Request, res: Response<IServerResponse>) =>
       });
     }
 
-    Logger.info({ message: `Received ${files.length} resumes. Initiating R2 upload and queuing...` });
+    Logger.info({
+      message: `Received ${files.length} resumes. Initiating R2 upload and queuing...`,
+    });
 
     // Step 1 & 2: Upload to R2 and create Pending records in parallel
     const queueResults = await Promise.allSettled(
@@ -524,7 +553,11 @@ export const uploadPdf = async (req: Request, res: Response<IServerResponse>) =>
 
         try {
           // 1. Store original file in Cloudflare R2
-          const resumeUrl = await uploadToR2(file.buffer, file.originalname, file.mimetype);
+          const resumeUrl = await uploadToR2(
+            file.buffer,
+            file.originalname,
+            file.mimetype,
+          );
 
           // 2. Create database record with "pending" status
           talent = new TalentProfile({
@@ -549,18 +582,21 @@ export const uploadPdf = async (req: Request, res: Response<IServerResponse>) =>
 
           return { name: file.originalname, status: "queued" };
         } catch (error: any) {
-          Logger.error({ message: `Failed to queue ${file.originalname}: ${error.message}` });
+          Logger.error({
+            message: `Failed to queue ${file.originalname}: ${error.message}`,
+          });
 
           if (talent?._id) {
             await TalentProfile.findByIdAndUpdate(talent._id, {
               parsingStatus: "failed",
-              errorMessage: "Failed to queue resume for parsing: " + error.message,
+              errorMessage:
+                "Failed to queue resume for parsing: " + error.message,
             });
           }
 
           throw error;
         }
-      })
+      }),
     );
 
     // Step 3: Return 202 Accepted immediately
