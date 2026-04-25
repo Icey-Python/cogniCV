@@ -7,6 +7,12 @@ const router = Router();
 
 router.get("/profiles", authenticate(), ApplicantController.getPlatformTalent);
 
+router.get("/profiles/mock", authenticate(), ApplicantController.getMockTalent);
+
+router.get("/profiles/mock/:id", authenticate(), ApplicantController.getMockTalentById);
+
+router.post("/jobs/:id/upload/internal", authenticate(), ApplicantController.uploadInternal);
+
 router.get("/jobs/:id/applicants", authenticate(), ApplicantController.getJobApplicants);
 
 router.post(

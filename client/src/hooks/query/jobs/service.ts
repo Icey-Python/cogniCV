@@ -93,3 +93,63 @@ export const JobService = {
 		return response.data;
 	}
 };
+
+// ─── Talent / Applicant Types ─────────────────────────────────────────────────
+
+export interface TalentProfile {
+	_id?: string;
+	firstName?: string;
+	lastName?: string;
+	email?: string;
+	headline?: string;
+	bio?: string;
+	location?: string;
+	skills?: { name: string; level: string; yearsOfExperience: number }[];
+	languages?: { name: string; proficiency: string }[];
+	experience?: { company: string; role: string; startDate: string; endDate?: string; description?: string; technologies: string[]; isCurrent: boolean }[];
+	education?: { institution: string; degree: string; fieldOfStudy: string; startYear: number; endYear?: number }[];
+	certifications?: { name: string; issuer: string; issueDate: string }[];
+	projects?: { name: string; description: string; technologies: string[]; role: string; link?: string; startDate: string; endDate: string }[];
+	availability?: { status: string; type: string; startDate?: string };
+	socialLinks?: { linkedin?: string; github?: string; portfolio?: string };
+	source?: 'csv' | 'pdf' | 'xlsx' | 'internal';
+	parsingStatus?: 'success' | 'partial' | 'failed' | 'pending';
+	resumeUrl?: string;
+}
+
+// ─── Applicant Service ────────────────────────────────────────────────────────
+
+export const ApplicantService = {
+	getMockTalent: async () => {
+		const response = await apiBase.get<IServerResponse<TalentProfile[]>>('/applicants/profiles/mock');
+		return response.data;
+	},
+
+	getMockTalentById: async (id: string) => {
+		const response = await apiBase.get<IServerResponse<TalentProfile>>(`/applicants/profiles/mock/${id}`);
+		return response.data;
+	},
+
+	uploadInternal: async ({ jobId, profiles }: { jobId: string; profiles: TalentProfile[] }) => {
+		const response = await apiBase.post<IServerResponse<{ total: number; jobId: string }>>(`/applicants/jobs/${jobId}/upload/internal`, { profiles });
+		return response.data;
+	},
+
+	uploadCsv: async ({ jobId, file }: { jobId: string; file: File }) => {
+		const formData = new FormData();
+		formData.append('file', file);
+		const response = await apiBase.post<IServerResponse<{ total: number; jobId: string }>>(`/applicants/jobs/${jobId}/upload/csv`, formData, {
+			headers: { 'Content-Type': 'multipart/form-data' },
+		});
+		return response.data;
+	},
+
+	uploadPdf: async ({ jobId, files }: { jobId: string; files: File[] }) => {
+		const formData = new FormData();
+		files.forEach((f) => formData.append('files', f));
+		const response = await apiBase.post<IServerResponse<{ total: number; queued: number; failed: number }>>(`/applicants/jobs/${jobId}/upload/pdf`, formData, {
+			headers: { 'Content-Type': 'multipart/form-data' },
+		});
+		return response.data;
+	},
+};

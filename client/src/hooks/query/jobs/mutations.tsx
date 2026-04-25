@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { JobService } from './service';
+import { JobService, ApplicantService } from './service';
 import { queryKeys } from '../keys';
 import { toast } from 'sonner';
 
@@ -42,6 +42,42 @@ export const useDeleteJobMutation = () => {
 		},
 		onError: (error: any) => {
 			toast.error(error.response?.data?.message || 'Error deleting job');
+		}
+	});
+};
+
+export const useUploadInternalMutation = () => {
+	return useMutation({
+		mutationFn: ApplicantService.uploadInternal,
+		onSuccess: (data) => {
+			toast.success(data.message || 'Applicants imported successfully');
+		},
+		onError: (error: any) => {
+			toast.error(error.response?.data?.message || 'Error importing applicants');
+		}
+	});
+};
+
+export const useUploadCsvMutation = () => {
+	return useMutation({
+		mutationFn: ApplicantService.uploadCsv,
+		onSuccess: (data) => {
+			toast.success(data.message || 'CSV uploaded successfully');
+		},
+		onError: (error: any) => {
+			toast.error(error.response?.data?.message || 'Error uploading CSV');
+		}
+	});
+};
+
+export const useUploadPdfMutation = () => {
+	return useMutation({
+		mutationFn: ApplicantService.uploadPdf,
+		onSuccess: (data) => {
+			toast.success(`${data.data?.queued ?? 0} resumes queued for processing`);
+		},
+		onError: (error: any) => {
+			toast.error(error.response?.data?.message || 'Error uploading PDFs');
 		}
 	});
 };

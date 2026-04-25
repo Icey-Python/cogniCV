@@ -1,13 +1,13 @@
 import { Document, Schema, model } from "mongoose";
 
 export interface ITalentProfile {
-  firstName: string;
-  lastName: string;
-  email: string;
-  headline: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  headline?: string;
   bio?: string;
-  location: string;
-  skills: {
+  location?: string;
+  skills?: {
     name: string;
     level: "Beginner" | "Intermediate" | "Advanced" | "Expert";
     yearsOfExperience: number;
@@ -16,7 +16,7 @@ export interface ITalentProfile {
     name: string;
     proficiency: "Basic" | "Conversational" | "Fluent" | "Native";
   }[];
-  experience: {
+  experience?: {
     company: string;
     role: string;
     startDate: string;
@@ -25,7 +25,7 @@ export interface ITalentProfile {
     technologies: string[];
     isCurrent: boolean;
   }[];
-  education: {
+  education?: {
     institution: string;
     degree: string;
     fieldOfStudy: string;
@@ -37,7 +37,7 @@ export interface ITalentProfile {
     issuer: string;
     issueDate: string;
   }[];
-  projects: {
+  projects?: {
     name: string;
     description: string;
     technologies: string[];
@@ -46,7 +46,7 @@ export interface ITalentProfile {
     startDate: string;
     endDate: string;
   }[];
-  availability: {
+  availability?: {
     status: "Available" | "Open to Opportunities" | "Not Available";
     type: "Full-time" | "Part-time" | "Contract";
     startDate?: string;
@@ -56,27 +56,30 @@ export interface ITalentProfile {
     github?: string;
     portfolio?: string;
   };
+  source: "csv" | "pdf" | "xlsx" | "internal";
+  resumeUrl?: string;
+  parsingStatus?: "success" | "partial" | "failed" | "pending";
+  errorMessage?: string;
 }
 
 export interface TalentProfileDoc extends ITalentProfile, Document {}
 
 const TalentProfileSchema = new Schema<TalentProfileDoc>(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    email: { type: String, required: true, index: true },
-    headline: { type: String, required: true },
+    firstName: { type: String },
+    lastName: { type: String },
+    email: { type: String, index: true },
+    headline: { type: String },
     bio: { type: String },
-    location: { type: String, required: true },
+    location: { type: String },
     skills: [
       {
-        name: { type: String, required: true },
+        name: { type: String },
         level: {
           type: String,
           enum: ["Beginner", "Intermediate", "Advanced", "Expert"],
-          required: true,
         },
-        yearsOfExperience: { type: Number, required: true },
+        yearsOfExperience: { type: Number },
       },
     ],
     languages: [
@@ -90,9 +93,9 @@ const TalentProfileSchema = new Schema<TalentProfileDoc>(
     ],
     experience: [
       {
-        company: { type: String, required: true },
-        role: { type: String, required: true },
-        startDate: { type: String, required: true },
+        company: { type: String },
+        role: { type: String },
+        startDate: { type: String },
         endDate: { type: String },
         description: { type: String },
         technologies: [String],
@@ -101,10 +104,10 @@ const TalentProfileSchema = new Schema<TalentProfileDoc>(
     ],
     education: [
       {
-        institution: { type: String, required: true },
-        degree: { type: String, required: true },
-        fieldOfStudy: { type: String, required: true },
-        startYear: { type: Number, required: true },
+        institution: { type: String },
+        degree: { type: String },
+        fieldOfStudy: { type: String },
+        startYear: { type: Number },
         endYear: { type: Number },
       },
     ],
@@ -130,12 +133,10 @@ const TalentProfileSchema = new Schema<TalentProfileDoc>(
       status: {
         type: String,
         enum: ["Available", "Open to Opportunities", "Not Available"],
-        required: true,
       },
       type: {
         type: String,
         enum: ["Full-time", "Part-time", "Contract"],
-        required: true,
       },
       startDate: { type: String },
     },
@@ -144,6 +145,18 @@ const TalentProfileSchema = new Schema<TalentProfileDoc>(
       github: { type: String },
       portfolio: { type: String },
     },
+    source: {
+      type: String,
+      enum: ["csv", "pdf", "xlsx", "internal"],
+      required: true,
+      default: "internal"
+    },
+    resumeUrl: { type: String },
+    parsingStatus: {
+      type: String,
+      enum: ["success", "partial", "failed", "pending"],
+    },
+    errorMessage: { type: String }
   },
   { timestamps: true }
 );

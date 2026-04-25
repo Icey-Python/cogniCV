@@ -32,6 +32,100 @@
         }
       }
     },
+    "/api/v1/applicants/profiles/mock": {
+      "get": {
+        "summary": "Get all mock talent profiles",
+        "tags": [
+          "Applicants"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mock profiles retrieved"
+          }
+        }
+      }
+    },
+    "/api/v1/applicants/profiles/mock/{id}": {
+      "get": {
+        "summary": "Get a single mock talent profile by ID",
+        "tags": [
+          "Applicants"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mock profile retrieved"
+          },
+          "404": {
+            "description": "Profile not found"
+          }
+        }
+      }
+    },
+    "/api/v1/applicants/jobs/{id}/upload/internal": {
+      "post": {
+        "summary": "Import internal talent profiles for a job",
+        "tags": [
+          "Applicants"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "profiles": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Internal profiles imported"
+          }
+        }
+      }
+    },
     "/api/v1/applicants/jobs/{id}/applicants": {
       "get": {
         "summary": "Get all applicants for a job",

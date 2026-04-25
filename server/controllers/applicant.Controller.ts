@@ -1,8 +1,10 @@
 import { Logger } from "borgen";
 import { HttpStatusCode } from "axios";
+import path from "path";
+import fs from "fs";
 import Job from "../models/job.model";
 import TalentProfile from "../models/talent.model";
-import ExternalApplicant from "../models/applicant.model";
+import Application from "../models/application.model";
 import { ParserService } from "../services/parser.service";
 import type { IServerResponse } from "../types";
 import type { Request, Response } from "express";
@@ -104,6 +106,190 @@ export const getPlatformTalent = async (
   }
 };
 
+const MOCK_TALENT_PATH = path.join(__dirname, "../data/internal-talent.json");
+
+const readMockTalent = (): any[] => {
+  const raw = fs.readFileSync(MOCK_TALENT_PATH, "utf-8");
+  return JSON.parse(raw);
+};
+
+/**
+ * @openapi
+ * /api/v1/applicants/profiles/mock:
+ *   get:
+ *     summary: Get all mock talent profiles
+ *     tags: [Applicants]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Mock profiles retrieved
+ */
+export const getMockTalent = async (req: Request, res: Response<IServerResponse>) => {
+  try {
+    const profiles = readMockTalent();
+    res.status(HttpStatusCode.Ok).json({
+      status: "success",
+      message: "Mock talent profiles retrieved",
+      data: profiles,
+    });
+  } catch (error) {
+    Logger.error({ message: "Error reading mock talent: " + error });
+    res.status(HttpStatusCode.InternalServerError).json({
+      status: "error",
+      message: "Failed to read mock talent",
+      data: null,
+    });
+  }
+};
+
+/**
+ * @openapi
+ * /api/v1/applicants/profiles/mock/{id}:
+ *   get:
+ *     summary: Get a single mock talent profile by ID
+ *     tags: [Applicants]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Mock profile retrieved
+ *       404:
+ *         description: Profile not found
+ */
+export const getMockTalentById = async (req: Request, res: Response<IServerResponse>) => {
+  try {
+    const { id } = req.params;
+    const profiles = readMockTalent();
+    const profile = profiles.find((p) => p._id === id);
+
+    if (!profile) {
+      return res.status(HttpStatusCode.NotFound).json({
+        status: "error",
+        message: "Mock profile not found",
+        data: null,
+      });
+    }
+
+    res.status(HttpStatusCode.Ok).json({
+      status: "success",
+      message: "Mock profile retrieved",
+      data: profile,
+    });
+  } catch (error) {
+    Logger.error({ message: "Error reading mock talent by id: " + error });
+    res.status(HttpStatusCode.InternalServerError).json({
+      status: "error",
+      message: "Failed to read mock profile",
+      data: null,
+    });
+  }
+};
+
+/**
+ * @openapi
+ * /api/v1/applicants/jobs/{id}/upload/internal:
+ *   post:
+ *     summary: Import internal talent profiles for a job
+ *     tags: [Applicants]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               profiles:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *     responses:
+ *       200:
+ *         description: Internal profiles imported
+ */
+export const uploadInternal = async (req: Request, res: Response<IServerResponse>) => {
+  try {
+    const { id: jobId } = req.params;
+    const { profiles } = req.body as { profiles: any[] };
+
+    if (!profiles || !Array.isArray(profiles) || profiles.length === 0) {
+      return res.status(HttpStatusCode.BadRequest).json({
+        status: "error",
+        message: "profiles array is required",
+        data: null,
+      });
+    }
+
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(HttpStatusCode.NotFound).json({
+        status: "error",
+        message: "Job not found",
+        data: null,
+      });
+    }
+
+    const saved = await Promise.all(
+      profiles.map(async (profile) => {
+        // 1. Find or create talent by email
+        let talent = await TalentProfile.findOne({ email: profile.email });
+
+        if (talent) {
+          // Update existing talent with latest data
+          Object.assign(talent, profile, { source: "internal", parsingStatus: "success" });
+          await talent.save();
+        } else {
+          talent = new TalentProfile({
+            ...profile,
+            source: "internal",
+            parsingStatus: "success",
+          });
+          await talent.save();
+        }
+
+        // 2. Link to job if not already linked
+        const existingApp = await Application.findOne({
+          jobId,
+          profileId: talent._id,
+        });
+
+        if (!existingApp) {
+          const application = new Application({ jobId, profileId: talent._id });
+          await application.save();
+        }
+
+        return talent;
+      })
+    );
+
+    res.status(HttpStatusCode.Ok).json({
+      status: "success",
+      message: `${saved.length} internal profiles imported`,
+      data: { total: saved.length, jobId },
+    });
+  } catch (error) {
+    Logger.error({ message: "Error uploading internal talent: " + error });
+    res.status(HttpStatusCode.InternalServerError).json({
+      status: "error",
+      message: "Failed to import internal profiles",
+      data: null,
+    });
+  }
+};
+
 /**
  * @openapi
  * /api/v1/applicants/jobs/{id}/applicants:
@@ -138,8 +324,15 @@ export const getJobApplicants = async (
       });
     }
 
-    const externalApplicants = await ExternalApplicant.find({ jobId });
-    const platformTalent = await TalentProfile.find().limit(10);
+    const applications = await Application.find({ jobId }).populate("profileId");
+
+    const externalApplicants = applications
+      .filter((app: any) => app.profileId && app.profileId.source !== "internal")
+      .map((app: any) => app.profileId);
+      
+    const platformTalent = applications
+      .filter((app: any) => app.profileId && app.profileId.source === "internal")
+      .map((app: any) => app.profileId);
 
     res.status(HttpStatusCode.Ok).json({
       status: "success",
@@ -213,16 +406,40 @@ export const uploadCsv = async (req: Request, res: Response<IServerResponse>) =>
     // 1. Parse Spreadsheet via AI
     const parsedProfiles = await ParserService.parseSpreadsheet(file.buffer);
 
-    // 2. Save each profile as an ExternalApplicant
+    // 2. Save each profile as a TalentProfile and create Application
     const savedApplicants = await Promise.all(
       parsedProfiles.map(async (profile) => {
-        const applicant = new ExternalApplicant({
+        // 1. Find or create talent by email
+        let talent = await TalentProfile.findOne({ email: profile.email });
+
+        if (talent) {
+          // Update existing talent with latest data
+          Object.assign(talent, profile, { source: "csv", parsingStatus: "success" });
+          await talent.save();
+        } else {
+          talent = new TalentProfile({
+            ...profile,
+            source: "csv",
+            parsingStatus: "success",
+          });
+          await talent.save();
+        }
+
+        // 2. Link to job if not already linked
+        const existingApp = await Application.findOne({
           jobId,
-          source: "csv",
-          parsedProfile: profile,
-          parsingStatus: "success",
+          profileId: talent._id,
         });
-        return await applicant.save();
+
+        if (!existingApp) {
+          const application = new Application({
+            jobId,
+            profileId: talent._id,
+          });
+          await application.save();
+        }
+
+        return talent;
       })
     );
 
@@ -303,24 +520,29 @@ export const uploadPdf = async (req: Request, res: Response<IServerResponse>) =>
     // Step 1 & 2: Upload to R2 and create Pending records in parallel
     const queueResults = await Promise.allSettled(
       files.map(async (file) => {
-        let applicant: InstanceType<typeof ExternalApplicant> | null = null;
+        let talent: InstanceType<typeof TalentProfile> | null = null;
 
         try {
           // 1. Store original file in Cloudflare R2
           const resumeUrl = await uploadToR2(file.buffer, file.originalname, file.mimetype);
 
           // 2. Create database record with "pending" status
-          applicant = new ExternalApplicant({
-            jobId,
+          talent = new TalentProfile({
             source: "pdf",
             resumeUrl,
             parsingStatus: "pending",
           });
-          await applicant.save();
+          await talent.save();
+
+          const application = new Application({
+            jobId,
+            profileId: talent._id,
+          });
+          await application.save();
 
           // 3. Publish to RabbitMQ for background AI processing
           await publishToQueue(RabbitMQQueues.RESUME_INGESTION, {
-            applicantId: applicant._id,
+            talentId: talent._id,
             resumeUrl,
             jobId,
           });
@@ -329,8 +551,8 @@ export const uploadPdf = async (req: Request, res: Response<IServerResponse>) =>
         } catch (error: any) {
           Logger.error({ message: `Failed to queue ${file.originalname}: ${error.message}` });
 
-          if (applicant?._id) {
-            await ExternalApplicant.findByIdAndUpdate(applicant._id, {
+          if (talent?._id) {
+            await TalentProfile.findByIdAndUpdate(talent._id, {
               parsingStatus: "failed",
               errorMessage: "Failed to queue resume for parsing: " + error.message,
             });
