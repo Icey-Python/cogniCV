@@ -90,7 +90,6 @@ export async function loginOauth({
 
       const {
         accessToken,
-        refreshToken,
         sessionId,
         user: userPayload,
       } = createUserSession(user);
@@ -99,7 +98,6 @@ export async function loginOauth({
       await Session.create({
         sessionId,
         userId: user._id,
-        refreshToken,
         expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
         isValid: true,
       });
@@ -110,7 +108,6 @@ export async function loginOauth({
         data: {
           user: userPayload,
           accessToken,
-          refreshToken,
         },
       };
     }
@@ -142,7 +139,6 @@ export async function loginOauth({
 
     const {
       accessToken,
-      refreshToken,
       sessionId,
       user: userPayload,
     } = createUserSession(savedUser);
@@ -151,7 +147,6 @@ export async function loginOauth({
     await Session.create({
       sessionId,
       userId: savedUser._id,
-      refreshToken,
       expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
       isValid: true,
     });
@@ -162,7 +157,6 @@ export async function loginOauth({
       data: {
         user: userPayload,
         accessToken,
-        refreshToken,
       },
     };
   } catch (err) {
@@ -294,7 +288,7 @@ export const createUser = async (
 
     // Create session
 
-    const { accessToken, refreshToken, sessionId } =
+    const { accessToken, sessionId } =
       createUserSession(savedUser);
 
 
@@ -302,13 +296,12 @@ export const createUser = async (
     await Session.create({
       sessionId,
       userId: savedUser._id,
-      refreshToken,
       expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
       isValid: true,
     });
 
     // Set cookies
-    setAuthCookies(res, accessToken, refreshToken, true);
+    setAuthCookies(res, accessToken, true);
 
     res.status(HttpStatusCode.Created).json({
       status: "success",
@@ -435,18 +428,17 @@ export const loginUser = async (
     await user.save();
 
     // Create session
-    const { accessToken, refreshToken, sessionId } = createUserSession(user);
+    const { accessToken, sessionId } = createUserSession(user);
 
     await Session.create({
       sessionId,
       userId: user._id,
-      refreshToken,
       expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
       isValid: true,
     });
 
     // Set cookies
-    setAuthCookies(res, accessToken, refreshToken, true);
+    setAuthCookies(res, accessToken, true);
 
     res.status(HttpStatusCode.Ok).json({
       status: "success",

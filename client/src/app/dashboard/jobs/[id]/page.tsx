@@ -369,7 +369,7 @@ export default function JobDetailPage() {
 				open={jobInfoOpen}
 				onOpenChange={setJobInfoOpen}
 			/>
-			<FloatingChat />
+			<FloatingChat jobId={job._id} enabled={isScreened} />
 		</div>
 	);
 }

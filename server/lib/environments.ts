@@ -20,6 +20,8 @@ export const ENV = {
   GEMINI_MODEL: process.env.GEMINI_MODEL || "gemini-2.0-flash",
   // RabbitMQ
   RABBITMQ_URL: process.env.RABBITMQ_URL || "amqp://localhost",
+  // ChromaDB
+  CHROMA_URL: process.env.CHROMA_URL || "http://localhost:8000",
   // Cloudflare R2
   R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID as string,
   R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY as string,

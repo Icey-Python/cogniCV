@@ -342,6 +342,88 @@
         }
       }
     },
+    "/api/v1/chat/job-analysis": {
+      "post": {
+        "summary": "Ask a question about a job's screening results (RAG chat)",
+        "tags": [
+          "Chat"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "jobId",
+                  "question"
+                ],
+                "properties": {
+                  "jobId": {
+                    "type": "string"
+                  },
+                  "question": {
+                    "type": "string"
+                  },
+                  "history": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "role": {
+                          "type": "string"
+                        },
+                        "content": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "AI-generated answer based on screening analysis"
+          }
+        }
+      }
+    },
+    "/api/v1/chat/job-analysis/{jobId}/status": {
+      "get": {
+        "summary": "Check if a job's analysis has been indexed for RAG chat",
+        "tags": [
+          "Chat"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "jobId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Index status"
+          }
+        }
+      }
+    },
     "/api/v1/jobs": {
       "post": {
         "summary": "Create a new job",
