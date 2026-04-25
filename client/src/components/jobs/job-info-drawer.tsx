@@ -1,6 +1,6 @@
 'use client';
 
-import { type Job } from '@/types';
+import { type Job } from '@/hooks/query/jobs/service';
 import {
 	Sheet,
 	SheetContent,
@@ -23,7 +23,7 @@ export function JobInfoDrawer({ job, open, onOpenChange }: JobInfoDrawerProps) {
 		<Sheet open={open} onOpenChange={onOpenChange}>
 			<SheetContent
 				side="right"
-				className="border-border flex w-full flex-col gap-0 border-l bg-white p-0 sm:max-w-lg"
+				className="border-border flex w-full flex-col gap-0 border-l bg-white p-0 pb-12 sm:max-w-lg"
 			>
 				<div className="flex items-start gap-4 border-b border-gray-100 bg-white px-4 py-6">
 					<div className="min-w-0 flex-1">
@@ -46,16 +46,16 @@ export function JobInfoDrawer({ job, open, onOpenChange }: JobInfoDrawerProps) {
 						<div className="mt-6 grid gap-3 sm:grid-cols-2">
 							<div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
 								<p className="text-muted-foreground text-xs font-semibold tracking-widest uppercase">
-									Department
+									Source
 								</p>
-								<p className="text-foreground mt-2 text-sm">{job.department}</p>
+								<p className="text-foreground mt-2 text-sm">{job.source}</p>
 							</div>
 							<div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
 								<p className="text-muted-foreground text-xs font-semibold tracking-widest uppercase">
 									Location
 								</p>
 								<p className="text-foreground mt-2 flex items-center gap-2 text-sm">
-									{job.location}
+									{job.location?.city}, {job.location?.country}
 								</p>
 							</div>
 							<div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
@@ -107,7 +107,7 @@ export function JobInfoDrawer({ job, open, onOpenChange }: JobInfoDrawerProps) {
 							<div className="mt-4 grid gap-2">
 								<div className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 text-sm">
 									<span className="text-muted-foreground">Applicants</span>
-									<span className="font-medium">{job.applicantCount}</span>
+									<span className="font-medium">0</span>
 								</div>
 								<div className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 text-sm">
 									<span className="text-muted-foreground">Job ID</span>

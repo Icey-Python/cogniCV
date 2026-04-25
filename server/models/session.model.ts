@@ -3,7 +3,7 @@ import { Document, Schema, Types, model } from "mongoose";
 export interface SessionDoc extends Document {
   sessionId: string;
   userId: Types.ObjectId;
-  refreshToken: string;
+  refreshToken?: string;
   userAgent?: string;
   ipAddress?: string;
   expiresAt: Date;
@@ -27,7 +27,6 @@ const SessionSchema: Schema = new Schema<SessionDoc>(
     },
     refreshToken: {
       type: String,
-      required: true,
     },
     userAgent: {
       type: String,
@@ -53,7 +52,7 @@ const SessionSchema: Schema = new Schema<SessionDoc>(
   {
     timestamps: true,
     collection: "session",
-  }
+  },
 );
 
 const Session = model<SessionDoc>("session", SessionSchema);

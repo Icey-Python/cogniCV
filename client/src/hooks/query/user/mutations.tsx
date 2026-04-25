@@ -22,6 +22,21 @@ export const useUpdateProfileMutation = () => {
 };
 
 /**
+ * Mutation to update user password
+ */
+export const useUpdatePasswordMutation = () => {
+	return useMutation({
+		mutationFn: UserService.updatePassword,
+		onSuccess: (data) => {
+			toast.success(data.message || 'Password updated successfully');
+		},
+		onError: (error: any) => {
+			toast.error(error.response?.data?.message || 'Error updating password');
+		}
+	});
+};
+
+/**
  * Mutation to update user phone number
  */
 export const useUpdatePhoneMutation = () => {

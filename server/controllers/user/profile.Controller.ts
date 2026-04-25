@@ -3,6 +3,8 @@ import { HttpStatusCode } from "axios";
 import User from "../../models/user.model";
 import type { IServerResponse } from "../../types";
 import type { Request, Response } from "express";
+import Account from "../../models/account.model";
+import { hashPassword, verifyPassword } from "../../lib/auth-utils";
 
 /**
  * @openapi
@@ -319,6 +321,104 @@ export const updateUserPhone = async (
     res.status(HttpStatusCode.InternalServerError).json({
       status: "error",
       message: "Error updating phone",
+      data: null,
+    });
+  }
+};
+
+/**
+ * @openapi
+ * /api/v1/user/password:
+ *   put:
+ *     summary: Update user password
+ *     tags: [Users]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - currentPassword
+ *               - newPassword
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *                 format: password
+ *               newPassword:
+ *                 type: string
+ *                 format: password
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+export const updatePassword = async (
+  req: Request,
+  res: Response<IServerResponse>
+) => {
+  const { currentPassword, newPassword } = req.body;
+  const userId = req.user?._id;
+
+  try {
+    if (!userId) {
+      return res.status(HttpStatusCode.Unauthorized).json({
+        status: "error",
+        message: "Authentication required",
+        data: null,
+      });
+    }
+
+    if (!currentPassword || !newPassword) {
+      return res.status(HttpStatusCode.BadRequest).json({
+        status: "error",
+        message: "Missing current or new password",
+        data: null,
+      });
+    }
+
+    const account = await Account.findOne({ userId });
+
+    if (!account || !account.password) {
+      return res.status(HttpStatusCode.BadRequest).json({
+        status: "error",
+        message: "Account not found or invalid",
+        data: null,
+      });
+    }
+
+    const isPasswordValid = await verifyPassword(currentPassword, account.password);
+
+    if (!isPasswordValid) {
+      return res.status(HttpStatusCode.BadRequest).json({
+        status: "error",
+        message: "Invalid current password",
+        data: null,
+      });
+    }
+
+    const hashedNewPassword = await hashPassword(newPassword);
+    account.password = hashedNewPassword;
+    await account.save();
+
+    res.status(HttpStatusCode.Ok).json({
+      status: "success",
+      message: "Password updated successfully",
+      data: null,
+    });
+  } catch (err) {
+    Logger.error({ message: "Error updating password" + err });
+
+    res.status(HttpStatusCode.InternalServerError).json({
+      status: "error",
+      message: "Error updating password",
       data: null,
     });
   }

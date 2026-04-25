@@ -11,7 +11,6 @@ import cookieParser from "cookie-parser";
 import { helmetConfig } from "./lib/helmet";
 import connectDb from "./database/connectDb";
 import { rateLimit } from "express-rate-limit";
-import { setupWebSocketServer } from "./sockets";
 import generateOpenAPISpec from "./docs/openapi";
 import expressBasicAuth from "express-basic-auth";
 import { apiReference } from "@scalar/express-api-reference";
@@ -21,7 +20,6 @@ import { AllowedOrigins, ENV, isDevelopment } from "./lib/environments";
 const app = express();
 
 const server = http.createServer(app);
-export const wss = setupWebSocketServer(server);
 
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute

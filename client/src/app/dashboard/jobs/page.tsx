@@ -1,29 +1,38 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { MOCK_JOBS } from '@/lib/mock-data';
+import { useState } from 'react';
 import { JobCard } from '@/components/jobs/job-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { IconPlus, IconSearch, IconFilter } from '@tabler/icons-react';
+import {
+	IconPlus,
+	IconSearch,
+	IconFilter,
+	IconLoader2
+} from '@tabler/icons-react';
 import Link from 'next/link';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue
+} from '@/components/ui/select';
+import { useSearchJobsQuery } from '@/hooks/query/jobs/queries';
 
 export default function JobListingsPage() {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [statusFilter, setStatusFilter] = useState<string>('all');
 	const [typeFilter, setTypeFilter] = useState<string>('all');
 
-	const filteredJobs = useMemo(() => {
-		return MOCK_JOBS.filter((job) => {
-			const matchesSearch =
-				job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				job.department.toLowerCase().includes(searchQuery.toLowerCase());
-			const matchesStatus = statusFilter === 'all' || job.status.toLowerCase() === statusFilter;
-			const matchesType = typeFilter === 'all' || job.jobType === typeFilter;
-			return matchesSearch && matchesStatus && matchesType;
-		});
-	}, [searchQuery, statusFilter, typeFilter]);
+	const { data, isLoading } = useSearchJobsQuery(
+		searchQuery,
+		statusFilter,
+		typeFilter
+	);
+
+	const jobs = data?.data?.jobs || [];
+	const totalJobs = data?.data?.totalJobs || 0;
 
 	return (
 		<div className="space-y-6">
@@ -43,7 +52,7 @@ export default function JobListingsPage() {
 			</div>
 
 			{/* Filters — no background */}
-			<div className="flex flex-col  sm:flex-row gap-3 items-start sm:items-center justify-between">
+			<div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
 				<div className="flex items-center gap-2">
 					<Select value={statusFilter} onValueChange={setStatusFilter}>
 						<SelectTrigger className="w-[140px]">
@@ -68,7 +77,7 @@ export default function JobListingsPage() {
 					</Select>
 				</div>
 				<div className="relative w-full flex-2 sm:max-w-md">
-					<IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+					<IconSearch className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
 					<Input
 						placeholder="Search jobs..."
 						value={searchQuery}
@@ -79,20 +88,24 @@ export default function JobListingsPage() {
 			</div>
 
 			{/* Results count */}
-			<p className="text-sm text-muted-foreground">
-				Showing {filteredJobs.length} of {MOCK_JOBS.length} jobs
+			<p className="text-muted-foreground text-sm">
+				Showing {jobs.length} of {totalJobs} jobs
 			</p>
 
 			{/* Job grid */}
-			{filteredJobs.length > 0 ? (
+			{isLoading ? (
+				<div className="flex items-center justify-center py-20">
+					<IconLoader2 className="text-muted-foreground size-8 animate-spin" />
+				</div>
+			) : jobs.length > 0 ? (
 				<div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-					{filteredJobs.map((job) => (
-						<JobCard key={job._id} job={job} />
-					))}
+					{jobs.map((job) => {
+						return <JobCard key={job._id} job={job} />;
+					})}
 				</div>
 			) : (
-				<div className="flex flex-col items-center justify-center py-20 text-center border border-dashed rounded-lg">
-					<IconFilter className="size-10 text-muted-foreground mb-4" />
+				<div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-20 text-center">
+					<IconFilter className="text-muted-foreground mb-4 size-10" />
 					<h3 className="text-lg font-medium">No jobs found</h3>
 					<p className="text-muted-foreground mt-1 max-w-sm">
 						Try adjusting your search query or filters.

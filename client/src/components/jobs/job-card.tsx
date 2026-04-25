@@ -1,4 +1,4 @@
-import { type Job } from '@/types';
+import { type Job } from '@/hooks/query/jobs/service';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { IconBriefcase, IconMapPin, IconClock, IconUsers, IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
@@ -35,10 +35,10 @@ export function JobCard({ job }: JobCardProps) {
 				<CardContent className="pt-0 space-y-4">
 					<div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
 						<span className="flex items-center gap-1">
-							<IconBriefcase className="size-3.5" /> {job.department}
+							<IconBriefcase className="size-3.5" /> {job.experienceLevel}
 						</span>
 						<span className="flex items-center gap-1">
-							<IconMapPin className="size-3.5" /> {job.location}
+							<IconMapPin className="size-3.5" /> {job.location?.city}, {job.location?.country}
 						</span>
 						<span className="flex items-center gap-1">
 							<IconClock className="size-3.5" /> {job.type}
@@ -64,7 +64,7 @@ export function JobCard({ job }: JobCardProps) {
 					<div className="flex items-center justify-between pt-3 border-t">
 						<div className="flex items-center gap-1.5 text-sm">
 							<IconUsers className="size-4 text-muted-foreground" />
-							<span className="font-semibold">{job.applicantCount}</span>
+							<span className="font-semibold">0</span>
 							<span className="text-muted-foreground">applicants</span>
 						</div>
 						<div className="flex items-center gap-1 text-xs text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">

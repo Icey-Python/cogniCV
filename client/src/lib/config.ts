@@ -42,9 +42,9 @@ apiBase.interceptors.response.use(
 		switch (status) {
 			case 401:
 				// Unauthorized - redirect to login
-				if (currentPath !== '/login') {
+				if (currentPath !== '/') {
 					if (isBrowser) {
-						window.location.href = '/login';
+						window.location.href = '/';
 					}
 				}
 				break;

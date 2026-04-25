@@ -1,4 +1,5 @@
 import { Document, Schema, Types, model } from "mongoose";
+import { Location } from "./organization.model";
 
 export enum ExperienceLevel {
   ENTRY = "Entry",
@@ -14,13 +15,27 @@ export enum JobType {
   CONTRACT = "Contract",
 }
 
+export enum JobStatus {
+  ACTIVE = "Active",
+  CLOSED = "Closed",
+  DRAFT = "Draft",
+}
+
+export enum JobSource {
+  INTERNAL = "Internal",
+  EXTERNAL = "External",
+}
+
 export interface JobDoc extends Document {
   title: string;
   description: string;
   requiredSkills: string[];
   experienceLevel: ExperienceLevel;
   type: JobType;
-  location: string;
+  status: JobStatus;
+  source: JobSource;
+  location: Location;
+  aiFocusArea?: string;
   createdBy: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -51,9 +66,29 @@ const JobSchema: Schema = new Schema<JobDoc>(
       enum: Object.values(JobType),
       required: true,
     },
-    location: {
+    status: {
       type: String,
-      required: true,
+      enum: Object.values(JobStatus),
+      default: JobStatus.ACTIVE,
+    },
+    source: {
+      type: String,
+      enum: Object.values(JobSource),
+      default: JobSource.INTERNAL,
+    },
+    location: {
+      country: { type: String, required: true },
+      city: { type: String, required: true },
+      workspaceType: {
+        type: String,
+        enum: ["Remote", "Hybrid", "On-site"],
+        required: true,
+      },
+      isDefault: { type: Boolean, default: false },
+    },
+    aiFocusArea: {
+      type: String,
+      required: false,
     },
     createdBy: {
       type: Schema.Types.ObjectId,
@@ -62,7 +97,7 @@ const JobSchema: Schema = new Schema<JobDoc>(
       index: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Job = model<JobDoc>("Job", JobSchema);

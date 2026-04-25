@@ -233,7 +233,7 @@ export async function loginOauth({
  */
 export const createUser = async (
   req: Request,
-  res: Response<IServerResponse>
+  res: Response<IServerResponse>,
 ) => {
   const { name, email, password } = req.body;
   try {
@@ -293,8 +293,11 @@ export const createUser = async (
     });
 
     // Create session
+
     const { accessToken, refreshToken, sessionId } =
       createUserSession(savedUser);
+
+
 
     await Session.create({
       sessionId,
@@ -383,7 +386,7 @@ export const createUser = async (
  */
 export const loginUser = async (
   req: Request,
-  res: Response<IServerResponse>
+  res: Response<IServerResponse>,
 ) => {
   const { email, password } = req.body;
   try {
@@ -494,14 +497,14 @@ export const loginUser = async (
  */
 export const logoutUser = async (
   req: Request,
-  res: Response<IServerResponse>
+  res: Response<IServerResponse>,
 ) => {
   try {
     // Invalidate session if user is authenticated
     if (req.session?.sessionId) {
       await Session.findOneAndUpdate(
         { sessionId: req.session.sessionId },
-        { isValid: false }
+        { isValid: false },
       );
     }
 
