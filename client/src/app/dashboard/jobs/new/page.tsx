@@ -17,6 +17,7 @@ import {
 import { useOrganizationQuery } from '@/hooks/query/organization/queries';
 import { useCreateJobMutation } from '@/hooks/query/jobs/mutations';
 import dynamic from 'next/dynamic';
+import { useEffect } from 'react';
 
 const MdxEditor = dynamic(() => import('@/components/ui/mdx-editor'), {
 	ssr: false
@@ -34,6 +35,7 @@ import {
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { Job } from '@/hooks/query/jobs/service';
 
 type JobType = 'internal' | 'external' | 'ai';
 type EmploymentType = 'Full-time' | 'Part-time' | 'Contract';
@@ -76,6 +78,49 @@ export default function NewJobPage() {
 	const [skillInput, setSkillInput] = useState('');
 	const [focusAreas, setFocusAreas] = useState('');
 	const [created, setCreated] = useState(false);
+
+	// Load AI draft from localStorage if available
+	useEffect(() => {
+		const draftJson = localStorage.getItem('job-draft-ai');
+		if (draftJson) {
+			try {
+				const draft: Job = JSON.parse(draftJson);
+				setTitle(draft.title || '');
+				setDescription(draft.description || '');
+				setEmploymentType(draft.type || 'Full-time');
+				setExperienceLevel(draft.experienceLevel || 'Mid');
+				setSkills(draft.requiredSkills || []);
+				
+				// Move to details step automatically if it's an AI draft
+				setStep(2);
+				
+				// We don't clear it immediately to allow location matching in the next effect
+			} catch (e) {
+				console.error('Failed to parse AI draft', e);
+				localStorage.removeItem('job-draft-ai');
+			}
+		}
+	}, []);
+
+	// Match location once dbLocations are loaded
+	useEffect(() => {
+		const draftJson = localStorage.getItem('job-draft-ai');
+		if (draftJson && dbLocations.length > 0 && !locationId) {
+			try {
+				const draft: Job = JSON.parse(draftJson);
+				const matchedLoc = dbLocations.find(
+					l => l.city.toLowerCase() === draft.location?.city?.toLowerCase()
+				);
+				if (matchedLoc) {
+					setLocationId(matchedLoc._id);
+				}
+				// Now we can clear it
+				localStorage.removeItem('job-draft-ai');
+			} catch (e) {
+				localStorage.removeItem('job-draft-ai');
+			}
+		}
+	}, [dbLocations, locationId]);
 
 	const addSkill = () => {
 		const trimmed = skillInput.trim();

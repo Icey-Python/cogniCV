@@ -71,7 +71,7 @@ import type { IServerResponse } from "../../types";
  */
 export const handleJobCreationChat = async (req: Request, res: Response<IServerResponse>) => {
   try {
-    const { messages } = req.body;
+    const { messages, availableLocations, availableDepartments } = req.body;
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(HttpStatusCode.BadRequest).json({
@@ -81,7 +81,11 @@ export const handleJobCreationChat = async (req: Request, res: Response<IServerR
       });
     }
 
-    const aiResponse = await GeminiService.evaluateJobCreationChat(messages);
+    const aiResponse = await GeminiService.evaluateJobCreationChat(
+      messages,
+      availableLocations || [],
+      availableDepartments || []
+    );
 
     res.status(HttpStatusCode.Ok).json({
       status: "success",
