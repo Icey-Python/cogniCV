@@ -65,7 +65,7 @@ export function JobCard({ job, disableLink }: JobCardProps) {
 				<div className="flex items-center justify-between pt-3 border-t">
 					<div className="flex items-center gap-1.5 text-sm">
 						<IconUsers className="size-4 text-muted-foreground" />
-						<span className="font-semibold">0</span>
+						<span className="font-semibold">{job.applicantCount || 0}</span>
 						<span className="text-muted-foreground">applicants</span>
 					</div>
 					{!disableLink && (
