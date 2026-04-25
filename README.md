@@ -20,7 +20,7 @@ CogniCV solves the challenge of manual resume screening by providing:
 - **Storage**: Cloudflare R2 / MinIO (S3 Compatible).
 - **AI Engine**: Google Gemini 2.5 Flash & Google Gemini 2.5 Flash.
 
-## 🏗 System Architecture
+## System Architecture
 
 ```mermaid
 graph TD
