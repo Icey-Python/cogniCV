@@ -49,7 +49,12 @@
         "startDate": "2020-01",
         "endDate": "Present",
         "description": "Led the migration from monolith to microservices architecture serving 100K+ users.",
-        "technologies": ["Go", "Kubernetes", "PostgreSQL", "Redis"],
+        "technologies": [
+          "Go",
+          "Kubernetes",
+          "PostgreSQL",
+          "Redis"
+        ],
         "isCurrent": true
       },
       {
@@ -58,7 +63,11 @@
         "startDate": "2017-06",
         "endDate": "2019-12",
         "description": "Built mobile-first web applications for local businesses.",
-        "technologies": ["React", "Node.js", "MongoDB"],
+        "technologies": [
+          "React",
+          "Node.js",
+          "MongoDB"
+        ],
         "isCurrent": false
       }
     ],
@@ -75,7 +84,11 @@
       {
         "name": "E-Gov Portal",
         "description": "Digital services platform for citizens to access government services.",
-        "technologies": ["React", "Go", "PostgreSQL"],
+        "technologies": [
+          "React",
+          "Go",
+          "PostgreSQL"
+        ],
         "role": "Lead Architect",
         "link": "https://gov.rw",
         "startDate": "2021-05",
@@ -90,7 +103,7 @@
       "linkedin": "https://linkedin.com/in/amani-kigali",
       "github": "https://github.com/amani-dev"
     },
-    "_id": "0369cf258be147ad0369cf25"
+    "_id": "69ec9a177c8f181c32b2fe47"
   },
   {
     "firstName": "Sarah",
@@ -138,7 +151,13 @@
         "startDate": "2022-06",
         "endDate": "Present",
         "description": "Optimizing inference latency for large language models deployed at scale.",
-        "technologies": ["Python", "PyTorch", "Docker", "AWS", "Kubernetes"],
+        "technologies": [
+          "Python",
+          "PyTorch",
+          "Docker",
+          "AWS",
+          "Kubernetes"
+        ],
         "isCurrent": true
       },
       {
@@ -147,7 +166,11 @@
         "startDate": "2020-09",
         "endDate": "2022-05",
         "description": "Conducted research on transformer architectures and attention mechanisms.",
-        "technologies": ["Python", "TensorFlow", "NumPy"],
+        "technologies": [
+          "Python",
+          "TensorFlow",
+          "NumPy"
+        ],
         "isCurrent": false
       }
     ],
@@ -178,7 +201,11 @@
       {
         "name": "SummaryBot",
         "description": "Automatic meeting notes generator using LLM summarization.",
-        "technologies": ["OpenAI API", "FastAPI", "React"],
+        "technologies": [
+          "OpenAI API",
+          "FastAPI",
+          "React"
+        ],
         "role": "Researcher",
         "startDate": "2023-01",
         "endDate": "2023-04"
@@ -193,7 +220,7 @@
       "linkedin": "https://linkedin.com/in/sarah-chen-ai",
       "github": "https://github.com/sarahchen-ml"
     },
-    "_id": "7ad0369cz258be147ad0369c"
+    "_id": "69ec9a177c8f181c32b2fe48"
   },
   {
     "firstName": "John",
@@ -241,7 +268,12 @@
         "startDate": "2025-01",
         "endDate": "2025-04",
         "description": "Built landing pages and assisted with frontend components.",
-        "technologies": ["HTML", "CSS", "Tailwind", "JavaScript"],
+        "technologies": [
+          "HTML",
+          "CSS",
+          "Tailwind",
+          "JavaScript"
+        ],
         "isCurrent": false
       }
     ],
@@ -258,7 +290,10 @@
       {
         "name": "Portfolio Site",
         "description": "Personal portfolio website showcasing projects.",
-        "technologies": ["Next.js", "Tailwind CSS"],
+        "technologies": [
+          "Next.js",
+          "Tailwind CSS"
+        ],
         "role": "Developer",
         "startDate": "2024-10",
         "endDate": "2024-11"
@@ -271,7 +306,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/in/john-okafor"
     },
-    "_id": "e147ad0369cf258be147ad03"
+    "_id": "69ec9a177c8f181c32b2fe49"
   },
   {
     "firstName": "Elena",
@@ -319,7 +354,12 @@
         "startDate": "2023-03",
         "endDate": "Present",
         "description": "Developed APIs for fintech applications serving 50K users.",
-        "technologies": ["Node.js", "Express", "PostgreSQL", "Redis"],
+        "technologies": [
+          "Node.js",
+          "Express",
+          "PostgreSQL",
+          "Redis"
+        ],
         "isCurrent": true
       }
     ],
@@ -336,7 +376,11 @@
       {
         "name": "Payment Gateway API",
         "description": "RESTful API for processing mobile money transactions.",
-        "technologies": ["Node.js", "Express", "PostgreSQL"],
+        "technologies": [
+          "Node.js",
+          "Express",
+          "PostgreSQL"
+        ],
         "role": "Backend Developer",
         "startDate": "2024-01",
         "endDate": "2024-06"
@@ -350,7 +394,7 @@
       "linkedin": "https://linkedin.com/in/elena-mwangi",
       "github": "https://github.com/elena-dev"
     },
-    "_id": "58be147ad0369cf258be197a"
+    "_id": "69ec9a177c8f181c32b2fe4a"
   },
   {
     "firstName": "Marcus",
@@ -394,7 +438,12 @@
         "startDate": "2019-08",
         "endDate": "Present",
         "description": "Architected multi-region cloud infrastructure reducing costs by 40%.",
-        "technologies": ["AWS", "Terraform", "Kubernetes", "Ansible"],
+        "technologies": [
+          "AWS",
+          "Terraform",
+          "Kubernetes",
+          "Ansible"
+        ],
         "isCurrent": true
       }
     ],
@@ -423,7 +472,11 @@
       {
         "name": "Cloud Migration",
         "description": "Migrated on-premise infrastructure to AWS for a Fortune 500 company.",
-        "technologies": ["AWS", "Terraform", "Kubernetes"],
+        "technologies": [
+          "AWS",
+          "Terraform",
+          "Kubernetes"
+        ],
         "role": "Lead DevOps",
         "startDate": "2020-01",
         "endDate": "2021-06"
@@ -437,7 +490,7 @@
       "linkedin": "https://linkedin.com/in/marcus-j-devops",
       "github": "https://github.com/marcus-j"
     },
-    "_id": "cf258be147ad0369cf258be1"
+    "_id": "69ec9a177c8f181c32b2fe4b"
   },
   {
     "firstName": "Sophie",
@@ -485,7 +538,11 @@
         "startDate": "2021-02",
         "endDate": "Present",
         "description": "Led design for B2B SaaS products with 100K+ users.",
-        "technologies": ["Figma", "Sketch", "Principle"],
+        "technologies": [
+          "Figma",
+          "Sketch",
+          "Principle"
+        ],
         "isCurrent": true
       }
     ],
@@ -502,7 +559,10 @@
       {
         "name": "E-Commerce Redesign",
         "description": "Complete redesign of shopping experience increasing conversions by 25%.",
-        "technologies": ["Figma", "UserTesting"],
+        "technologies": [
+          "Figma",
+          "UserTesting"
+        ],
         "role": "Lead Designer",
         "startDate": "2022-06",
         "endDate": "2023-02"
@@ -516,7 +576,7 @@
       "linkedin": "https://linkedin.com/in/sophie-mueller",
       "dribbble": "https://dribbble.com/sophiemueller"
     },
-    "_id": "369cf258bi147ad0369cf258"
+    "_id": "69ec9a177c8f181c32b2fe4c"
   },
   {
     "firstName": "Kwame",
@@ -564,7 +624,11 @@
         "startDate": "2024-01",
         "endDate": "Present",
         "description": "Created dashboards and reports for executive leadership.",
-        "technologies": ["SQL", "Tableau", "Excel"],
+        "technologies": [
+          "SQL",
+          "Tableau",
+          "Excel"
+        ],
         "isCurrent": true
       }
     ],
@@ -581,7 +645,10 @@
       {
         "name": "Sales Dashboard",
         "description": "Interactive dashboard tracking sales performance across regions.",
-        "technologies": ["Tableau", "SQL"],
+        "technologies": [
+          "Tableau",
+          "SQL"
+        ],
         "role": "Analyst",
         "startDate": "2024-03",
         "endDate": "2024-08"
@@ -591,7 +658,7 @@
       "status": "Available",
       "type": "Full-time"
     },
-    "_id": "ad0369cf258be147ad0369cf"
+    "_id": "69ec9a177c8f181c32b2fe4d"
   },
   {
     "firstName": "Carlos",
@@ -643,7 +710,11 @@
         "startDate": "2022-05",
         "endDate": "Present",
         "description": "Developed fintech mobile app with 500K+ downloads.",
-        "technologies": ["Flutter", "Firebase", "REST APIs"],
+        "technologies": [
+          "Flutter",
+          "Firebase",
+          "REST APIs"
+        ],
         "isCurrent": true
       }
     ],
@@ -660,7 +731,11 @@
       {
         "name": " delivery App",
         "description": "Food delivery application with real-time tracking.",
-        "technologies": ["Flutter", "Firebase", "Google Maps"],
+        "technologies": [
+          "Flutter",
+          "Firebase",
+          "Google Maps"
+        ],
         "role": "Lead Developer",
         "startDate": "2023-01",
         "endDate": "2023-08"
@@ -674,7 +749,7 @@
       "linkedin": "https://linkedin.com/in/carlos-silva",
       "github": "https://github.com/carlos-dev"
     },
-    "_id": "147ad0369cf2b8be147ad036"
+    "_id": "69ec9a177c8f181c32b2fe4e"
   },
   {
     "firstName": "Priya",
@@ -722,7 +797,11 @@
         "startDate": "2020-03",
         "endDate": "Present",
         "description": "Conducted security audits for Fortune 500 companies.",
-        "technologies": ["Kali Linux", "Burp Suite", "Wireshark"],
+        "technologies": [
+          "Kali Linux",
+          "Burp Suite",
+          "Wireshark"
+        ],
         "isCurrent": true
       }
     ],
@@ -751,7 +830,10 @@
       {
         "name": "Bank Security Audit",
         "description": "Comprehensive security assessment for major Indian bank.",
-        "technologies": ["Kali Linux", "Nessus"],
+        "technologies": [
+          "Kali Linux",
+          "Nessus"
+        ],
         "role": "Lead Auditor",
         "startDate": "2021-06",
         "endDate": "2021-09"
@@ -764,7 +846,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/in/priya-sharma-sec"
     },
-    "_id": "8be147ad0369cf258be147ad"
+    "_id": "69ec9a177c8f181c32b2fe4f"
   },
   {
     "firstName": "Oliver",
@@ -808,7 +890,12 @@
         "startDate": "2021-01",
         "endDate": "Present",
         "description": "Built automation framework reducing test time by 60%.",
-        "technologies": ["Selenium", "Java", "TestNG", "Jenkins"],
+        "technologies": [
+          "Selenium",
+          "Java",
+          "TestNG",
+          "Jenkins"
+        ],
         "isCurrent": true
       }
     ],
@@ -825,7 +912,11 @@
       {
         "name": "Automation Framework",
         "description": "Created reusable Selenium framework for regression testing.",
-        "technologies": ["Selenium", "Java", "Maven"],
+        "technologies": [
+          "Selenium",
+          "Java",
+          "Maven"
+        ],
         "role": "QA Lead",
         "startDate": "2022-01",
         "endDate": "2022-07"
@@ -838,7 +929,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/in/oliver-brown-qa"
     },
-    "_id": "f258be147ad0969cf258be14"
+    "_id": "69ec9a177c8f181c32b2fe50"
   },
   {
     "firstName": "Chen",
@@ -890,7 +981,12 @@
         "startDate": "2022-09",
         "endDate": "Present",
         "description": "Developed APIs for e-commerce platforms.",
-        "technologies": ["Python", "Django", "PostgreSQL", "Docker"],
+        "technologies": [
+          "Python",
+          "Django",
+          "PostgreSQL",
+          "Docker"
+        ],
         "isCurrent": true
       }
     ],
@@ -907,7 +1003,11 @@
       {
         "name": "E-Commerce API",
         "description": "RESTful API for online retail platform.",
-        "technologies": ["Django", "REST Framework", "PostgreSQL"],
+        "technologies": [
+          "Django",
+          "REST Framework",
+          "PostgreSQL"
+        ],
         "role": "Backend Developer",
         "startDate": "2023-02",
         "endDate": "2023-07"
@@ -921,7 +1021,7 @@
       "linkedin": "https://linkedin.com/in/chen-wei",
       "github": "https://github.com/chenwei-dev"
     },
-    "_id": "69cf258be147ad0369cf258b"
+    "_id": "69ec9a177c8f181c32b2fe51"
   },
   {
     "firstName": "Ahmed",
@@ -969,7 +1069,11 @@
         "startDate": "2024-06",
         "endDate": "Present",
         "description": "Built frontend components and REST endpoints.",
-        "technologies": ["React", "Node.js", "MongoDB"],
+        "technologies": [
+          "React",
+          "Node.js",
+          "MongoDB"
+        ],
         "isCurrent": true
       }
     ],
@@ -986,7 +1090,11 @@
       {
         "name": "Task Manager App",
         "description": "Fullstack task management application.",
-        "technologies": ["React", "Node.js", "MongoDB"],
+        "technologies": [
+          "React",
+          "Node.js",
+          "MongoDB"
+        ],
         "role": "Developer",
         "startDate": "2024-01",
         "endDate": "2024-04"
@@ -1000,7 +1108,7 @@
       "linkedin": "https://linkedin.com/in/ahmed-hassan",
       "github": "https://github.com/ahmedh"
     },
-    "_id": "d0369cf258ba147ad0369cf2"
+    "_id": "69ec9a177c8f181c32b2fe52"
   },
   {
     "firstName": "Fatima",
@@ -1048,7 +1156,12 @@
         "startDate": "2019-04",
         "endDate": "Present",
         "description": "Designed cloud Solutions for 50+ enterprise clients.",
-        "technologies": ["Azure", "Terraform", "AWS", "GCP"],
+        "technologies": [
+          "Azure",
+          "Terraform",
+          "AWS",
+          "GCP"
+        ],
         "isCurrent": true
       }
     ],
@@ -1072,7 +1185,10 @@
       {
         "name": "Enterprise Cloud Migration",
         "description": "Led migration of 200+ servers to Azure.",
-        "technologies": ["Azure", "Terraform"],
+        "technologies": [
+          "Azure",
+          "Terraform"
+        ],
         "role": "Lead Architect",
         "startDate": "2021-01",
         "endDate": "2022-06"
@@ -1085,7 +1201,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/in/fatima-alrashid"
     },
-    "_id": "47ad0369cf258be147ad0369"
+    "_id": "69ec9a177c8f181c32b2fe53"
   },
   {
     "firstName": "Ravi",
@@ -1133,7 +1249,11 @@
         "startDate": "2022-01",
         "endDate": "Present",
         "description": "Developed DeFi protocols with $100M+ TVL.",
-        "technologies": ["Solidity", "Ethereum", "Hardhat"],
+        "technologies": [
+          "Solidity",
+          "Ethereum",
+          "Hardhat"
+        ],
         "isCurrent": true
       }
     ],
@@ -1150,7 +1270,11 @@
       {
         "name": "DeFi Protocol",
         "description": "Decentralized exchange protocol with automated market making.",
-        "technologies": ["Solidity", "Ethereum", "Web3"],
+        "technologies": [
+          "Solidity",
+          "Ethereum",
+          "Web3"
+        ],
         "role": "Lead Developer",
         "startDate": "2022-06",
         "endDate": "2023-03"
@@ -1164,7 +1288,7 @@
       "linkedin": "https://linkedin.com/in/ravi-patel",
       "github": "https://github.com/ravi-blockchain"
     },
-    "_id": "be147ad0369cf258be147ad0"
+    "_id": "69ec9a177c8f181c32b2fe54"
   },
   {
     "firstName": "Michael",
@@ -1208,7 +1332,11 @@
         "startDate": "2019-06",
         "endDate": "Present",
         "description": "Led product roadmap for B2B SaaS platform with $50M ARR.",
-        "technologies": ["Jira", "Confluence", "Figma"],
+        "technologies": [
+          "Jira",
+          "Confluence",
+          "Figma"
+        ],
         "isCurrent": true
       }
     ],
@@ -1225,7 +1353,10 @@
       {
         "name": "SaaS Platform Launch",
         "description": "Launched B2B platform from 0 to $50M ARR.",
-        "technologies": ["Jira", "Mixpanel"],
+        "technologies": [
+          "Jira",
+          "Mixpanel"
+        ],
         "role": "Product Lead",
         "startDate": "2020-01",
         "endDate": "2023-12"
@@ -1238,7 +1369,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/in/michael-thompson-pm"
     },
-    "_id": "258be147ad0369cf258be147"
+    "_id": "69ec9a177c8f181c32b2fe55"
   },
   {
     "firstName": "Yuki",
@@ -1286,7 +1417,11 @@
         "startDate": "2021-04",
         "endDate": "Present",
         "description": "Developed firmware for smart home devices.",
-        "technologies": ["C++", "RTOS", "ESP32"],
+        "technologies": [
+          "C++",
+          "RTOS",
+          "ESP32"
+        ],
         "isCurrent": true
       }
     ],
@@ -1303,7 +1438,11 @@
       {
         "name": "Smart Home Hub",
         "description": "IoT hub connecting 100+ smart devices.",
-        "technologies": ["C++", "ESP32", "MQTT"],
+        "technologies": [
+          "C++",
+          "ESP32",
+          "MQTT"
+        ],
         "role": "Firmware Lead",
         "startDate": "2022-01",
         "endDate": "2023-01"
@@ -1317,7 +1456,7 @@
       "linkedin": "https://linkedin.com/in/yuki-tanaka",
       "github": "https://github.com/yuki-embedded"
     },
-    "_id": "9cf258be147ad0369cf258be"
+    "_id": "69ec9a177c8f181c32b2fe56"
   },
   {
     "firstName": "Lucas",
@@ -1365,7 +1504,11 @@
         "startDate": "2023-02",
         "endDate": "Present",
         "description": "Developing mobile games with 1M+ downloads.",
-        "technologies": ["Unity", "C#", "Blender"],
+        "technologies": [
+          "Unity",
+          "C#",
+          "Blender"
+        ],
         "isCurrent": true
       }
     ],
@@ -1382,7 +1525,10 @@
       {
         "name": "Adventure Quest",
         "description": "Mobile adventure game with procedural generation.",
-        "technologies": ["Unity", "C#"],
+        "technologies": [
+          "Unity",
+          "C#"
+        ],
         "role": "Lead Developer",
         "startDate": "2023-05",
         "endDate": "2024-02"
@@ -1396,7 +1542,7 @@
       "linkedin": "https://linkedin.com/in/lucas-martin-game",
       "github": "https://github.com/lucasgames"
     },
-    "_id": "0369cf258be147ada369cf25"
+    "_id": "69ec9a177c8f181c32b2fe57"
   },
   {
     "firstName": "Emily",
@@ -1444,7 +1590,11 @@
         "startDate": "2024-03",
         "endDate": "Present",
         "description": "Implementing SEO strategies for B2B clients.",
-        "technologies": ["Google Analytics", "Python", "SQL"],
+        "technologies": [
+          "Google Analytics",
+          "Python",
+          "SQL"
+        ],
         "isCurrent": true
       }
     ],
@@ -1461,7 +1611,10 @@
       {
         "name": "SEO Performance Dashboard",
         "description": "Automated dashboard tracking keyword rankings.",
-        "technologies": ["Python", "Google Search Console"],
+        "technologies": [
+          "Python",
+          "Google Search Console"
+        ],
         "role": "Analyst",
         "startDate": "2024-06",
         "endDate": "2024-09"
@@ -1474,7 +1627,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/in/emily-wong"
     },
-    "_id": "7ad0369cf258be147ad0369c"
+    "_id": "69ec9a177c8f181c32b2fe58"
   },
   {
     "firstName": "Diego",
@@ -1522,7 +1675,12 @@
         "startDate": "2020-08",
         "endDate": "Present",
         "description": "Built SaaS platforms serving 10K+ users.",
-        "technologies": ["Ruby", "Rails", "PostgreSQL", "Redis"],
+        "technologies": [
+          "Ruby",
+          "Rails",
+          "PostgreSQL",
+          "Redis"
+        ],
         "isCurrent": true
       }
     ],
@@ -1539,7 +1697,11 @@
       {
         "name": "Project Management Tool",
         "description": "Agile project management SaaS platform.",
-        "technologies": ["Rails", "React", "PostgreSQL"],
+        "technologies": [
+          "Rails",
+          "React",
+          "PostgreSQL"
+        ],
         "role": "Lead Developer",
         "startDate": "2021-01",
         "endDate": "2022-06"
@@ -1553,7 +1715,7 @@
       "linkedin": "https://linkedin.com/in/diego-rodriguez",
       "github": "https://github.com/diego-rails"
     },
-    "_id": "e147ad0369cf251be147ad03"
+    "_id": "69ec9a177c8f181c32b2fe59"
   },
   {
     "firstName": "Tadesse",
@@ -1601,7 +1763,11 @@
         "startDate": "2021-09",
         "endDate": "Present",
         "description": "Developed apps with 100K+ downloads.",
-        "technologies": ["Kotlin", "Jetpack Compose", "Firebase"],
+        "technologies": [
+          "Kotlin",
+          "Jetpack Compose",
+          "Firebase"
+        ],
         "isCurrent": true
       }
     ],
@@ -1618,7 +1784,11 @@
       {
         "name": "Mobile Banking App",
         "description": "Secure banking application for unbanked populations.",
-        "technologies": ["Kotlin", "Jetpack Compose", "Firebase"],
+        "technologies": [
+          "Kotlin",
+          "Jetpack Compose",
+          "Firebase"
+        ],
         "role": "Lead Developer",
         "startDate": "2022-03",
         "endDate": "2023-02"
@@ -1632,7 +1802,7 @@
       "linkedin": "https://linkedin.com/in/tadesse-bekele",
       "github": "https://github.com/tadesse"
     },
-    "_id": "58be147ad0369cf258be147a"
+    "_id": "69ec9a177c8f181c32b2fe5a"
   },
   {
     "firstName": "Sofia",
@@ -1680,7 +1850,11 @@
         "startDate": "2023-01",
         "endDate": "Present",
         "description": "Building consumer iOS apps for Latin American market.",
-        "technologies": ["Swift", "SwiftUI", "Combine"],
+        "technologies": [
+          "Swift",
+          "SwiftUI",
+          "Combine"
+        ],
         "isCurrent": true
       }
     ],
@@ -1697,7 +1871,11 @@
       {
         "name": "Health Tracker App",
         "description": "Fitness tracking app with health API integration.",
-        "technologies": ["Swift", "SwiftUI", "HealthKit"],
+        "technologies": [
+          "Swift",
+          "SwiftUI",
+          "HealthKit"
+        ],
         "role": "Lead Developer",
         "startDate": "2023-04",
         "endDate": "2024-01"
@@ -1711,7 +1889,7 @@
       "linkedin": "https://linkedin.com/in/sofia-garcia-ios",
       "github": "https://github.com/sofia-ios"
     },
-    "_id": "cf258be1470d0369cf258be1"
+    "_id": "69ec9a177c8f181c32b2fe5b"
   },
   {
     "firstName": "Omar",
@@ -1759,7 +1937,12 @@
         "startDate": "2020-05",
         "endDate": "Present",
         "description": "Deployed computer vision models for smart city projects.",
-        "technologies": ["TensorFlow", "Python", "Keras", "OpenCV"],
+        "technologies": [
+          "TensorFlow",
+          "Python",
+          "Keras",
+          "OpenCV"
+        ],
         "isCurrent": true
       }
     ],
@@ -1783,7 +1966,11 @@
       {
         "name": "Smart City Vision",
         "description": "Computer vision system for traffic management.",
-        "technologies": ["TensorFlow", "OpenCV", "Python"],
+        "technologies": [
+          "TensorFlow",
+          "OpenCV",
+          "Python"
+        ],
         "role": "Lead AI Engineer",
         "startDate": "2021-06",
         "endDate": "2022-12"
@@ -1797,7 +1984,7 @@
       "linkedin": "https://linkedin.com/in/omar-hussein-ai",
       "github": "https://github.com/omar-ai"
     },
-    "_id": "369cf258be147ad0369cf258"
+    "_id": "69ec9a177c8f181c32b2fe5c"
   },
   {
     "firstName": "Nina",
@@ -1845,7 +2032,11 @@
         "startDate": "2021-03",
         "endDate": "Present",
         "description": "Built predictive models for retail analytics.",
-        "technologies": ["R", "Python", "scikit-learn"],
+        "technologies": [
+          "R",
+          "Python",
+          "scikit-learn"
+        ],
         "isCurrent": true
       }
     ],
@@ -1862,7 +2053,10 @@
       {
         "name": "Customer Churn Prediction",
         "description": "ML model reducing churn by 15%.",
-        "technologies": ["R", "XGBoost"],
+        "technologies": [
+          "R",
+          "XGBoost"
+        ],
         "role": "Data Scientist",
         "startDate": "2022-01",
         "endDate": "2022-08"
@@ -1875,7 +2069,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/in/nina-petrova"
     },
-    "_id": "ad0369cf238be147ad0369cf"
+    "_id": "69ec9a177c8f181c32b2fe5d"
   },
   {
     "firstName": "Jakob",
@@ -1923,7 +2117,11 @@
         "startDate": "2022-07",
         "endDate": "Present",
         "description": "Developing high-performance networking tools.",
-        "technologies": ["Rust", "Tokio", "WebAssembly"],
+        "technologies": [
+          "Rust",
+          "Tokio",
+          "WebAssembly"
+        ],
         "isCurrent": true
       }
     ],
@@ -1940,7 +2138,10 @@
       {
         "name": "Wasm HTTP Server",
         "description": "High-performance web server in WebAssembly.",
-        "technologies": ["Rust", "WebAssembly"],
+        "technologies": [
+          "Rust",
+          "WebAssembly"
+        ],
         "role": "Lead Developer",
         "startDate": "2023-02",
         "endDate": "2023-11"
@@ -1954,7 +2155,7 @@
       "linkedin": "https://linkedin.com/in/jakob-andersen",
       "github": "https://github.com/jakob-rust"
     },
-    "_id": "147ad0369cf258be147ad036"
+    "_id": "69ec9a177c8f181c32b2fe5e"
   },
   {
     "firstName": "Anita",
@@ -2002,7 +2203,11 @@
         "startDate": "2020-04",
         "endDate": "Present",
         "description": "Creating documentation for enterprise software.",
-        "technologies": ["Markdown", "Docusaurus", "Swagger"],
+        "technologies": [
+          "Markdown",
+          "Docusaurus",
+          "Swagger"
+        ],
         "isCurrent": true
       }
     ],
@@ -2019,7 +2224,10 @@
       {
         "name": "API Documentation Portal",
         "description": "Comprehensive developer docs portal.",
-        "technologies": ["Docusaurus", "OpenAPI"],
+        "technologies": [
+          "Docusaurus",
+          "OpenAPI"
+        ],
         "role": "Lead Writer",
         "startDate": "2021-08",
         "endDate": "2022-04"
@@ -2032,7 +2240,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/in/anita-nair"
     },
-    "_id": "8be147ad0329cf258be147ad"
+    "_id": "69ec9a177c8f181c32b2fe5f"
   },
   {
     "firstName": "Hiroshi",
@@ -2080,7 +2288,11 @@
         "startDate": "2018-06",
         "endDate": "Present",
         "description": "Managing mission-critical databases for financial sector.",
-        "technologies": ["PostgreSQL", "MySQL", "Oracle"],
+        "technologies": [
+          "PostgreSQL",
+          "MySQL",
+          "Oracle"
+        ],
         "isCurrent": true
       }
     ],
@@ -2104,7 +2316,9 @@
       {
         "name": "Database Migration",
         "description": "Migrated legacy DB to PostgreSQL with zero downtime.",
-        "technologies": ["PostgreSQL"],
+        "technologies": [
+          "PostgreSQL"
+        ],
         "role": "Lead DBA",
         "startDate": "2021-01",
         "endDate": "2021-12"
@@ -2117,7 +2331,7 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/in/hiroshi-yamamoto-dba"
     },
-    "_id": "f258be147ad0369cf258be14"
+    "_id": "69ec9a177c8f181c32b2fe60"
   },
   {
     "firstName": "Zoe",
@@ -2161,7 +2375,12 @@
         "startDate": "2021-09",
         "endDate": "Present",
         "description": "Maintaining 99.99% uptime for cloud services.",
-        "technologies": ["Go", "Prometheus", "Grafana", "Kubernetes"],
+        "technologies": [
+          "Go",
+          "Prometheus",
+          "Grafana",
+          "Kubernetes"
+        ],
         "isCurrent": true
       }
     ],
@@ -2178,7 +2397,11 @@
       {
         "name": "Observability Platform",
         "description": "Built end-to-end monitoring and alerting system.",
-        "technologies": ["Prometheus", "Grafana", "Go"],
+        "technologies": [
+          "Prometheus",
+          "Grafana",
+          "Go"
+        ],
         "role": "SRE Lead",
         "startDate": "2022-03",
         "endDate": "2023-01"
@@ -2192,7 +2415,7 @@
       "linkedin": "https://linkedin.com/in/zoe-mitchell-sre",
       "github": "https://github.com/zoe-sre"
     },
-    "_id": "69cf258be14ead0369cf258b"
+    "_id": "69ec9a177c8f181c32b2fe61"
   },
   {
     "firstName": "Luis",
@@ -2240,7 +2463,11 @@
         "startDate": "2022-04",
         "endDate": "Present",
         "description": "Building interactive web applications.",
-        "technologies": ["Vue.js", "TypeScript", "Pinia"],
+        "technologies": [
+          "Vue.js",
+          "TypeScript",
+          "Pinia"
+        ],
         "isCurrent": true
       }
     ],
@@ -2257,7 +2484,11 @@
       {
         "name": "E-Learning Platform",
         "description": "Interactive learning platform with real-time collaboration.",
-        "technologies": ["Vue.js", "Nuxt.js", "Firebase"],
+        "technologies": [
+          "Vue.js",
+          "Nuxt.js",
+          "Firebase"
+        ],
         "role": "Frontend Lead",
         "startDate": "2023-01",
         "endDate": "2023-10"
@@ -2271,7 +2502,7 @@
       "linkedin": "https://linkedin.com/in/luis-fernandez-vue",
       "github": "https://github.com/luis-vue"
     },
-    "_id": "d0369cf258be147ad0369cf2"
+    "_id": "69ec9a177c8f181c32b2fe62"
   },
   {
     "firstName": "Amara",
@@ -2323,7 +2554,11 @@
         "startDate": "2019-02",
         "endDate": "Present",
         "description": "Leading 30+ engineers buildingfintech solutions.",
-        "technologies": ["Java", "Spring Boot", "Kubernetes"],
+        "technologies": [
+          "Java",
+          "Spring Boot",
+          "Kubernetes"
+        ],
         "isCurrent": true
       }
     ],
@@ -2347,7 +2582,10 @@
       {
         "name": "Mobile Money Platform",
         "description": "Led team building payment platform serving 5M users.",
-        "technologies": ["Java", "Spring Boot"],
+        "technologies": [
+          "Java",
+          "Spring Boot"
+        ],
         "role": "Engineering Lead",
         "startDate": "2019-06",
         "endDate": "2021-12"
@@ -2360,6 +2598,6 @@
     "socialLinks": {
       "linkedin": "https://linkedin.com/in/amara-diallo"
     },
-    "_id": "47ad0369cf228be147ad0369"
+    "_id": "69ec9a177c8f181c32b2fe63"
   }
 ]
