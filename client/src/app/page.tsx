@@ -9,7 +9,7 @@ export default function LoginPage() {
 			<div className="relative hidden lg:flex flex-col text-white">
 				<Image
 					src="/login_image.webp"
-					alt="CogniCV Background"
+					alt="cogniCV Background"
 					fill
 					priority
 					className="absolute inset-0 h-full w-full object-cover brightness-50"
@@ -18,7 +18,7 @@ export default function LoginPage() {
 					<div className="bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
 						<IconSparkles className="size-4" />
 					</div>
-					CogniCV
+					cogniCV
 				</div>
 				<div className="relative z-10 mt-auto p-10 mb-10">
 					<h1 className="text-4xl font-bold mb-4 font-work-sans">AI-Powered Recruitment</h1>

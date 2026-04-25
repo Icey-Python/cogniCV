@@ -251,7 +251,7 @@ export class ChromaService {
       .map((m) => `${m.role === "user" ? "Recruiter" : "Assistant"}: ${m.content}`)
       .join("\n");
 
-    const systemPrompt = `You are an expert AI recruitment analyst for the CogniCV platform. 
+    const systemPrompt = `You are an expert AI recruitment analyst for the cogniCV platform. 
 You have access to detailed screening analysis data for a specific job posting and its candidates.
 
 Your role is to help recruiters understand their screening results by answering questions about:

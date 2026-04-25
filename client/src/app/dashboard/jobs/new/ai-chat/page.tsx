@@ -333,7 +333,7 @@ export default function AiJobCreationPage() {
 				<div className="space-y-2">
 					<h2 className="font-lora text-3xl font-semibold">Job Created Successfully</h2>
 					<p className="text-muted-foreground mx-auto max-w-md">
-						The CogniCV AI is now scanning platform profiles to find the best matches for this role.
+						The cogniCV AI is now scanning platform profiles to find the best matches for this role.
 					</p>
 				</div>
 				<div className="flex justify-center gap-4 pt-4">

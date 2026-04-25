@@ -27,7 +27,7 @@ export default function SharedAnalysisPage() {
 	const params = useParams<{ id: string }>();
 	const [password, setPassword] = useState('');
 	const [activeTab, setActiveTab] = useState<'analysis' | 'applicant' | 'job'>('analysis');
-	
+
 	const { data, isLoading, error } = useSharedAnalysisQuery(params.id, password);
 
 	const handleVerify = async (enteredPassword: string) => {
@@ -103,7 +103,7 @@ export default function SharedAnalysisPage() {
 							<IconSparkles className="size-5 text-white" />
 						</div>
 						<span className="font-lora text-xl font-bold tracking-tight text-slate-900">
-							CogniCV
+							cogniCV
 						</span>
 					</div>
 
@@ -154,7 +154,7 @@ export default function SharedAnalysisPage() {
 					<div className="space-y-8">
 						{/* Header */}
 						<div className="text-center space-y-4">
-							<Badge variant="outline" className="mb-2">CogniCV Shared Analysis</Badge>
+							<Badge variant="outline" className="mb-2">cogniCV Shared Analysis</Badge>
 							<h1 className="font-lora text-4xl">{candidateName}</h1>
 							<p className="text-muted-foreground text-lg">{p.headline}</p>
 							<div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
@@ -287,9 +287,9 @@ export default function SharedAnalysisPage() {
 				{activeTab === 'job' && contextJob && (
 					<JobDetailsView job={contextJob} />
 				)}
-				
+
 				<footer className="mt-20 text-center text-sm text-slate-400">
-					© {new Date().getFullYear()} CogniCV Recruitment Platform. All rights reserved.
+					© {new Date().getFullYear()} cogniCV Recruitment Platform. All rights reserved.
 				</footer>
 			</main>
 		</div>

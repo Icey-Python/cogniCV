@@ -1,10 +1,10 @@
-# CogniCV — AI-Powered Talent Screening Platform
+# cogniCV — AI-Powered Talent Screening Platform
 
-CogniCV is an intelligent recruitment tool designed to automate and enhance the candidate screening process. Built for high-volume recruitment, it leverages Google's Gemini AI to parse resumes, analyze candidate fit against job descriptions, and provide explainable ranking shortlists.
+cogniCV is an intelligent recruitment tool designed to automate and enhance the candidate screening process. Built for high-volume recruitment, it leverages Google's Gemini AI to parse resumes, analyze candidate fit against job descriptions, and provide explainable ranking shortlists.
 
 ## Project Overview
 
-CogniCV solves the challenge of manual resume screening by providing:
+cogniCV solves the challenge of manual resume screening by providing:
 - **AI-Powered Resume Parsing**: Automatically extracts structured data (skills, experience, education) from PDF resumes.
 - **Intelligent Job Creation**: An AI chat assistant that helps recruiters generate detailed, markdown-formatted job descriptions.
 - **Weighted Scoring Engine**: Ranks candidates based on a multi-dimensional scoring model (Skills, Experience, Education, Relevance).
@@ -124,7 +124,7 @@ The application will be available at `http://localhost:3000`.
 
 ## AI Decision Flow
 
-CogniCV uses a chunked processing model to evaluate candidates efficiently while staying within AI rate limits.
+cogniCV uses a chunked processing model to evaluate candidates efficiently while staying within AI rate limits.
 
 1.  **Ingestion**: Resumes are uploaded and parsed into structured JSON via Gemini.
 2.  **Trigger**: When a recruiter starts "AI Screening", the server fetches all candidate snapshots and the job description.
@@ -150,4 +150,4 @@ CogniCV uses a chunked processing model to evaluate candidates efficiently while
 - **Chunk Size**: The system is tuned to process 10 candidates per AI call to balance speed and evaluation depth.
 - **PDF Quality**: Text extraction quality depends on the underlying PDF structure (scanned images without OCR may fail).
 
-© 2026 CogniCV Team. Built for the Umurava AI Hackathon.
+© 2026 cogniCV Team. Built for the Umurava AI Hackathon.

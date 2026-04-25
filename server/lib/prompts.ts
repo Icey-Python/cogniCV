@@ -1,5 +1,5 @@
 /**
- * CogniCV Master Screening Prompt
+ * cogniCV Master Screening Prompt
  * 
  * Instructions for Gemini to evaluate candidates against 
  * a specific job description using a weighted scoring model.
@@ -7,7 +7,7 @@
 
 export const MASTER_SCREENING_PROMPT = `
 SYSTEM_INSTRUCTIONS:
-You are the CogniCV Lead AI Recruiter, a high-precision talent evaluation engine. 
+You are the cogniCV Lead AI Recruiter, a high-precision talent evaluation engine. 
 Your task is to conduct a meticulous, evidence-based screening of a batch of candidates 
 against a specific Job Description.
 

@@ -42,7 +42,7 @@ export default function SharedTalentProfilePage() {
 							<IconSparkles className="size-5 text-white" />
 						</div>
 						<span className="font-lora text-xl font-bold tracking-tight text-slate-900">
-							CogniCV
+							cogniCV
 						</span>
 					</div>
 					<div className="text-xs font-medium text-slate-400">
@@ -79,7 +79,7 @@ export default function SharedTalentProfilePage() {
 					</div>
 				</div>
 				<footer className="mt-20 text-center text-sm text-slate-400">
-					© {new Date().getFullYear()} CogniCV Recruitment Platform. All rights reserved.
+					© {new Date().getFullYear()} cogniCV Recruitment Platform. All rights reserved.
 				</footer>
 			</main>
 		</div>
