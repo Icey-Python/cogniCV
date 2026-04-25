@@ -8,7 +8,13 @@ import {
 	markdownShortcutPlugin,
 	linkPlugin,
 	linkDialogPlugin,
-	MDXEditorMethods
+	MDXEditorMethods,
+	toolbarPlugin,
+	UndoRedo,
+	BoldItalicUnderlineToggles,
+	ListsToggle,
+	BlockTypeSelect,
+	CreateLink
 } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
 import { forwardRef } from 'react';
@@ -22,19 +28,31 @@ interface MdxEditorProps {
 export const MdxEditor = forwardRef<MDXEditorMethods, MdxEditorProps>(
 	({ markdown, onChange, placeholder }, ref) => {
 		return (
-			<div className="prose border-input bg-background w-full max-w-full rounded-md border">
+			<div className="border-input bg-background w-full max-w-full rounded-md border">
 				<MDXEditor
 					ref={ref}
 					markdown={markdown}
 					onChange={onChange}
-					contentEditableClassName="min-h-[200px] px-3 py-2 text-sm"
+					placeholder={placeholder}
+					contentEditableClassName="prose prose-sm max-w-none min-h-[200px] px-3 py-2 text-sm focus:outline-none"
 					plugins={[
 						headingsPlugin(),
 						quotePlugin(),
 						listsPlugin(),
 						markdownShortcutPlugin(),
 						linkPlugin(),
-						linkDialogPlugin()
+						linkDialogPlugin(),
+						toolbarPlugin({
+							toolbarContents: () => (
+								<div className="flex flex-wrap items-center gap-1 border-b p-1">
+									<UndoRedo />
+									<BoldItalicUnderlineToggles />
+									<BlockTypeSelect />
+									<ListsToggle />
+									<CreateLink />
+								</div>
+							)
+						})
 					]}
 				/>
 			</div>

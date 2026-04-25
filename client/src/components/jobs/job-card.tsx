@@ -4,6 +4,7 @@ import { IconBriefcase, IconMapPin, IconClock, IconUsers, IconArrowRight } from 
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import MarkdownRenderer from '@/components/ui/markdown';
 
 interface JobCardProps {
 	job: Job;
@@ -24,9 +25,9 @@ export function JobCard({ job, disableLink }: JobCardProps) {
 					<CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2 font-lora">
 						{job.title}
 					</CardTitle>
-					<p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed my-2">
-						{job.description}
-					</p>
+					<div className="text-sm text-muted-foreground line-clamp-2 leading-relaxed my-2 h-10 overflow-hidden prose-p:my-0 prose-headings:text-sm prose-headings:my-0">
+						<MarkdownRenderer content={job.description} />
+					</div>
 				</div>
 				<Badge variant="outline" className={cn('text-xs', statusDot[job.status])}>
 				{job.status}

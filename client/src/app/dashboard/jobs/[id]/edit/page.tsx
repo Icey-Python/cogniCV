@@ -28,6 +28,11 @@ import {
 	SelectTrigger,
 	SelectValue
 } from '@/components/ui/select';
+import dynamic from 'next/dynamic';
+
+const MdxEditor = dynamic(() => import('@/components/ui/mdx-editor'), {
+	ssr: false
+});
 
 type EmploymentType = 'Full-time' | 'Part-time' | 'Contract';
 type ExperienceLevel = 'Entry' | 'Junior' | 'Mid' | 'Senior' | 'Lead';
@@ -195,12 +200,10 @@ export default function EditJobPage() {
 
 							<div className="grid gap-2">
 								<Label htmlFor="description">Job Description</Label>
-								<Textarea
-									id="description"
+								<MdxEditor 
+									markdown={description} 
+									onChange={setDescription} 
 									placeholder="Describe the role and responsibilities..."
-									className="min-h-[200px] shadow-none"
-									value={description}
-									onChange={(e) => setDescription(e.target.value)}
 								/>
 							</div>
 

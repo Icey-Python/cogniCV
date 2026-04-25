@@ -357,7 +357,11 @@ export default function NewJobPage() {
 									<Label htmlFor="description">
 										Job Description <span className="text-destructive">*</span>
 									</Label>
-									<MdxEditor markdown={description} onChange={setDescription} />
+									<MdxEditor 
+										markdown={description} 
+										onChange={setDescription} 
+										placeholder="Describe the role and responsibilities..."
+									/>
 								</div>
 								<div className="grid gap-5 sm:grid-cols-2">
 									<div className="grid gap-1.5">
