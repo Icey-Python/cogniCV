@@ -8,7 +8,6 @@ import amqp from "amqplib";
 
 const BATCH_SIZE = 5;
 const BATCH_TIMEOUT_MS = 2000;
-const MAX_PROCESSING_ATTEMPTS = 3;
 
 let batchBuffer: amqp.ConsumeMessage[] = [];
 let batchTimeout: NodeJS.Timeout | null = null;
@@ -52,7 +51,7 @@ const processBatch = async () => {
   Logger.info({ message: `Processing batch of ${currentBatch.length} resumes...` });
 
   try {
-    const taskData = currentBatch.map((msg) => parseTaskMessage(msg));
+    const taskData = currentBatch.map((msg) => JSON.parse(msg.content.toString()));
     
     const buffers = await Promise.all(
       taskData.map(async (data) => {
@@ -62,65 +61,52 @@ const processBatch = async () => {
     );
 
     const parsedProfiles = await ParserService.parseResumeBatch(buffers);
-    const updatedTalentIds = new Set<string>();
 
     await Promise.all(
       parsedProfiles.map(async (profile: any) => {
         const originalData = taskData[profile.candidateIndex];
         if (!originalData) return;
-        updatedTalentIds.add(String(originalData.talentId));
 
-        // 1. Check if another talent profile exists with this email
-        const existingTalent = await TalentProfile.findOne({ email: profile.email });
+        const { talentId, jobId } = originalData;
 
-        if (existingTalent && String(existingTalent._id) !== String(originalData.talentId)) {
-          Logger.info({ message: `Deduplicating talent: Found existing profile for ${profile.email}` });
+        // 1. IDENTITY CHECK: Find if this email already exists
+        const existingTalent = await TalentProfile.findOne({ 
+          email: profile.email,
+          _id: { $ne: talentId } // Don't match the current temporary record
+        });
 
-          // Update existing talent with latest parsed data
-          Object.assign(existingTalent, profile, { parsingStatus: "success" });
-          await existingTalent.save();
+        if (existingTalent) {
+          Logger.info({ message: `Smart Merge: Updating existing profile for ${profile.email}` });
 
-          // Check if an application already exists for this existing talent and job
-          const duplicateApplication = await Application.findOne({
-            jobId: originalData.jobId,
-            profileId: existingTalent._id,
+          // A. Update the existing profile with LATEST resume data
+          await TalentProfile.findByIdAndUpdate(existingTalent._id, {
+            ...profile,
+            parsingStatus: "success",
+            source: "pdf"
           });
 
-          if (duplicateApplication) {
-            // Already applied! Just delete the temporary application and placeholder talent
-            await Application.findOneAndDelete({
-              jobId: originalData.jobId,
-              profileId: originalData.talentId,
-            });
-          } else {
-            // New application for existing talent: Update the temporary application link
-            await Application.findOneAndUpdate(
-              { jobId: originalData.jobId, profileId: originalData.talentId },
-              { profileId: existingTalent._id }
-            );
+          // B. Link this existing profile to the NEW job (if not already linked)
+          const existingApp = await Application.findOne({ 
+            jobId, 
+            profileId: existingTalent._id 
+          });
+
+          if (!existingApp) {
+            await Application.create({ jobId, profileId: existingTalent._id });
           }
 
-          // Delete the temporary placeholder talent
-          await TalentProfile.findByIdAndDelete(originalData.talentId);
+          // C. Cleanup: Remove the temporary placeholder talent and its application
+          await Application.findOneAndDelete({ jobId, profileId: talentId });
+          await TalentProfile.findByIdAndDelete(talentId);
+
         } else {
-          // 2. Normal update for the placeholder talent
-          await TalentProfile.findByIdAndUpdate(originalData.talentId, {
+          // 2. NEW TALENT: Simply update the placeholder record
+          await TalentProfile.findByIdAndUpdate(talentId, {
             ...profile,
             parsingStatus: "success",
           });
         }
       })
-    );
-
-    await Promise.all(
-      taskData
-        .filter((data) => !updatedTalentIds.has(String(data.talentId)))
-        .map((data) =>
-          TalentProfile.findByIdAndUpdate(data.talentId, {
-            parsingStatus: "failed",
-            errorMessage: "AI parser did not return a result for this resume",
-          })
-        )
     );
 
     currentBatch.forEach((msg) => channel.ack(msg));
@@ -130,43 +116,12 @@ const processBatch = async () => {
     Logger.error({ message: "Batch processing failure: " + error.message });
 
     for (const msg of currentBatch) {
-      const task = parseTaskMessage(msg);
-      const attempt = getProcessingAttempt(msg) + 1;
-
-      if (attempt < MAX_PROCESSING_ATTEMPTS) {
-        await TalentProfile.findByIdAndUpdate(task.talentId, {
-          parsingStatus: "pending",
-          errorMessage: `Retrying resume parsing (${attempt}/${MAX_PROCESSING_ATTEMPTS}): ${error.message}`,
-        });
-
-        channel.sendToQueue(RabbitMQQueues.RESUME_INGESTION, msg.content, {
-          persistent: true,
-          headers: {
-            ...msg.properties.headers,
-            processingAttempt: attempt,
-          },
-        });
-      } else {
-        await TalentProfile.findByIdAndUpdate(task.talentId, {
-          parsingStatus: "failed",
-          errorMessage: "Batch processing error after retries: " + error.message,
-        });
-      }
-
+      const { talentId } = JSON.parse(msg.content.toString());
+      await TalentProfile.findByIdAndUpdate(talentId, {
+        parsingStatus: "failed",
+        errorMessage: "Batch processing error: " + error.message,
+      });
       channel.ack(msg);
     }
   }
-};
-
-const parseTaskMessage = (msg: amqp.ConsumeMessage): {
-  talentId: string;
-  resumeUrl: string;
-  jobId: string;
-} => {
-  return JSON.parse(msg.content.toString());
-};
-
-const getProcessingAttempt = (msg: amqp.ConsumeMessage): number => {
-  const attempt = msg.properties.headers?.processingAttempt;
-  return typeof attempt === "number" ? attempt : 0;
 };

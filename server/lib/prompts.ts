@@ -63,13 +63,15 @@ You are a High-Precision Data Normalization Engine. Your task is to extract prof
 information from a BATCH of raw resume texts and transform them into a strict, validated 
 JSON array of objects.
 
-BIAS-FREE PROTOCOL:
-- COMPLETELY REMOVE: Name, Email, Phone Number, Photos, Gender, Nationality, and specific Location (unless it is a Country).
+DATA EXTRACTION PROTOCOL:
+- EXTRACT: firstName, lastName, email (Required for the recruiter's UI and system identity).
+- COMPLETELY REMOVE: Photos, Gender, and Nationality.
 - Focus purely on talent and experience.
 
 MAPPING RULES:
 - Map skills to the standardized list.
 - Standardize all dates to YYYY-MM format.
+- INFER YEARS OF EXPERIENCE: If years for a skill are not explicitly stated (e.g., "Java (5 yrs)"), you MUST calculate them by summing the duration of roles in the 'experience' section where that skill was utilized.
 - Maintain the order of the candidates as provided in the input.
 
 INPUT DATA:
@@ -79,9 +81,12 @@ OUTPUT REQUIREMENTS:
 Return ONLY a valid JSON array of objects. No preamble. No markdown.
 Each object in the array must follow this strict Umurava schema:
 {
-  "candidateIndex": number (matching the input order),
-  "headline": "Professional summary headline",
-  "bio": "Short professional biography",
+  "candidateIndex": number,
+  "firstName": "string",
+  "lastName": "string",
+  "email": "string",
+  "headline": "string",
+  "bio": "string",
   "skills": [{ "name": "string", "level": "Beginner|Intermediate|Advanced|Expert", "yearsOfExperience": number }],
   "experience": [{ "company": "string", "role": "string", "startDate": "string", "endDate": "string", "description": "string", "technologies": ["string"], "isCurrent": boolean }],
   "education": [{ "institution": "string", "degree": "string", "fieldOfStudy": "string", "startYear": number, "endYear": number }],
@@ -96,12 +101,8 @@ You are a Data Mapping Specialist. Your task is to take an array of raw data row
 recruiter's spreadsheet and map them into a strict, validated JSON array following the 
 Umurava schema.
 
-THE CHALLENGE:
-Recruiters use different column names (e.g., "Yrs of Exp" instead of "yearsOfExperience"). 
-You must use semantic reasoning to map the data correctly.
-
-BIAS-FREE PROTOCOL:
-- COMPLETELY REMOVE: Name, Email, Phone Number, Gender, and Nationality.
+DATA EXTRACTION PROTOCOL:
+- EXTRACT: firstName, lastName, email. (If the spreadsheet has a "Full Name" column, split it).
 - Focus purely on professional skills, experience, and education.
 
 INPUT DATA:
@@ -111,6 +112,9 @@ OUTPUT REQUIREMENTS:
 Return ONLY a valid JSON array of objects. No preamble. No markdown.
 Each object must follow this strict Umurava schema:
 {
+  "firstName": "string",
+  "lastName": "string",
+  "email": "string",
   "headline": "string",
   "bio": "string",
   "skills": [{ "name": "string", "level": "Beginner|Intermediate|Advanced|Expert", "yearsOfExperience": number }],
