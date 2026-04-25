@@ -1,22 +1,27 @@
-import { MOCK_JOBS } from '@/lib/mock-data';
+'use client';
+
 import { JobCard } from '@/components/jobs/job-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { IconBriefcase, IconUsers, IconStar, IconTrendingUp, IconArrowRight } from '@tabler/icons-react';
+import { IconBriefcase, IconUsers, IconStar, IconTrendingUp, IconArrowRight, IconLoader2 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-
-const totalApplicants = MOCK_JOBS.reduce((sum, j) => sum + j.applicantCount, 0);
-const activeJobs = MOCK_JOBS.filter((j) => j.status === 'Active').length;
-
-const stats = [
-	{ label: 'Active Jobs', value: activeJobs, icon: IconBriefcase, change: '+2 this week', color: 'text-primary' },
-	{ label: 'Total Applicants', value: totalApplicants, icon: IconUsers, change: '+12% vs last month', color: 'text-primary' },
-	{ label: 'Shortlisted', value: 28, icon: IconStar, change: '+5 today', color: 'text-primary' },
-	{ label: 'Avg. Match Score', value: '83%', icon: IconTrendingUp, change: '+2pts improvement', color: 'text-primary' },
-];
+import { useSearchJobsQuery, useJobAnalyticsQuery } from '@/hooks/query/jobs/queries';
 
 export default function DashboardPage() {
+	const { data: analyticsData } = useJobAnalyticsQuery();
+	const { data: jobsData, isLoading: isJobsLoading } = useSearchJobsQuery('', 'Active', 'all', 1, 3);
+
+	const analytics = analyticsData?.data;
+	const recentJobs = jobsData?.data?.jobs || [];
+
+	const stats = [
+		{ label: 'Active Jobs', value: analytics?.activeJobs || 0, icon: IconBriefcase, change: 'Total open roles', color: 'text-primary' },
+		{ label: 'Total Applicants', value: analytics?.totalCandidates || 0, icon: IconUsers, change: 'Across all jobs', color: 'text-primary' },
+		{ label: 'Shortlisted', value: 28, icon: IconStar, change: 'Awaiting review', color: 'text-primary' }, // Hardcoded for now
+		{ label: 'Avg. Match Score', value: `${analytics?.avgMatchScore || 0}%`, icon: IconTrendingUp, change: 'AI confidence score', color: 'text-primary' },
+	];
+
 	return (
 		<div className="space-y-8">
 			<div>
@@ -54,11 +59,19 @@ export default function DashboardPage() {
 					</Link>
 				</div>
 				<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-					{MOCK_JOBS.filter((j) => j.status === 'Active')
-						.slice(0, 3)
-						.map((job) => (
-							<JobCard key={job._id} job={job} />
-						))}
+					{isJobsLoading ? (
+						<div className="col-span-full flex justify-center py-10">
+							<IconLoader2 className="size-8 animate-spin text-muted-foreground" />
+						</div>
+					) : recentJobs.length > 0 ? (
+						recentJobs.map((job) => (
+							<JobCard key={job._id} job={job as any} />
+						))
+					) : (
+						<div className="col-span-full text-center py-10 border rounded-lg bg-muted/10 text-muted-foreground">
+							No active jobs found. Create one to get started.
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

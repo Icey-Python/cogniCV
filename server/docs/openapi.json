@@ -394,6 +394,82 @@
         }
       }
     },
+    "/api/v1/jobs/search": {
+      "get": {
+        "summary": "Search and filter jobs",
+        "tags": [
+          "Jobs"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search by title or description"
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by status (e.g. Active, Closed)"
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by source (e.g. Internal, External)"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Jobs retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/analytics": {
+      "get": {
+        "summary": "Get dashboard analytics for jobs",
+        "tags": [
+          "Jobs"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Analytics retrieved successfully"
+          }
+        }
+      }
+    },
     "/api/v1/organization": {
       "get": {
         "summary": "Get organization settings",
@@ -1284,6 +1360,23 @@
             ]
           },
           "location": {
+            "type": "object",
+            "properties": {
+              "country": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "workspaceType": {
+                "type": "string"
+              },
+              "isDefault": {
+                "type": "boolean"
+              }
+            }
+          },
+          "aiFocusArea": {
             "type": "string"
           },
           "createdBy": {

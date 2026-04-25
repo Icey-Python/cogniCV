@@ -2,8 +2,9 @@
 
 import { useState, useMemo } from 'react'
 import { useParams } from 'next/navigation'
-import { MOCK_JOBS, MOCK_RANKED_CANDIDATES } from '@/lib/mock-data'
+import { MOCK_RANKED_CANDIDATES } from '@/lib/mock-data'
 import { type RankedCandidate } from '@/types'
+import { useJobQuery } from '@/hooks/query/jobs/queries'
 import { ApplicantInsightDrawer } from '@/components/jobs/applicant-insight-drawer'
 import { JobInfoDrawer } from '@/components/jobs/job-info-drawer'
 import { Button } from '@/components/ui/button'
@@ -25,7 +26,8 @@ import Link from 'next/link'
 
 export default function JobDetailPage() {
 	const params = useParams<{ id: string }>()
-	const job = MOCK_JOBS.find((j) => j._id === params.id)
+	const { data, isLoading } = useJobQuery(params.id as string)
+	const job = data?.data
 	const candidates = MOCK_RANKED_CANDIDATES[params.id] ?? []
 
 	const [search, setSearch] = useState('')
@@ -53,6 +55,10 @@ export default function JobDetailPage() {
 	const openDrawer = (candidate: RankedCandidate) => {
 		setSelectedCandidate(candidate)
 		setDrawerOpen(true)
+	}
+
+	if (isLoading) {
+		return <div className="flex justify-center py-20 text-muted-foreground">Loading job details...</div>
 	}
 
 	if (!job) {
@@ -86,18 +92,18 @@ export default function JobDetailPage() {
 					</div>
 					<div className='text-muted-foreground mt-2 flex flex-wrap gap-4 text-sm'>
 						<span className='flex items-center gap-1'>
-							<IconBriefcase className='size-4' /> {job.department}
+							<IconBriefcase className='size-4' /> {job.experienceLevel}
 						</span>
 						<span className='flex items-center gap-1'>
-							<IconMapPin className='size-4' /> {job.location}
+							<IconMapPin className='size-4' /> {job.location?.city}, {job.location?.country}
 						</span>
 						<span className='flex items-center gap-1'>
-							<IconUsers className='size-4' /> {job.applicantCount} applicants
+							<IconUsers className='size-4' /> 0 applicants
 						</span>
 					</div>
 				</div>
 				<div className='flex items-center gap-2'>
-					{job.jobType === 'external' && !showUpload && !uploadComplete && (
+					{job.source === 'External' && !showUpload && !uploadComplete && (
 						<Button variant='default' asChild className='shrink-0 gap-2'>
 							<Link href={`/dashboard/jobs/${job._id}/upload`}>
 								Import Applications
@@ -112,7 +118,7 @@ export default function JobDetailPage() {
 			</div>
 
 			{/* Empty states */}
-			{!hasApplicants && job.jobType === 'internal' && (
+			{!hasApplicants && job.source === 'Internal' && (
 				<Card className='border-dashed'>
 					<CardContent className='space-y-3 py-16 text-center'>
 						<IconUsers className='text-muted-foreground mx-auto size-10' />
@@ -128,7 +134,7 @@ export default function JobDetailPage() {
 				</Card>
 			)}
 
-			{!hasApplicants && job.jobType === 'external' && !showUpload && (
+			{!hasApplicants && job.source === 'External' && !showUpload && (
 				<Card className='border-dashed'>
 					<CardContent className='space-y-3 py-16 text-center'>
 						<IconUpload className='text-muted-foreground mx-auto size-10' />

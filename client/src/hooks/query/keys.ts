@@ -16,5 +16,13 @@ export const queryKeys = {
 	organization: {
 		all: ['organization'] as const,
 		details: () => [...queryKeys.organization.all, 'details'] as const
+	},
+	jobs: {
+		all: ['jobs'] as const,
+		lists: () => [...queryKeys.jobs.all, 'list'] as const,
+		list: (filters: string) => [...queryKeys.jobs.lists(), { filters }] as const,
+		details: () => [...queryKeys.jobs.all, 'detail'] as const,
+		detail: (id: string) => [...queryKeys.jobs.details(), id] as const,
+		analytics: () => [...queryKeys.jobs.all, 'analytics'] as const,
 	}
 };
