@@ -50,8 +50,9 @@ export type CreateJobPayload = Omit<Job, '_id' | 'status' | 'source' | 'createdB
 
 export interface JobAnalytics {
 	activeJobs: number;
-	totalCandidates: number;
-	avgMatchScore: number;
+	totalTalentPool: number;
+	departments: number;
+	locations: number;
 }
 
 export const JobService = {
