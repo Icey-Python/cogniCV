@@ -24,16 +24,16 @@
 
 ## 1. Project Overview
 
-| Field | Detail |
-|---|---|
-| **Product Name** | CogniCV — AI-Powered Talent Screening Platform |
-| **Hackathon Theme** | An Innovation Challenge to Build AI Products for the HR Industry |
-| **Sponsor** | Umurava Africa |
-| **Tech Stack** | Next.js · Node.js · TypeScript · MongoDB · Gemini API · Redux Toolkit · Tailwind CSS |
-| **Repositories** | `cognicv-frontend` (Next.js) · `cognicv-backend` (Node.js + TypeScript) |
-| **Core Goal** | Build a production-grade AI recruiter tool that screens, scores, ranks, and explains candidate shortlists |
+| Field               | Detail                                                                                                    |
+| ------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Product Name**    | CogniCV — AI-Powered Talent Screening Platform                                                            |
+| **Hackathon Theme** | An Innovation Challenge to Build AI Products for the HR Industry                                          |
+| **Sponsor**         | Umurava Africa                                                                                            |
+| **Tech Stack**      | Next.js · Node.js · TypeScript · MongoDB · Gemini API · Redux Toolkit · Tailwind CSS                      |
+| **Repositories**    | `cognicv-frontend` (Next.js) · `cognicv-backend` (Node.js + TypeScript)                                   |
+| **Core Goal**       | Build a production-grade AI recruiter tool that screens, scores, ranks, and explains candidate shortlists |
 
-**CogniCV** is an intelligent talent screening platform built for Umurava's recruiter ecosystem. It solves the two core pain points of modern hiring — high application volume and inconsistent cross-profile comparison — using Google's Gemini API as its reasoning engine. CogniCV ingests structured talent profiles from the Umurava platform and unstructured data from external sources (CSV uploads, PDF resumes), evaluates all candidates simultaneously against a job's requirements, and returns a transparent, explainable ranked shortlist.
+**CogniCV** is an intelligent talent screening platform built for Umurava's recruiter ecosystem. It solves the two core pain points of modern hiring — high application volume and inconsistent cross-profile comparison — using Google's Gemini API as its reasoning engine. CogniCV ingests structured talent profiles from the Umurava platform and unstructured data from external sources (CSV uploads, PDF resumes), evaluates all candidates simultaneously against a job's requirements, and returns a transparent, explainable ranked shortlisted
 
 ---
 
@@ -47,12 +47,12 @@
 
 ### 2.2 How We Win Each Judging Criterion
 
-| Judging Criterion | Our Winning Angle |
-|---|---|
+| Judging Criterion            | Our Winning Angle                                                                                                                                         |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **AI & Engineering Prowess** | Multi-candidate batch Gemini prompting, weighted scoring engine, strict JSON output schema, documented prompt engineering rationale, retry/fallback logic |
-| **UX & Product Design** | Clean recruiter-first Next.js dashboard, spotlight shortlist view, per-candidate reasoning cards, mobile-responsive Tailwind UI, skeleton loaders |
-| **HR / Talent Acquisition** | Bias-awareness prompt layer, skills gap analysis per candidate, availability flags, explainable shortlist tied to specific job criteria |
-| **Business Relevance** | Dual-mode ingestion (Umurava platform + external), schema-compliant design, Vercel + Railway deploy, multi-tenant ready architecture |
+| **UX & Product Design**      | Clean recruiter-first Next.js dashboard, spotlight shortlist view, per-candidate reasoning cards, mobile-responsive Tailwind UI, skeleton loaders         |
+| **HR / Talent Acquisition**  | Bias-awareness prompt layer, skills gap analysis per candidate, availability flags, explainable shortlist tied to specific job criteria                   |
+| **Business Relevance**       | Dual-mode ingestion (Umurava platform + external), schema-compliant design, Vercel + Railway deploy, multi-tenant ready architecture                      |
 
 ---
 
@@ -62,27 +62,27 @@
 
 Recruiters create a job and CogniCV screens structured Talent Profiles (Umurava schema) against job requirements via the Gemini AI layer.
 
-| Feature | Description | Priority |
-|---|---|---|
-| Job Creation Form | Title, description, required skills, experience level, location, employment type | Must Have |
-| Talent Profile Ingestion | Load schema-compliant profiles from MongoDB (seeded dummy data) | Must Have |
-| AI Screening Trigger | Batch-evaluate all applicants in a single Gemini prompt call | Must Have |
-| Ranked Shortlist View | Top 10 or Top 20 candidates sorted by match score (0–100) | Must Have |
-| Candidate Reasoning Card | AI-generated Strengths, Gaps, and Recommendation per candidate | Must Have |
-| Score Breakdown | Weighted sub-scores: Skills, Experience, Education, Availability | Should Have |
-| Shortlist Export | Download ranked list as CSV or PDF | Should Have |
+| Feature                  | Description                                                                      | Priority    |
+| ------------------------ | -------------------------------------------------------------------------------- | ----------- |
+| Job Creation Form        | Title, description, required skills, experience level, location, employment type | Must Have   |
+| Talent Profile Ingestion | Load schema-compliant profiles from MongoDB (seeded dummy data)                  | Must Have   |
+| AI Screening Trigger     | Batch-evaluate all applicants in a single Gemini prompt call                     | Must Have   |
+| Ranked Shortlist View    | Top 10 or Top 20 candidates sorted by match score (0–100)                        | Must Have   |
+| Candidate Reasoning Card | AI-generated Strengths, Gaps, and Recommendation per candidate                   | Must Have   |
+| Score Breakdown          | Weighted sub-scores: Skills, Experience, Education, Availability                 | Should Have |
+| Shortlist Export         | Download ranked list as CSV or PDF                                               | Should Have |
 
 ### 3.2 Scenario 2 — External Job Board Screening
 
 Recruiters upload applicant data via CSV/Excel or PDF resumes. The same AI engine processes and ranks this data.
 
-| Feature | Description | Priority |
-|---|---|---|
-| CSV / Excel Upload | Drag-and-drop upload with column mapping UI | Must Have |
-| PDF Resume Upload | Multi-file PDF upload with AI-powered text extraction | Must Have |
-| Resume Parsing | Gemini-powered extraction of structured candidate objects from raw resume text | Must Have |
-| Unified Screening | External candidates ranked on the same scoring model as platform profiles | Must Have |
-| Ingestion Audit Log | Show parsed, skipped, and flagged profile counts post-upload | Should Have |
+| Feature             | Description                                                                    | Priority    |
+| ------------------- | ------------------------------------------------------------------------------ | ----------- |
+| CSV / Excel Upload  | Drag-and-drop upload with column mapping UI                                    | Must Have   |
+| PDF Resume Upload   | Multi-file PDF upload with AI-powered text extraction                          | Must Have   |
+| Resume Parsing      | Gemini-powered extraction of structured candidate objects from raw resume text | Must Have   |
+| Unified Screening   | External candidates ranked on the same scoring model as platform profiles      | Must Have   |
+| Ingestion Audit Log | Show parsed, skipped, and flagged profile counts post-upload                   | Should Have |
 
 ---
 
@@ -92,12 +92,12 @@ Recruiters upload applicant data via CSV/Excel or PDF resumes. The same AI engin
 
 CogniCV uses a weighted scoring model applied consistently across all candidates:
 
-| Dimension | Weight | What It Evaluates |
-|---|---|---|
-| Skills Match | 40% | Required skills vs. candidate's declared skills, levels, and years of experience |
-| Experience Relevance | 30% | Role titles, industry fit, responsibilities, recency of relevant work |
-| Education Fit | 15% | Degree level, field of study alignment with job requirements |
-| Availability | 15% | Availability status, employment type match, start date |
+| Dimension            | Weight | What It Evaluates                                                                |
+| -------------------- | ------ | -------------------------------------------------------------------------------- |
+| Skills Match         | 40%    | Required skills vs. candidate's declared skills, levels, and years of experience |
+| Experience Relevance | 30%    | Role titles, industry fit, responsibilities, recency of relevant work            |
+| Education Fit        | 15%    | Degree level, field of study alignment with job requirements                     |
+| Availability         | 15%    | Availability status, employment type match, start date                           |
 
 **Total Score: 0–100.** Top 10 or Top 20 candidates are surfaced as the shortlist.
 
@@ -143,13 +143,13 @@ RESUME TEXT:
 
 ### 4.3 AI Safeguards
 
-| Safeguard | Implementation |
-|---|---|
-| **Bias Awareness** | System prompt explicitly instructs Gemini to exclude name, location, and nationality from scoring |
-| **JSON Schema Enforcement** | Backend validates Gemini's response against a TypeScript Zod schema before storing |
-| **Fallback Prompts** | If response fails validation, a correction prompt is sent: `"Your previous response was invalid JSON. Return only the corrected JSON array."` |
-| **Retry Logic** | Up to 3 retries with exponential backoff on Gemini API errors |
-| **Candidate Normalisation** | PDF/CSV candidates are mapped to the Umurava TalentProfile schema before entering the scoring pipeline |
+| Safeguard                   | Implementation                                                                                                                                |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Bias Awareness**          | System prompt explicitly instructs Gemini to exclude name, location, and nationality from scoring                                             |
+| **JSON Schema Enforcement** | Backend validates Gemini's response against a TypeScript Zod schema before storing                                                            |
+| **Fallback Prompts**        | If response fails validation, a correction prompt is sent: `"Your previous response was invalid JSON. Return only the corrected JSON array."` |
+| **Retry Logic**             | Up to 3 retries with exponential backoff on Gemini API errors                                                                                 |
+| **Candidate Normalisation** | PDF/CSV candidates are mapped to the Umurava TalentProfile schema before entering the scoring pipeline                                        |
 
 ### 4.4 AI Output Structure (Per Candidate)
 
@@ -183,17 +183,17 @@ RESUME TEXT:
 
 ### 5.1 Layer Overview
 
-| Layer | Technology | Responsibility |
-|---|---|---|
-| **Frontend** | Next.js 14 (App Router) · React · Redux Toolkit · Tailwind CSS | Recruiter dashboard, job forms, shortlist visualisation, upload interfaces |
-| **Backend API** | Node.js · TypeScript · Express · REST | Business logic, AI orchestration, data ingestion, auth |
-| **AI Layer** | Gemini 1.5 Flash API (mandatory) | Job-candidate matching, scoring, ranking, reasoning generation, resume parsing |
-| **Database** | MongoDB · Mongoose | Jobs, Applicants, ScreeningResults, Users collections |
-| **File Handling** | Multer · pdf-parse · SheetJS | PDF and CSV/Excel parsing pipeline |
-| **Auth** | JWT + bcrypt | Recruiter account management |
-| **Hosting — Frontend** | Vercel | Next.js deployment |
-| **Hosting — Backend** | Railway / Render | Node.js API server |
-| **Hosting — DB** | MongoDB Atlas | Cloud-hosted database |
+| Layer                  | Technology                                                     | Responsibility                                                                 |
+| ---------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| **Frontend**           | Next.js 14 (App Router) · React · Redux Toolkit · Tailwind CSS | Recruiter dashboard, job forms, shortlist visualisation, upload interfaces     |
+| **Backend API**        | Node.js · TypeScript · Express · REST                          | Business logic, AI orchestration, data ingestion, auth                         |
+| **AI Layer**           | Gemini 1.5 Flash API (mandatory)                               | Job-candidate matching, scoring, ranking, reasoning generation, resume parsing |
+| **Database**           | MongoDB · Mongoose                                             | Jobs, Applicants, ScreeningResults, Users collections                          |
+| **File Handling**      | Multer · pdf-parse · SheetJS                                   | PDF and CSV/Excel parsing pipeline                                             |
+| **Auth**               | JWT + bcrypt                                                   | Recruiter account management                                                   |
+| **Hosting — Frontend** | Vercel                                                         | Next.js deployment                                                             |
+| **Hosting — Backend**  | Railway / Render                                               | Node.js API server                                                             |
+| **Hosting — DB**       | MongoDB Atlas                                                  | Cloud-hosted database                                                          |
 
 ### 5.2 AI Screening Data Flow
 
@@ -218,6 +218,7 @@ RESUME TEXT:
 ### 5.3 Repository Structure
 
 #### `cognicv-frontend`
+
 ```
 src/
 ├── app/
@@ -238,6 +239,7 @@ src/
 ```
 
 #### `cognicv-backend`
+
 ```
 src/
 ├── routes/
@@ -261,6 +263,7 @@ src/
 ## 6. Database Schema
 
 ### `users`
+
 ```ts
 {
   _id: ObjectId,
@@ -272,6 +275,7 @@ src/
 ```
 
 ### `jobs`
+
 ```ts
 {
   _id: ObjectId,
@@ -287,6 +291,7 @@ src/
 ```
 
 ### `talentProfiles` _(Umurava Schema — must not be modified)_
+
 ```ts
 {
   _id: ObjectId,
@@ -308,6 +313,7 @@ src/
 ```
 
 ### `externalApplicants`
+
 ```ts
 {
   _id: ObjectId,
@@ -320,6 +326,7 @@ src/
 ```
 
 ### `screeningResults`
+
 ```ts
 {
   _id: ObjectId,
@@ -343,21 +350,21 @@ src/
 
 ## 7. API Endpoint Reference
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/auth/register` | Create recruiter account |
-| `POST` | `/api/auth/login` | Login, return JWT |
-| `GET` | `/api/jobs` | List all jobs for authenticated recruiter |
-| `POST` | `/api/jobs` | Create a new job |
-| `GET` | `/api/jobs/:id` | Get single job detail |
-| `PUT` | `/api/jobs/:id` | Update job |
-| `DELETE` | `/api/jobs/:id` | Delete job |
-| `GET` | `/api/jobs/:id/applicants` | List all applicants (platform + external) for job |
-| `POST` | `/api/jobs/:id/upload/csv` | Upload CSV applicant file |
-| `POST` | `/api/jobs/:id/upload/pdf` | Upload PDF resume files |
-| `POST` | `/api/jobs/:id/screen` | Trigger AI screening run |
-| `GET` | `/api/jobs/:id/results` | Get ranked shortlist with reasoning |
-| `GET` | `/api/profiles` | Browse / seed platform talent profiles |
+| Method   | Endpoint                   | Description                                       |
+| -------- | -------------------------- | ------------------------------------------------- |
+| `POST`   | `/api/auth/register`       | Create recruiter account                          |
+| `POST`   | `/api/auth/login`          | Login, return JWT                                 |
+| `GET`    | `/api/jobs`                | List all jobs for authenticated recruiter         |
+| `POST`   | `/api/jobs`                | Create a new job                                  |
+| `GET`    | `/api/jobs/:id`            | Get single job detail                             |
+| `PUT`    | `/api/jobs/:id`            | Update job                                        |
+| `DELETE` | `/api/jobs/:id`            | Delete job                                        |
+| `GET`    | `/api/jobs/:id/applicants` | List all applicants (platform + external) for job |
+| `POST`   | `/api/jobs/:id/upload/csv` | Upload CSV applicant file                         |
+| `POST`   | `/api/jobs/:id/upload/pdf` | Upload PDF resume files                           |
+| `POST`   | `/api/jobs/:id/screen`     | Trigger AI screening run                          |
+| `GET`    | `/api/jobs/:id/results`    | Get ranked shortlist with reasoning               |
+| `GET`    | `/api/profiles`            | Browse / seed platform talent profiles            |
 
 ---
 
@@ -370,6 +377,7 @@ src/
 ### 🎨 Member 1 — Frontend Engineer
 
 **Tech Skills Required**
+
 - Next.js 14 (App Router, server components)
 - React + Redux Toolkit + RTK Query
 - Tailwind CSS + shadcn/ui
@@ -395,6 +403,7 @@ src/
 ### ⚙️ Member 2 — Backend Engineer
 
 **Tech Skills Required**
+
 - Node.js + TypeScript + Express
 - MongoDB + Mongoose (schema design)
 - REST API design
@@ -423,6 +432,7 @@ src/
 ### 🤖 Member 3 — AI / Full-Stack Integration Engineer
 
 **Tech Skills Required**
+
 - Gemini 1.5 Flash API (Google AI SDK for Node.js)
 - Prompt engineering (zero-shot, few-shot, structured output)
 - JSON schema enforcement in LLM responses
@@ -448,14 +458,14 @@ src/
 
 ## 9. Sprint Plan
 
-| Phase | Duration | Deliverables |
-|---|---|---|
-| **Phase 0 — Setup** | Day 1 (4h) | Both repos created and structured, env vars configured, MongoDB Atlas cluster live, Gemini API key tested, Vercel + Railway deployments linked to repos |
-| **Phase 1 — Foundation** | Day 1–2 | Auth (BE + FE), Job CRUD, Mongoose schemas, seed script with 50 dummy profiles, basic dashboard shell with navigation |
-| **Phase 2 — Core AI** | Day 2–3 | Master screening prompt designed and tested, batch screening endpoint live, Zod validation layer, results stored in MongoDB |
-| **Phase 3 — File Ingestion** | Day 3 | CSV parsing pipeline, PDF parsing pipeline, external applicant normalisation service, upload UI complete with parse status |
-| **Phase 4 — Shortlist UI** | Day 3–4 | Ranked shortlist view, animated score bars, candidate reasoning cards, detail modal, export functionality |
-| **Phase 5 — Polish & Deploy** | Day 4–5 | Error handling, loading states, mobile responsiveness, README + AI flow documentation, final Vercel + Railway production deploy, full demo run-through |
+| Phase                         | Duration   | Deliverables                                                                                                                                            |
+| ----------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Phase 0 — Setup**           | Day 1 (4h) | Both repos created and structured, env vars configured, MongoDB Atlas cluster live, Gemini API key tested, Vercel + Railway deployments linked to repos |
+| **Phase 1 — Foundation**      | Day 1–2    | Auth (BE + FE), Job CRUD, Mongoose schemas, seed script with 50 dummy profiles, basic dashboard shell with navigation                                   |
+| **Phase 2 — Core AI**         | Day 2–3    | Master screening prompt designed and tested, batch screening endpoint live, Zod validation layer, results stored in MongoDB                             |
+| **Phase 3 — File Ingestion**  | Day 3      | CSV parsing pipeline, PDF parsing pipeline, external applicant normalisation service, upload UI complete with parse status                              |
+| **Phase 4 — Shortlist UI**    | Day 3–4    | Ranked shortlist view, animated score bars, candidate reasoning cards, detail modal, export functionality                                               |
+| **Phase 5 — Polish & Deploy** | Day 4–5    | Error handling, loading states, mobile responsiveness, README + AI flow documentation, final Vercel + Railway production deploy, full demo run-through  |
 
 ---
 
@@ -471,6 +481,7 @@ Member 3 will use **Faker.js** to generate 50+ realistic `TalentProfile` records
 - **African-first location data**: Nairobi, Lagos, Kigali, Accra, Cape Town, Kampala, Dar es Salaam — aligned with Umurava's market
 
 Run with:
+
 ```bash
 cd cognicv-backend
 npx ts-node src/scripts/seed.ts
@@ -481,6 +492,7 @@ npx ts-node src/scripts/seed.ts
 ## 11. Environment Variables
 
 ### `cognicv-backend/.env`
+
 ```env
 GEMINI_API_KEY=your_google_ai_studio_key
 MONGODB_URI=mongodb+srv://...
@@ -489,6 +501,7 @@ PORT=3001
 ```
 
 ### `cognicv-frontend/.env.local`
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001   # Railway URL in production
 ```
@@ -500,6 +513,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3001   # Railway URL in production
 Use this before submission to verify every scoring dimension is demonstrable in the live app.
 
 ### ✅ AI & Engineering Prowess
+
 - [ ] Gemini API integrated and calling correctly
 - [ ] Batch multi-candidate prompt in a single API call
 - [ ] Weighted scoring model (Skills 40 / Experience 30 / Education 15 / Availability 15)
@@ -510,6 +524,7 @@ Use this before submission to verify every scoring dimension is demonstrable in 
 - [ ] Prompt engineering documented in README
 
 ### ✅ UX & Product Design
+
 - [ ] Clean recruiter dashboard with intuitive navigation
 - [ ] Animated score bars and rank badges on shortlist cards
 - [ ] Expandable per-candidate reasoning cards
@@ -519,6 +534,7 @@ Use this before submission to verify every scoring dimension is demonstrable in 
 - [ ] Export shortlist as CSV or PDF
 
 ### ✅ HR / Talent Acquisition
+
 - [ ] Bias-awareness layer in AI prompt (name/location excluded from scoring)
 - [ ] Skills gap analysis visible per candidate
 - [ ] Availability and employment type flags surfaced in cards
@@ -527,6 +543,7 @@ Use this before submission to verify every scoring dimension is demonstrable in 
 - [ ] Top 10 / Top 20 shortlist configurable by recruiter
 
 ### ✅ Business Relevance
+
 - [ ] Multi-tenant auth (recruiters have isolated job views)
 - [ ] Scalable MongoDB schema with indexed fields
 - [ ] Live production URL on Vercel + Railway
@@ -536,5 +553,5 @@ Use this before submission to verify every scoring dimension is demonstrable in 
 
 ---
 
-> *Build as if this goes live at scale within Umurava's ecosystem.*
+> _Build as if this goes live at scale within Umurava's ecosystem._
 > **CogniCV — Umurava AI Hackathon 2025**

@@ -2,31 +2,6 @@ import { apiBase } from '@/lib/config';
 import { IServerResponse, User } from '@/types/api';
 
 export const UserService = {
-	createUser: async (data: any) => {
-		const response = await apiBase.post<IServerResponse<{ user: User }>>(
-			'/user',
-			data
-		);
-		return response.data;
-	},
-
-	login: async (data: any) => {
-		const response = await apiBase.post<IServerResponse<{ user: User }>>(
-			'/user/login',
-			data
-		);
-		return response.data;
-	},
-
-	logout: async () => {
-		const response = await apiBase.get<IServerResponse<null>>('/user/logout');
-		return response.data;
-	},
-
-	getMe: async () => {
-		const response = await apiBase.get<IServerResponse<User>>('/user/me');
-		return response.data;
-	},
 
 	getUser: async (id: string) => {
 		const response = await apiBase.get<IServerResponse<User>>(`/user?id=${id}`);
