@@ -8,26 +8,39 @@ import {
 	TableCell,
 	TableHead,
 	TableHeader,
-	TableRow,
+	TableRow
 } from '@/components/ui/table';
 import {
 	IconMapPin,
 	IconBolt,
 	IconPaperclip,
-	IconChevronRight,
+	IconChevronRight
 } from '@tabler/icons-react';
 
-export function CircularScoreProgress({ score }: { score: number }) {
+export function CircularScoreProgress({
+	score,
+	max = 100
+}: {
+	score: number;
+	max?: number;
+}) {
+	const percentage = (score / max) * 100;
 	const color =
-		score >= 90 ? 'text-emerald-500' : score >= 75 ? 'text-primary' : score >= 60 ? 'text-amber-500' : 'text-red-500';
+		percentage >= 90
+			? 'text-emerald-500'
+			: percentage >= 75
+				? 'text-primary'
+				: percentage >= 60
+					? 'text-amber-500'
+					: 'text-red-500';
 
 	const radius = 16;
 	const circumference = 2 * Math.PI * radius;
-	const strokeDashoffset = circumference - (score / 100) * circumference;
+	const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
 	return (
 		<div className="relative inline-flex items-center justify-center">
-			<svg className="size-10 transform -rotate-90">
+			<svg className="size-10 -rotate-90 transform">
 				<circle
 					className="text-muted/30"
 					strokeWidth="3.5"
@@ -50,7 +63,9 @@ export function CircularScoreProgress({ score }: { score: number }) {
 					cy="20"
 				/>
 			</svg>
-			<span className={cn("absolute text-xs font-bold", color)}>{score}</span>
+			<span className={cn('absolute text-[10px] font-bold', color)}>
+				{score}
+			</span>
 		</div>
 	);
 }
@@ -61,15 +76,23 @@ interface RankedApplicantsTableProps {
 	showJob?: boolean;
 }
 
-export function RankedApplicantsTable({ candidates, onRowClick, showJob = false }: RankedApplicantsTableProps) {
+export function RankedApplicantsTable({
+	candidates,
+	onRowClick,
+	showJob = false
+}: RankedApplicantsTableProps) {
 	return (
 		<div className="flex flex-col">
 			<Table>
 				<TableHeader>
 					<TableRow>
 						{!showJob && <TableHead className="w-16 pl-6">Rank</TableHead>}
-						<TableHead className={showJob ? "pl-6" : ""}>Candidate</TableHead>
-						{showJob && <TableHead className="hidden md:table-cell">Applied For</TableHead>}
+						<TableHead className={showJob ? 'pl-6' : ''}>Candidate</TableHead>
+						{showJob && (
+							<TableHead className="hidden md:table-cell">
+								Applied For
+							</TableHead>
+						)}
 						<TableHead className="hidden md:table-cell">Location</TableHead>
 						<TableHead className="hidden sm:table-cell">Source</TableHead>
 						<TableHead>Score</TableHead>
@@ -80,7 +103,10 @@ export function RankedApplicantsTable({ candidates, onRowClick, showJob = false 
 				<TableBody>
 					{candidates.length === 0 ? (
 						<TableRow>
-							<TableCell colSpan={showJob ? 7 : 7} className="py-12 text-center text-muted-foreground text-sm">
+							<TableCell
+								colSpan={showJob ? 7 : 7}
+								className="text-muted-foreground py-12 text-center text-sm"
+							>
 								No candidates match your search.
 							</TableCell>
 						</TableRow>
@@ -90,7 +116,7 @@ export function RankedApplicantsTable({ candidates, onRowClick, showJob = false 
 							return (
 								<TableRow
 									key={`${candidate.candidateId}-${i}`}
-									className="cursor-pointer group hover:bg-muted/50 transition-colors"
+									className="group hover:bg-muted/50 cursor-pointer transition-colors"
 									onClick={() => onRowClick(candidate)}
 								>
 									{!showJob && (
@@ -100,37 +126,50 @@ export function RankedApplicantsTable({ candidates, onRowClick, showJob = false 
 													1
 												</span>
 											) : (
-												<span className="font-semibold text-muted-foreground">{candidate.rank}</span>
+												<span className="text-muted-foreground font-semibold">
+													{candidate.rank}
+												</span>
 											)}
 										</TableCell>
 									)}
-									<TableCell className={showJob ? "pl-6" : ""}>
+									<TableCell className={showJob ? 'pl-6' : ''}>
 										<div className="flex items-center gap-3">
-											<div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary shrink-0">
-												{p.firstName[0]}{p.lastName[0]}
+											<div className="bg-primary/10 text-primary flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold">
+												{p.firstName?.[0]}
+												{p.lastName?.[0]}
 											</div>
 											<div className="min-w-0">
-												<p className="text-sm font-medium">{p.firstName} {p.lastName}</p>
-												<p className="text-xs text-muted-foreground truncate max-w-[200px]">{p.headline}</p>
+												<p className="text-sm font-medium">
+													{p.firstName} {p.lastName}
+												</p>
+												<p className="text-muted-foreground max-w-[200px] truncate text-xs">
+													{p.headline}
+												</p>
 											</div>
 										</div>
 									</TableCell>
 									{showJob && (
-										<TableCell className="hidden md:table-cell text-sm text-muted-foreground">
+										<TableCell className="text-muted-foreground hidden text-sm md:table-cell">
 											{candidate.job?.title || 'Unknown Role'}
 										</TableCell>
 									)}
 									<TableCell className="hidden md:table-cell">
-										<span className="flex items-center gap-1 text-sm text-muted-foreground">
+										<span className="text-muted-foreground flex items-center gap-1 text-sm">
 											<IconMapPin className="size-3.5" /> {p.location}
 										</span>
 									</TableCell>
 									<TableCell className="hidden sm:table-cell">
-										<span className="flex items-center gap-1 text-xs text-muted-foreground">
-											{candidate.profileSource === 'platform' || candidate.profileSource === 'internal' ? (
-												<><IconBolt className="size-3.5 text-primary" /> Platform</>
+										<span className="text-muted-foreground flex items-center gap-1 text-xs">
+											{candidate.profileSource === 'platform' ||
+											candidate.profileSource === 'internal' ? (
+												<>
+													<IconBolt className="text-primary size-3.5" />{' '}
+													Platform
+												</>
 											) : (
-												<><IconPaperclip className="size-3.5" /> External</>
+												<>
+													<IconPaperclip className="size-3.5" /> External
+												</>
 											)}
 										</span>
 									</TableCell>
@@ -138,15 +177,19 @@ export function RankedApplicantsTable({ candidates, onRowClick, showJob = false 
 										<CircularScoreProgress score={candidate.matchScore} />
 									</TableCell>
 									<TableCell className="hidden lg:table-cell">
-										<span className={cn(
-											'text-xs',
-											p.availability.status === 'Available' ? 'text-emerald-600' : 'text-muted-foreground'
-										)}>
-											{p.availability.status}
+										<span
+											className={cn(
+												'text-xs',
+												p.availability?.status === 'Available'
+													? 'text-emerald-600'
+													: 'text-muted-foreground'
+											)}
+										>
+											{p.availability?.status || 'Active'}
 										</span>
 									</TableCell>
 									<TableCell>
-										<IconChevronRight className="size-4 text-muted-foreground  transition-opacity" />
+										<IconChevronRight className="text-muted-foreground size-4 transition-opacity" />
 									</TableCell>
 								</TableRow>
 							);

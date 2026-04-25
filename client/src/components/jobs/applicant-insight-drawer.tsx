@@ -134,16 +134,16 @@ export function ApplicantInsightDrawer({
 									</div>
 									<div className="grid grid-cols-2 gap-4">
 										{[
-											{ label: 'Skills', score: (subScores as any)?.skillMatch ?? (subScores as any)?.skills ?? 0 },
-											{ label: 'Experience', score: (subScores as any)?.experienceRelevance ?? (subScores as any)?.experience ?? 0 },
-											{ label: 'Education', score: (subScores as any)?.educationalAlignment ?? (subScores as any)?.education ?? 0 },
-											{ label: 'Availability', score: (subScores as any)?.culturalFit ?? (subScores as any)?.availability ?? 0 }
-										].map(({ label, score }) => (
+											{ label: 'Skills', score: (subScores as any)?.skillMatch ?? (subScores as any)?.skills ?? 0, max: 40 },
+											{ label: 'Experience', score: (subScores as any)?.experienceRelevance ?? (subScores as any)?.experience ?? 0, max: 30 },
+											{ label: 'Education', score: (subScores as any)?.educationalAlignment ?? (subScores as any)?.education ?? 0, max: 15 },
+											{ label: 'Availability', score: (subScores as any)?.culturalFit ?? (subScores as any)?.availability ?? 0, max: 15 }
+										].map(({ label, score, max }) => (
 											<div
 												key={label}
 												className="flex flex-col items-center justify-center rounded-lg border border-gray-100 bg-gray-50 p-3 text-center"
 											>
-												<CircularScoreProgress score={score} />
+												<CircularScoreProgress score={score} max={max} />
 												<span className="text-muted-foreground mt-2 text-[10px] font-medium tracking-wider uppercase">
 													{label}
 												</span>

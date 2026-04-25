@@ -55,8 +55,12 @@ export function SimpleApplicantsTable({ applicants, onRowClick }: SimpleApplican
 											{(applicant.firstName?.[0] || '')}{(applicant.lastName?.[0] || '')}
 										</div>
 										<div className="min-w-0">
-											<p className="text-sm font-medium">{applicant.firstName} {applicant.lastName}</p>
-											<p className="text-xs text-muted-foreground truncate max-w-[200px]">{applicant.headline}</p>
+											<p className="text-sm font-medium">
+												{applicant.firstName || ''} {applicant.lastName || ''}
+											</p>
+											<p className="text-xs text-muted-foreground truncate max-w-[200px]">
+												{applicant.headline || 'No headline provided'}
+											</p>
 										</div>
 									</div>
 								</TableCell>
