@@ -34,6 +34,7 @@ function formatBytes(bytes: number) {
 }
 
 function DropZone({
+	zoneId,
 	accept,
 	multiple,
 	label,
@@ -41,6 +42,7 @@ function DropZone({
 	icon: Icon,
 	onFiles,
 }: {
+	zoneId: string;
 	accept: string;
 	multiple: boolean;
 	label: string;
@@ -70,14 +72,14 @@ function DropZone({
 			)}
 		>
 			<input
-				id="file-upload"
+				id={`file-upload-${zoneId}`}
 				type="file"
 				accept={accept}
 				multiple={multiple}
 				className="hidden"
 				onChange={(e) => e.target.files && onFiles(Array.from(e.target.files))}
 			/>
-			<label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center gap-3">
+			<label htmlFor={`file-upload-${zoneId}`} className="cursor-pointer flex flex-col items-center gap-3">
 				<div className="rounded-full bg-primary/10 p-4">
 					<Icon className="size-6 text-primary" />
 				</div>
@@ -164,6 +166,7 @@ export function UploadPanel({ onComplete }: UploadPanelProps) {
 				</TabsList>
 				<TabsContent value="pdf" className="mt-4">
 					<DropZone
+						zoneId="pdf"
 						accept=".pdf"
 						multiple={true}
 						label="Drop PDF resumes here"
@@ -174,6 +177,7 @@ export function UploadPanel({ onComplete }: UploadPanelProps) {
 				</TabsContent>
 				<TabsContent value="csv" className="mt-4">
 					<DropZone
+						zoneId="csv"
 						accept=".csv,.xlsx,.xls"
 						multiple={false}
 						label="Drop CSV or Excel file here"
