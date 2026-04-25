@@ -73,10 +73,10 @@ export class ParserService {
       );
 
       // 2. Call AI with the batch of texts
-      const prompt = RESUME_BATCH_PARSER_PROMPT.replace(
-        "{{RAW_TEXT_ARRAY}}",
-        JSON.stringify(textExtractions)
-      );
+      const currentDate = new Date().toISOString().split('T')[0];
+      const prompt = RESUME_BATCH_PARSER_PROMPT
+        .replace("{{RAW_TEXT_ARRAY}}", JSON.stringify(textExtractions))
+        .replace("{{CURRENT_DATE}}", currentDate);
 
       const result = await this.model.generateContent(prompt);
       const response = await result.response;
