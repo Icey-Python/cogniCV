@@ -3,6 +3,7 @@ import userGroup from "./userGroup";
 import jobGroup from "./jobGroup";
 import applicantGroup from "./applicantGroup";
 import screeningGroup from "./screeningGroup";
+import shareGroup from "./shareGroup";
 import chatGroup from "./chatGroup";
 import organizationGroup from "./organizationGroup";
 import { HttpStatusCode } from "axios";
@@ -15,6 +16,7 @@ router.get("/ping", (_, res) => {
 });
 
 // Route groups
+router.use("/share", shareGroup);
 router.use("/user", userGroup);
 router.use("/jobs", jobGroup);
 router.use("/applicants", applicantGroup);

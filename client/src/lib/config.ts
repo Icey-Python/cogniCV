@@ -41,8 +41,15 @@ apiBase.interceptors.response.use(
 		// Handle different HTTP status codes
 		switch (status) {
 			case 401:
-				// Unauthorized - redirect to login
-				if (currentPath !== '/') {
+				// Unauthorized - only redirect to login if on a dashboard page
+				const pathname = isBrowser ? window.location.pathname : currentPath;
+				const isDashboardPage = pathname.startsWith('/dashboard');
+
+				if (process.env.NODE_ENV === 'development') {
+					console.log('401 Error encountered.', { pathname, isDashboardPage });
+				}
+
+				if (isDashboardPage) {
 					if (isBrowser) {
 						window.location.href = '/';
 					}

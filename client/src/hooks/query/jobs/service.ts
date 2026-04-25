@@ -161,3 +161,17 @@ export const ScreeningService = {
 		return response.data;
 	},
 };
+
+// ─── Share Service ──────────────────────────────────────────────────────────
+
+export const ShareService = {
+	generateShareLink: async (data: { jobId: string; candidateId: string; type: string; password?: string }) => {
+		const response = await apiBase.post<IServerResponse<{ shareId: string }>>('/share/generate', data);
+		return response.data;
+	},
+
+	getSharedAnalysis: async (shareId: string, password?: string) => {
+		const response = await apiBase.post<IServerResponse<{ job: Job; candidate: RankedCandidate; isProtected: boolean }>>(`/share/${shareId}`, { password });
+		return response.data;
+	},
+};

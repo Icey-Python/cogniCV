@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { JobService, ApplicantService, ScreeningService } from './service';
+import { JobService, ApplicantService, ScreeningService, ShareService } from './service';
 import { queryKeys } from '../keys';
 import { toast } from 'sonner';
 
@@ -98,6 +98,15 @@ export const useTriggerScreeningMutation = () => {
 		},
 		onError: (error: any) => {
 			toast.error(error.response?.data?.message || 'Error during screening');
+		}
+	});
+};
+
+export const useGenerateShareLinkMutation = () => {
+	return useMutation({
+		mutationFn: ShareService.generateShareLink,
+		onError: (error: any) => {
+			toast.error(error.response?.data?.message || 'Error generating share link');
 		}
 	});
 };
