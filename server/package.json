@@ -9,7 +9,7 @@
     "dev": "tsx watch app.ts",
     "build": "tsc",
     "generateDocs": "tsx ./docs/generateDocs.ts && cp ./docs/openapi.json ./build/docs/openapi.json",
-    "deploy": "pm2 start  build/app.js --name template-backend --instances 2",
+    "deploy": "pm2 start  build/app.js --name cognicv-backend --instances 1",
     "start": "node ./build/app.js"
   },
   "dependencies": {
