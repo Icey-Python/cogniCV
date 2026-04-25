@@ -3,6 +3,8 @@ import { IServerResponse } from '@/types/api';
 import { Location } from '../organization/service';
 import { RankedCandidate, TalentProfile } from '@/types';
 
+export type { TalentProfile };
+
 export enum ExperienceLevel {
 	ENTRY = 'Entry',
 	JUNIOR = 'Junior',

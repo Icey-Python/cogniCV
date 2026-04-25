@@ -67,38 +67,20 @@ export default function TalentProfilePage() {
 	const handleCopyLink = () => {
 		if (generatedLink) {
 			copyToClipboard(generatedLink);
-			toast.success('Link copied to clipboard');
 		}
 	};
 
 	return (
-		<div className="space-y-8">
+		<div className="space-y-8 max-w-4xl mx-auto">
 			{/* Header Navigation */}
 			<div className="flex flex-col space-y-6">
-				<div className="max-w-3xl space-y-4">
-					<h1 className="font-lora text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+				<div className="space-y-1">
+					<div className="flex items-center justify-between">
+					<h1 className="font-lora text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
 						{candidateName}
 					</h1>
-					<p className="text-xl leading-relaxed text-slate-500">
-						{profile.headline}
-					</p>
-					<div className="flex items-center justify-center gap-3">
-						<Badge
-							variant="outline"
-							className="bg-slate-50 px-3 py-1 text-sm font-medium"
-						>
-							{profile.source === 'internal'
-								? 'Platform Profile'
-								: 'Imported Profile'}
-						</Badge>
-						<Badge
-							variant="outline"
-							className="border-emerald-100 bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700"
-						>
-							{profile.availability?.status || 'Available'}
-						</Badge>
 
-						<div className="flex flex-row items-center gap-2">
+					<div className="flex flex-row items-center gap-2">
 							<Dialog
 								open={isShareModalOpen}
 								onOpenChange={setIsShareModalOpen}
@@ -106,7 +88,6 @@ export default function TalentProfilePage() {
 								<DialogTrigger asChild>
 									<Button
 										variant="outline"
-										size="sm"
 										className="gap-2"
 										onClick={handleGenerateLink}
 									>
@@ -138,11 +119,14 @@ export default function TalentProfilePage() {
 								</DialogContent>
 							</Dialog>
 
-							<Button variant="outline" size="sm" className="gap-2">
+							<Button variant="outline" className="gap-2">
 								<IconDownload className="size-4" /> Export
 							</Button>
 						</div>
 					</div>
+					<p className="text-sm text-slate-500">
+						{profile.headline}
+					</p>
 				</div>
 			</div>
 
