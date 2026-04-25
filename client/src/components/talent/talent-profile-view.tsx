@@ -47,44 +47,41 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 						</p>
 			)}
 
-			{/* Personal Information & Quick Stats */}
-			<div className="grid gap-6 md:grid-cols-3">
-				{/* Personal Information (formerly Contact) */}
-				<Card className="md:col-span-2 border-none shadow-none">
-					<CardHeader className="px-0">
-						<CardTitle className="font-lora text-lg">
-							Personal Information
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="space-y-6 px-0">
-						<div className="grid gap-4 sm:grid-cols-2">
-							<div className="space-y-3">
+			{/* Top Section: Personal Information & Education/Certifications */}
+			<div className="grid gap-12 lg:grid-cols-2">
+				{/* Column 1: Personal Information */}
+				<div>
+					<CardTitle className="font-lora text-lg mb-4">
+						Personal Information
+					</CardTitle>
+					<div className="space-y-6">
+						<div className="space-y-4">
+							<div className="flex items-center gap-3 text-sm">
+								<IconMail className="size-4 text-slate-400" />
+								<span className="truncate">{profile.email}</span>
+							</div>
+							{profile.location && (
 								<div className="flex items-center gap-3 text-sm">
-									<IconMail className="size-4 text-slate-400" />
-									<span className="truncate">{profile.email}</span>
+									<IconMapPin className="size-4 text-slate-400" />
+									<span>{profile.location}</span>
 								</div>
-								{profile.location && (
-									<div className="flex items-center gap-3 text-sm">
-										<IconMapPin className="size-4 text-slate-400" />
-										<span>{profile.location}</span>
-									</div>
-								)}
-								<div className="flex items-center gap-3 text-sm">
-									<IconBriefcase className="size-4 text-slate-400" />
-									<span>{profile.experience?.length || 0} Professional Roles</span>
-								</div>
-								<div className="flex items-center gap-3 text-sm">
-									<div className={cn(
-										'size-2 rounded-full',
-										profile.availability?.status === 'Available'
-											? 'bg-emerald-500'
-											: 'bg-amber-500'
-									)} />
-									<span>{profile.availability?.status || 'Active'}</span>
-								</div>
+							)}
+							<div className="flex items-center gap-3 text-sm">
+								<IconBriefcase className="size-4 text-slate-400" />
+								<span>{profile.experience?.length || 0} Professional Roles</span>
+							</div>
+							<div className="flex items-center gap-3 text-sm">
+								<div className={cn(
+									'size-2 rounded-full',
+									profile.availability?.status === 'Available'
+										? 'bg-emerald-500'
+										: 'bg-amber-500'
+								)} />
+								<span>{profile.availability?.status || 'Active'}</span>
 							</div>
 
-							<div className="flex flex-wrap gap-2 content-start">
+							{/* Social Links moved below availability */}
+							<div className="flex flex-wrap gap-2 pt-2">
 								{profile.socialLinks?.linkedin && (
 									<a
 										href={profile.socialLinks.linkedin}
@@ -119,8 +116,8 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 							</div>
 						</div>
 
-						{/* Moved Technical Skills here */}
-						<div className="pt-4 border-t">
+						{/* Technical Skills - Border-t removed */}
+						<div className="pt-2">
 							<p className="text-sm font-medium mb-3">Technical Skills</p>
 							<div className="flex flex-wrap gap-2">
 								{profile.skills?.map((skill: Skill) => (
@@ -137,41 +134,67 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 								))}
 							</div>
 						</div>
-					</CardContent>
-				</Card>
+					</div>
+				</div>
 
-				{/* Certifications (Moved to side of Personal Info) */}
-				{profile.certifications && profile.certifications.length > 0 && (
-					<Card className="border-none shadow-none">
-						<CardHeader className="px-0">
+				{/* Column 2: Education & Certifications */}
+				<div className="space-y-10">
+					{/* Education */}
+					{profile.education && profile.education.length > 0 && (
+						<div className="space-y-4">
+							<CardTitle className="font-lora flex items-center gap-2 text-lg">
+								<IconSchool className="text-primary" size={20} /> Education
+							</CardTitle>
+							<div className="space-y-4">
+								{profile.education.map((edu: Education, i: number) => (
+									<div
+										key={i}
+										className="bg-card space-y-1 rounded-lg"
+									>
+										<p className="text-base font-semibold">{edu.degree}</p>
+										<p className="text-muted-foreground text-sm">
+											{edu.institution}
+										</p>
+										<p className="text-sm tracking-wider text-slate-400 uppercase">
+											{edu.startYear} – {edu.endYear ?? 'Present'}
+										</p>
+									</div>
+								))}
+							</div>
+						</div>
+					)}
+
+					{/* Certifications */}
+					{profile.certifications && profile.certifications.length > 0 && (
+						<div className="space-y-4">
 							<CardTitle className="font-lora flex items-center gap-2 text-base">
 								<IconCertificate className="text-primary size-4" />{' '}
 								Certifications
 							</CardTitle>
-						</CardHeader>
-						<CardContent className="space-y-3 px-0">
-							{profile.certifications.map((cert: Certification, i: number) => (
-								<div key={i} className="flex items-center gap-3">
-									<div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-amber-100 bg-amber-50">
-										<IconCertificate className="size-4 text-amber-600" />
+							<div className="space-y-3">
+								{profile.certifications.map((cert: Certification, i: number) => (
+									<div key={i} className="flex items-center gap-3">
+										<div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-amber-100 bg-amber-50">
+											<IconCertificate className="size-4 text-amber-600" />
+										</div>
+										<div className="min-w-0">
+											<p className="truncate text-xs font-semibold">
+												{cert.name}
+											</p>
+											<p className="text-muted-foreground truncate text-[10px]">
+												{cert.issuer}
+											</p>
+										</div>
 									</div>
-									<div className="min-w-0">
-										<p className="truncate text-xs font-semibold">
-											{cert.name}
-										</p>
-										<p className="text-muted-foreground truncate text-[10px]">
-											{cert.issuer}
-										</p>
-									</div>
-								</div>
-							))}
-						</CardContent>
-					</Card>
-				)}
+								))}
+							</div>
+						</div>
+					)}
+				</div>
 			</div>
 
-			{/* Main Content Layout */}
-			<div className="grid gap-12 lg:grid-cols-2">
+			{/* Bottom Section: Experience & Projects */}
+			<div className="grid gap-12 lg:grid-cols-2 mt-4">
 				{/* Column 1: Experience */}
 				<div className="space-y-6">
 					{profile.experience && profile.experience.length > 0 && (
@@ -227,15 +250,14 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 					)}
 				</div>
 
-				{/* Column 2: Projects & Education Stacked */}
-				<div className="space-y-10">
-					{/* Projects */}
+				{/* Column 2: Featured Projects */}
+				<div className="space-y-6">
 					{profile.projects && profile.projects.length > 0 && (
 						<div className="space-y-4">
 							<CardTitle className="font-lora flex items-center gap-2 text-lg">
 								<IconStar className="text-primary size-4" /> Featured Projects
 							</CardTitle>
-							<div className="grid gap-4 sm:grid-cols-1">
+							<div className="grid gap-6 sm:grid-cols-1">
 								{profile.projects.map((proj: Project, i: number) => (
 									<div
 										key={i}
@@ -267,31 +289,6 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 												</span>
 											))}
 										</div>
-									</div>
-								))}
-							</div>
-						</div>
-					)}
-
-					{/* Education */}
-					{profile.education && profile.education.length > 0 && (
-						<div className="space-y-4">
-							<CardTitle className="font-lora flex items-center gap-2 text-lg">
-								<IconSchool className="text-primary" size={20} /> Education
-							</CardTitle>
-							<div className="space-y-4">
-								{profile.education.map((edu: Education, i: number) => (
-									<div
-										key={i}
-										className="bg-card space-y-1 rounded-lg p-4"
-									>
-										<p className="text-base font-semibold">{edu.degree}</p>
-										<p className="text-muted-foreground text-sm">
-											{edu.institution}
-										</p>
-										<p className="text-sm tracking-wider text-slate-400 uppercase">
-											{edu.startYear} – {edu.endYear ?? 'Present'}
-										</p>
 									</div>
 								))}
 							</div>
