@@ -5,8 +5,10 @@ export interface UserDoc extends Document {
   image: string;
   email: string;
   phone: string;
-  role: string;
+  role: UserRole;
   lastLogin: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export enum UserRole {
@@ -44,7 +46,7 @@ const UserSchema: Schema = new Schema<UserDoc>(
       default: Date.now,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const User = model<UserDoc>("User", UserSchema);
