@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import {
 	useJobQuery,
@@ -30,6 +30,17 @@ import {
 import { FloatingChat } from '@/components/chat/floating-chat';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import {
+	Pagination,
+	PaginationContent,
+	PaginationEllipsis,
+	PaginationItem,
+	PaginationLink,
+	PaginationNext,
+	PaginationPrevious
+} from '@/components/ui/pagination';
+
+const ITEMS_PER_PAGE = 10;
 
 export default function JobDetailPage() {
 	const params = useParams<{ id: string }>();
@@ -55,6 +66,12 @@ export default function JobDetailPage() {
 	const [selectedCandidate, setSelectedCandidate] = useState<any | null>(null);
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [jobInfoOpen, setJobInfoOpen] = useState(false);
+	const [currentPage, setCurrentPage] = useState(1);
+
+	// Reset to page 1 when search changes
+	useEffect(() => {
+		setCurrentPage(1);
+	}, [search]);
 
 	const filteredRanked = useMemo(
 		() =>
@@ -74,6 +91,14 @@ export default function JobDetailPage() {
 			}),
 		[allApplicants, search]
 	);
+
+	const activeData = rankedCandidates.length > 0 ? filteredRanked : filteredUnscreened;
+	const totalPages = Math.ceil(activeData.length / ITEMS_PER_PAGE);
+	
+	const paginatedData = useMemo(() => {
+		const start = (currentPage - 1) * ITEMS_PER_PAGE;
+		return activeData.slice(start, start + ITEMS_PER_PAGE);
+	}, [activeData, currentPage]);
 
 	const openDrawer = (candidate: any) => {
 		setSelectedCandidate(candidate);
@@ -229,12 +254,12 @@ export default function JobDetailPage() {
 					<Card>
 						{isScreened ? (
 							<RankedApplicantsTable
-								candidates={filteredRanked}
+								candidates={paginatedData as any}
 								onRowClick={openDrawer}
 							/>
 						) : (
 							<SimpleApplicantsTable
-								applicants={filteredUnscreened}
+								applicants={paginatedData as any}
 								onRowClick={(a) =>
 									openDrawer({
 										profileSnapshot: a,
@@ -252,6 +277,82 @@ export default function JobDetailPage() {
 									} as any)
 								}
 							/>
+						)}
+
+						{totalPages > 1 && (
+							<div className="border-t p-4 flex items-center justify-between">
+								<p className="text-sm text-muted-foreground">
+									Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{' '}
+									{Math.min(currentPage * ITEMS_PER_PAGE, activeData.length)} of{' '}
+									{activeData.length} candidates
+								</p>
+								<Pagination className="w-auto mx-0">
+									<PaginationContent>
+										<PaginationItem>
+											<PaginationPrevious
+												href="#"
+												onClick={(e) => {
+													e.preventDefault();
+													if (currentPage > 1) setCurrentPage((p) => p - 1);
+												}}
+												className={
+													currentPage === 1 ? 'pointer-events-none opacity-50' : ''
+												}
+											/>
+										</PaginationItem>
+
+										{Array.from({ length: totalPages }).map((_, i) => {
+											const page = i + 1;
+											if (
+												page === 1 ||
+												page === totalPages ||
+												(page >= currentPage - 1 && page <= currentPage + 1)
+											) {
+												return (
+													<PaginationItem key={page}>
+														<PaginationLink
+															href="#"
+															onClick={(e) => {
+																e.preventDefault();
+																setCurrentPage(page);
+															}}
+															isActive={currentPage === page}
+														>
+															{page}
+														</PaginationLink>
+													</PaginationItem>
+												);
+											} else if (
+												page === currentPage - 2 ||
+												page === currentPage + 2
+											) {
+												return (
+													<PaginationItem key={page}>
+														<PaginationEllipsis />
+													</PaginationItem>
+												);
+											}
+											return null;
+										})}
+
+										<PaginationItem>
+											<PaginationNext
+												href="#"
+												onClick={(e) => {
+													e.preventDefault();
+													if (currentPage < totalPages)
+														setCurrentPage((p) => p + 1);
+												}}
+												className={
+													currentPage === totalPages
+														? 'pointer-events-none opacity-50'
+														: ''
+												}
+											/>
+										</PaginationItem>
+									</PaginationContent>
+								</Pagination>
+							</div>
 						)}
 					</Card>
 				</div>
@@ -272,3 +373,4 @@ export default function JobDetailPage() {
 		</div>
 	);
 }
+
