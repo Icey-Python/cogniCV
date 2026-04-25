@@ -111,7 +111,14 @@ export class GeminiService {
   /**
    * Evaluate job creation chat history
    */
-  static async evaluateJobCreationChat(messages: { role: string; content: string }[]): Promise<any> {
+  static async evaluateJobCreationChat(
+    messages: { role: string; content: string }[],
+    availableLocations: any[] = [],
+    availableDepartments: any[] = []
+  ): Promise<any> {
+    const locationsStr = availableLocations.map(l => `- ID: ${l._id}, Name: ${l.city}, ${l.country} (${l.workspaceType})`).join('\n');
+    const departmentsStr = availableDepartments.map(d => `- ID: ${d._id}, Name: ${d.name}`).join('\n');
+
     const systemPrompt = `You are an expert technical recruiter assistant helping a user create a new job posting.
 Your goal is to collect the following required fields from the user through a natural conversation:
 1. title (string)
@@ -119,28 +126,41 @@ Your goal is to collect the following required fields from the user through a na
 3. requiredSkills (array of strings)
 4. experienceLevel (must be one of: "Entry", "Junior", "Mid", "Senior", "Lead")
 5. type (must be one of: "Full-time", "Part-time", "Contract")
-6. location (string)
+6. locationId (string - MUST be an ID from the available locations list)
+7. departmentId (string - MUST be an ID from the available departments list)
 
-The conversation history will be provided.
-Analyze the conversation to determine if ALL 6 required fields have been clearly provided by the user.
+Available Locations:
+${locationsStr || 'None available'}
 
-You MUST respond in pure JSON format (no markdown, no backticks).
-If any field is missing or unclear, your JSON response must be:
+Available Departments:
+${departmentsStr || 'None available'}
+
+The conversation history will be provided. 
+
+CRITICAL INSTRUCTIONS:
+- You MUST return a "jobData" object in EVERY response.
+- AGGRESSIVELY extract partial information (e.g. if the user says "I need a React dev", set "title" to "React Developer" and add "React" to "requiredSkills").
+- NEVER GUESS or auto-fill "locationId" or "departmentId" just because the user mentions a location or department name (e.g. "Remote" or "Engineering").
+- To get the "locationId" or "departmentId", you MUST set "actionRequired" to "location" or "department". This will open a UI modal for the user to explicitly select an option.
+- When the user selects an option from the UI, the system will send a message like "Selected location: Kigali, Rwanda (ID: 123)" or "Selected department: Engineering (ID: 456)". ONLY THEN should you extract the ID and put it in "locationId" or "departmentId".
+- If "locationId" or "departmentId" is missing, set "actionRequired" to the missing field's type, and ask the user to select one from the options on screen.
+- For "requiredSkills", always return an array of strings.
+- For "experienceLevel", map common terms: "Senior" -> "Senior", "Junior" -> "Junior", etc.
+- For "type", map: "Full time" -> "Full-time", "Contractor" -> "Contract", etc.
+
+You MUST respond in pure JSON format (no markdown, no backticks) with this structure:
 {
-  "isComplete": false,
-  "nextQuestion": "Friendly conversational question asking for the missing details, one at a time if multiple are missing."
-}
-
-If all fields have been provided, your JSON response must be:
-{
-  "isComplete": true,
+  "isComplete": boolean, // true ONLY if ALL 7 required fields are gathered and valid
+  "nextQuestion": "string", // Friendly conversational question asking for missing details (null if complete)
+  "actionRequired": "location" | "department" | null, // Set to "location" or "department" to trigger the UI modal if those IDs are missing.
   "jobData": {
-    "title": "...",
-    "description": "...",
-    "requiredSkills": ["...", "..."],
-    "experienceLevel": "...",
-    "type": "...",
-    "location": "..."
+    "title": "string or null",
+    "description": "string or null",
+    "requiredSkills": ["string"] or null,
+    "experienceLevel": "string or null",
+    "type": "string or null",
+    "locationId": "string or null",
+    "departmentId": "string or null"
   }
 }
 
