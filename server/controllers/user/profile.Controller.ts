@@ -6,6 +6,65 @@ import type { Request, Response } from "express";
 
 /**
  * @openapi
+ * /api/v1/user/me:
+ *   get:
+ *     summary: Get currently logged in user details
+ *     tags: [Users]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: User found
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+export const getLoggedInUser = async (
+  req: Request,
+  res: Response<IServerResponse>
+) => {
+  try {
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return res.status(HttpStatusCode.Unauthorized).json({
+        status: "error",
+        message: "Authentication required",
+        data: null,
+      });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(HttpStatusCode.NotFound).json({
+        status: "error",
+        message: "User not found",
+        data: null,
+      });
+    }
+
+    res.status(HttpStatusCode.Ok).json({
+      status: "success",
+      message: "User found",
+      data: user,
+    });
+  } catch (err) {
+    Logger.error({ message: "Error getting logged in user" + err });
+
+    res.status(HttpStatusCode.InternalServerError).json({
+      status: "error",
+      message: "Error getting user",
+      data: null,
+    });
+  }
+};
+
+/**
+ * @openapi
  * /api/v1/user:
  *   get:
  *     summary: Get user details

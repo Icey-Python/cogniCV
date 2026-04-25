@@ -12,7 +12,6 @@ export const ENV = {
   API_DOCS_REALM: process.env.API_DOCS_REALM || "your_api_docs",
   // JWT related
   JWT_SECRET: process.env.JWT_SECRET as string,
-  JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET as string,
   // Admin
   ADMIN_INITIAL_PASS: process.env.ADMIN_INITIAL_PASS as string,
   ADMIN_INITIAL_EMAIL: process.env.ADMIN_INITIAL_EMAIL as string,

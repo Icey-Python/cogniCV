@@ -23,6 +23,11 @@ export const UserService = {
 		return response.data;
 	},
 
+	getMe: async () => {
+		const response = await apiBase.get<IServerResponse<User>>('/user/me');
+		return response.data;
+	},
+
 	getUser: async (id: string) => {
 		const response = await apiBase.get<IServerResponse<User>>(`/user?id=${id}`);
 		return response.data;

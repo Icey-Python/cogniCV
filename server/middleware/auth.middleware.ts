@@ -2,12 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { IServerResponse } from "../types";
 import {
   verifyAccessToken,
-  verifyRefreshToken,
-  generateAccessToken,
-  setAuthCookies,
   clearAuthCookies,
   ACCESS_TOKEN_COOKIE,
-  REFRESH_TOKEN_COOKIE,
   TokenPayload,
 } from "../lib/auth-utils";
 import User from "../models/user.model";
@@ -65,14 +61,13 @@ export const authenticate = (options: AuthOptions = {}) => {
   return async (
     req: Request,
     res: Response<IServerResponse>,
-    next: NextFunction
+    next: NextFunction,
   ) => {
     try {
       const accessToken = req.cookies[ACCESS_TOKEN_COOKIE];
-      const refreshToken = req.cookies[REFRESH_TOKEN_COOKIE];
 
       // Handle missing authentication tokens
-      if (!accessToken && !refreshToken) {
+      if (!accessToken) {
         if (isOptional) {
           return next();
         }
@@ -86,73 +81,22 @@ export const authenticate = (options: AuthOptions = {}) => {
       let tokenPayload: TokenPayload | null = null;
 
       // Try to verify access token
-      if (accessToken) {
-        try {
-          tokenPayload = verifyAccessToken(accessToken);
-        } catch (error) {
-          // Access token expired or invalid, try refresh token
-          if (refreshToken) {
-            try {
-              const refreshPayload = verifyRefreshToken(refreshToken);
-
-              // Verify session is still valid
-              const session = await Session.findOne({
-                sessionId: refreshPayload.sessionId,
-                isValid: true,
-              });
-
-              if (!session) {
-                clearAuthCookies(res);
-                if (isOptional) {
-                  return next();
-                }
-                return res.status(401).json({
-                  status: "error",
-                  message: "Session expired",
-                  data: null,
-                });
-              }
-
-              // Update last activity
-              session.lastActivity = new Date();
-              await session.save();
-
-              // Generate new access token
-              const newAccessToken = generateAccessToken({
-                userId: refreshPayload.userId,
-                email: refreshPayload.email,
-                role: refreshPayload.role,
-                sessionId: refreshPayload.sessionId,
-              });
-
-              // Set new access token in cookie
-              setAuthCookies(res, newAccessToken, refreshToken, true);
-              tokenPayload = refreshPayload;
-            } catch (refreshError) {
-              clearAuthCookies(res);
-              if (isOptional) {
-                return next();
-              }
-              return res.status(401).json({
-                status: "error",
-                message: "Invalid authentication",
-                data: null,
-              });
-            }
-          } else {
-            if (isOptional) {
-              return next();
-            }
-            return res.status(401).json({
-              status: "error",
-              message: "Authentication expired",
-              data: null,
-            });
-          }
+      try {
+        tokenPayload = verifyAccessToken(accessToken);
+      } catch (error) {
+        clearAuthCookies(res);
+        if (isOptional) {
+          return next();
         }
+        return res.status(401).json({
+          status: "error",
+          message: "Authentication expired or invalid",
+          data: null,
+        });
       }
 
       if (!tokenPayload) {
+        clearAuthCookies(res);
         if (isOptional) {
           return next();
         }
@@ -161,6 +105,30 @@ export const authenticate = (options: AuthOptions = {}) => {
           message: "Invalid authentication",
           data: null,
         });
+      }
+
+      // Verify session is still valid
+      if (tokenPayload.sessionId) {
+        const session = await Session.findOne({
+          sessionId: tokenPayload.sessionId,
+          isValid: true,
+        });
+
+        if (!session) {
+          clearAuthCookies(res);
+          if (isOptional) {
+            return next();
+          }
+          return res.status(401).json({
+            status: "error",
+            message: "Session expired",
+            data: null,
+          });
+        }
+
+        // Update last activity
+        session.lastActivity = new Date();
+        await session.save();
       }
 
       // Get user from database
