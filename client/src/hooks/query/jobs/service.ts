@@ -42,6 +42,7 @@ export interface Job {
 	location: Location;
 	aiFocusArea?: string;
 	createdBy: string;
+	applicantCount?: number;
 	createdAt: string;
 	updatedAt: string;
 }
