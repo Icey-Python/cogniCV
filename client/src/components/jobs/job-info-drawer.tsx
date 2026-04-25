@@ -25,21 +25,18 @@ export function JobInfoDrawer({ job, open, onOpenChange }: JobInfoDrawerProps) {
 				side="right"
 				className="border-border flex w-full flex-col gap-0 border-l bg-white p-0 pb-12 sm:max-w-lg"
 			>
-				<div className="flex items-start gap-4 border-b border-gray-100 bg-white px-4 py-6">
+				<div className="flex items-start gap-4 border-b border-gray-100 bg-white px-4 pt-6 pb-3">
 					<div className="min-w-0 flex-1">
-						<SheetTitle className="font-serif text-2xl">Job details</SheetTitle>
+						<SheetTitle className="font-lora text-2xl">{job.title}</SheetTitle>
 						<SheetDescription className="text-muted-foreground mt-0.5 text-sm">
 							Quick reference for the role, requirements, and hiring context.
 						</SheetDescription>
 					</div>
 				</div>
 
-				<ScrollArea className="mt-4 flex-1 bg-white">
+				<ScrollArea className="flex-1 bg-white pt-4">
 					<div className="space-y-8 px-4">
-						<h2 className="text-foreground mt-3 text-xl font-semibold">
-							ROLE : {job.title}
-						</h2>
-						<div className="text-muted-foreground -mt-4 text-sm leading-6">
+						<div className="text-muted-foreground text-sm leading-6">
 							<MarkdownRenderer content={job.description} />
 						</div>
 
@@ -81,38 +78,12 @@ export function JobInfoDrawer({ job, open, onOpenChange }: JobInfoDrawerProps) {
 							<div className="mt-4 flex flex-wrap gap-2">
 								{job.requiredSkills.map((skill) => (
 									<span
-										key={skill}
-										className="border-input bg-muted/70 text-foreground rounded-full border px-3 py-1 text-xs font-medium"
+										key={skill + '-job-info-drawer'}
+										className="bg-primary/10 text-primary rounded-full border-0 px-3 py-1 text-sm font-medium"
 									>
 										{skill}
 									</span>
 								))}
-							</div>
-						</div>
-
-						<div>
-							<h3 className="text-muted-foreground font-lora text-lg font-semibold uppercase">
-								Hiring Context
-							</h3>
-							<div className="flex items-start justify-between gap-4">
-								<p className="text-muted-foreground mt-2 text-sm leading-6">
-									Use this information to compare the candidate's AI analysis
-									against the role's actual requirements.
-								</p>
-
-								<span className="border-primary/20 bg-primary/10 text-primary inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold">
-									{job.status}
-								</span>
-							</div>
-							<div className="mt-4 grid gap-2">
-								<div className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 text-sm">
-									<span className="text-muted-foreground">Applicants</span>
-									<span className="font-medium">0</span>
-								</div>
-								<div className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 text-sm">
-									<span className="text-muted-foreground">Job ID</span>
-									<span className="text-foreground font-medium">{job._id}</span>
-								</div>
 							</div>
 						</div>
 					</div>

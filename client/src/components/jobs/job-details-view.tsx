@@ -15,13 +15,18 @@ export function JobDetailsView({ job }: JobDetailsViewProps) {
 			<div className="flex flex-wrap items-start justify-between gap-4">
 				<div className="space-y-2">
 					<h1 className="font-lora text-3xl">{job.title}</h1>
-					<div className="flex items-center gap-2 text-muted-foreground">
+					<div className="text-muted-foreground flex items-center gap-2">
 						<span>{job.source}</span>
 						<span>•</span>
-						<span>{job.location?.city}, {job.location?.country}</span>
+						<span>
+							{job.location?.city}, {job.location?.country}
+						</span>
 					</div>
 				</div>
-				<Badge variant="outline" className="border-primary border-t-0 border-x-0 rounded-none shadow-none py-2.5">
+				<Badge
+					variant="outline"
+					className="border-primary rounded-none border-x-0 border-t-0 py-2.5 shadow-none"
+				>
 					{job.status}
 				</Badge>
 			</div>
@@ -66,35 +71,24 @@ export function JobDetailsView({ job }: JobDetailsViewProps) {
 			</div>
 
 			<div className="space-y-4">
-				<h2 className="text-xl font-semibold font-lora">Job Description</h2>
+				<h2 className="font-lora text-xl font-semibold">Job Description</h2>
 				<div className="text-muted-foreground leading-relaxed">
 					<MarkdownRenderer content={job.description} />
 				</div>
 			</div>
 
 			<div className="space-y-4">
-				<h2 className="text-xl font-semibold font-lora">Required Skills</h2>
+				<h2 className="font-lora text-xl font-semibold">Required Skills</h2>
 				<div className="flex flex-wrap gap-2">
 					{job.requiredSkills.map((skill) => (
 						<Badge
 							key={skill}
-							variant="secondary"
-							className="rounded-full px-4 py-1.5"
+							variant="outline"
+							className="bg-primary/10 text-primary rounded-full border-0 px-4 py-1.5 text-sm"
 						>
 							{skill}
 						</Badge>
 					))}
-				</div>
-			</div>
-
-			<div className="rounded-xl border bg-slate-50/50 p-6">
-				<h3 className="font-lora text-lg font-semibold mb-2">Hiring Context</h3>
-				<p className="text-muted-foreground text-sm leading-relaxed mb-4">
-					Use this information to compare the candidate's AI analysis against the role's actual requirements.
-				</p>
-				<div className="flex items-center justify-between py-3 border-t text-sm">
-					<span className="text-muted-foreground">Job ID</span>
-					<span className="font-mono text-xs">{job._id}</span>
 				</div>
 			</div>
 		</div>
