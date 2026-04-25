@@ -7,13 +7,17 @@ const genAI = new GoogleGenerativeAI(ENV.GEMINI_API_KEY);
 
 export class GeminiService {
   private static model = genAI.getGenerativeModel({ model: ENV.GEMINI_MODEL });
-  private static CHUNK_SIZE = 20;
+  private static CHUNK_SIZE = 10;
   private static MAX_RETRIES = 3;
 
   /**
    * Evaluates a large batch of candidates by splitting them into chunks with retries
    */
-  static async evaluateCandidates(job: any, candidates: any[]): Promise<any[]> {
+  static async evaluateCandidates(
+    job: any, 
+    candidates: any[], 
+    onProgress?: (results: any[]) => Promise<void>
+  ): Promise<any[]> {
     const chunks = this.createChunks(candidates, this.CHUNK_SIZE);
     let allResults: any[] = [];
 
@@ -23,9 +27,15 @@ export class GeminiService {
     for (const [index, chunk] of chunks.entries()) {
       let retryCount = 0;
       let success = false;
+      let lastError: any = null;
 
       while (retryCount < this.MAX_RETRIES && !success) {
         try {
+          // Add a small delay between chunks to prevent rate limit issues
+          if (index > 0 && retryCount === 0) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+
           const prompt = this.constructScreeningPrompt(job, chunk);
           const result = await this.model.generateContent(prompt);
           const response = await result.response;
@@ -37,11 +47,17 @@ export class GeminiService {
           if (Array.isArray(parsedResults)) {
             allResults = [...allResults, ...parsedResults];
             success = true;
+            
+            // Call onProgress if provided
+            if (onProgress) {
+              await onProgress(allResults);
+            }
           } else {
-            throw new Error("Invalid JSON format from AI");
+            throw new Error("Invalid JSON format from AI: Expected an array");
           }
         } catch (error) {
           retryCount++;
+          lastError = error;
           const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff (2s, 4s, 8s)
           
           Logger.warn({ 
@@ -50,10 +66,13 @@ export class GeminiService {
 
           if (retryCount < this.MAX_RETRIES) {
             await new Promise(resolve => setTimeout(resolve, delay));
-          } else {
-            Logger.error({ message: `Chunk ${index + 1} failed after ${this.MAX_RETRIES} attempts. Skipping.` });
           }
         }
+      }
+
+      if (!success) {
+        Logger.error({ message: `Chunk ${index + 1} failed after ${this.MAX_RETRIES} attempts. Stopping screening.` });
+        throw new Error(`Failed to evaluate candidate chunk ${index + 1}: ${lastError?.message || 'Unknown error'}`);
       }
     }
 
@@ -122,7 +141,7 @@ export class GeminiService {
     const systemPrompt = `You are an expert technical recruiter assistant helping a user create a new job posting.
 Your goal is to collect the following required fields from the user through a natural conversation:
 1. title (string)
-2. description (string - a detailed, professional job description generated from the user's brief overview)
+2. description (string - a detailed, professional job description generated in MARKDOWN format from the user's brief overview)
 3. requiredSkills (array of strings)
 4. experienceLevel (must be one of: "Entry", "Junior", "Mid", "Senior", "Lead")
 5. type (must be one of: "Full-time", "Part-time", "Contract")
@@ -140,7 +159,7 @@ The conversation history will be provided.
 CRITICAL INSTRUCTIONS:
 - You MUST return a "jobData" object in EVERY response.
 - AGGRESSIVELY extract partial information (e.g. if the user says "I need a React dev", set "title" to "React Developer" and add "React" to "requiredSkills").
-- For the "description" field: Ask the user for a brief overview. Once provided, you MUST GENERATE A FULL, DETAILED JOB DESCRIPTION. DO NOT just copy the user's input. Expand it to include standard sections like "About the Role", "Key Responsibilities", and "Qualifications" based on the title and skills.
+- For the "description" field: Ask the user for a brief overview. Once provided, you MUST GENERATE A FULL, DETAILED JOB DESCRIPTION IN MARKDOWN FORMAT. DO NOT just copy the user's input. Expand it to include standard sections like "About the Role", "Key Responsibilities", and "Qualifications" based on the title and skills. Use proper markdown headers, bullet points, and bold text for readability.
 - NEVER GUESS or auto-fill "locationId" or "departmentId" just because the user mentions a location or department name.
 - DO NOT GUESS or auto-fill "type", "experienceLevel", or "workspaceType". 
 - IF ANY OF THE FOLLOWING ARE MISSING, YOU MUST SET "actionRequired" TO THE CORRESPONDING STRING SO THE UI CAN DISPLAY A SELECTOR:
@@ -191,10 +210,14 @@ ${JSON.stringify(messages, null, 2)}`;
    * Extract JSON from a potentially markdown-wrapped string
    */
   private static extractJson(text: string): string {
-    const match = text.match(/(\[[\s\S]*\]|{[\s\S]*})/);
+    // 1. Remove markdown code block markers if present (```json or ```)
+    let cleaned = text.replace(/```json\s?|```\s?/g, '');
+    
+    // 2. Find the first occurrence of [ or { and the last occurrence of ] or }
+    const match = cleaned.match(/(\[[\s\S]*\]|{[\s\S]*})/);
     if (match) {
       return match[0];
     }
-    return text.trim();
+    return cleaned.trim();
   }
 }

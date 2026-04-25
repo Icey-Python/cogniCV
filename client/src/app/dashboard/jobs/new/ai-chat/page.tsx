@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
+import MarkdownRenderer from '@/components/ui/markdown';
 
 const STORAGE_KEY = 'ai-job-creation-chat';
 
@@ -469,8 +470,12 @@ export default function AiJobCreationPage() {
 								{/* Description */}
 								<div className="space-y-2">
 									<p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Description</p>
-									<div className={cn("text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap", !draftJob.description && "text-muted-foreground/40 italic")}>
-										{draftJob.description || "Describe the role to see it here..."}
+									<div className={cn("text-sm leading-relaxed text-muted-foreground", !draftJob.description && "text-muted-foreground/40 italic")}>
+										{draftJob.description ? (
+											<MarkdownRenderer content={draftJob.description} />
+										) : (
+											"Describe the role to see it here..."
+										)}
 									</div>
 								</div>
 

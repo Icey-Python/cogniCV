@@ -125,14 +125,42 @@ export const triggerScreening = async (
       jobId,
       status: "pending",
       rankedCandidates: [],
+      totalCandidates: allCandidates.length,
     });
     await screeningRecord.save();
 
     // 4. Run AI Evaluation 
     try {
-      const aiResults = await GeminiService.evaluateCandidates(job, allCandidates);
+      const aiResults = await GeminiService.evaluateCandidates(
+        job, 
+        allCandidates,
+        async (currentAiResults) => {
+          // Map partial results back to our schema
+          const partialRanked = currentAiResults
+            .map((result: any) => {
+              const candidate = candidateById.get(String(result.candidateId));
+              if (!candidate) return null;
 
-      // 5. Map AI results back to our schema
+              return {
+                rank: result.rank || 0, // Rank might not be final yet
+                candidateId: candidate._id,
+                profileSource: candidate.source,
+                matchScore: result.matchScore,
+                subScores: result.subScores,
+                reasoning: result.reasoning,
+                profileSnapshot: candidate,
+              };
+            })
+            .filter((result): result is NonNullable<typeof result> => result !== null);
+
+          // Update the screening record with partial results
+          await ScreeningResult.findByIdAndUpdate(screeningRecord._id, {
+            rankedCandidates: partialRanked
+          });
+        }
+      );
+
+      // 5. Map final AI results back to our schema
       const rankedCandidates = aiResults
         .map((result: any) => {
         const candidate = candidateById.get(String(result.candidateId));
@@ -174,7 +202,9 @@ export const triggerScreening = async (
         data: screeningRecord,
       });
     } catch (aiError) {
+      // Clear partial results if the whole process fails
       screeningRecord.status = "failed";
+      screeningRecord.rankedCandidates = [];
       screeningRecord.error = (aiError as Error).message;
       await screeningRecord.save();
       throw aiError;
