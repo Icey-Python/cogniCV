@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useMockTalentQuery } from '@/hooks/query/jobs/queries';
 import { TalentPoolTable } from '@/components/talent/talent-pool-table';
 import { Input } from '@/components/ui/input';
@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/select';
 import {
 	IconSearch,
-	IconUsers,
 	IconFilter,
 	IconLoader2,
 	IconX,
@@ -22,6 +21,15 @@ import {
 } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const SENIORITY_LEVELS = ['All', 'Senior', 'Junior', 'Mid', 'Lead', 'Entry'];
 const LANGUAGES = ['All', 'React', 'TypeScript', 'Node.js', 'Python', 'Go', 'Java', 'Figma', 'GraphQL'];
@@ -33,6 +41,9 @@ export default function TalentPoolPage() {
 	const [search, setSearch] = useState('');
 	const [seniorityFilter, setSeniorityFilter] = useState('All');
 	const [languageFilter, setLanguageFilter] = useState('All');
+	
+	const [currentPage, setCurrentPage] = useState(1);
+	const itemsPerPage = 15;
 
 	const filteredTalent = useMemo(() => {
 		return talent.filter((profile) => {
@@ -57,6 +68,17 @@ export default function TalentPoolPage() {
 			return matchesSearch && matchesSeniority && matchesLanguage;
 		});
 	}, [talent, search, seniorityFilter, languageFilter]);
+
+	// Reset to page 1 on filter change
+	useEffect(() => {
+		setCurrentPage(1);
+	}, [search, seniorityFilter, languageFilter]);
+
+	const totalPages = Math.ceil(filteredTalent.length / itemsPerPage);
+	const paginatedTalent = filteredTalent.slice(
+		(currentPage - 1) * itemsPerPage,
+		currentPage * itemsPerPage
+	);
 
 	const clearFilters = () => {
 		setSearch('');
@@ -160,21 +182,86 @@ export default function TalentPoolPage() {
 			<div className="space-y-4">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-2">
-						<IconUsers className="size-4 text-slate-400" />
 						<span className="text-sm font-medium text-slate-600">
-							{filteredTalent.length} candidates found
+							Showing {paginatedTalent.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} - {Math.min(currentPage * itemsPerPage, filteredTalent.length)} of {filteredTalent.length} candidates
 						</span>
 					</div>
 				</div>
 
-				<Card className="overflow-hidden border-slate-200 shadow-sm">
+				<Card className="overflow-hidden border-slate-200">
 					{isLoading ? (
 						<div className="flex flex-col items-center justify-center py-20 gap-3">
 							<IconLoader2 className="size-8 text-primary animate-spin" />
 							<p className="text-sm text-slate-500 font-medium">Loading talent pool...</p>
 						</div>
 					) : (
-						<TalentPoolTable talent={filteredTalent} />
+						<>
+							<TalentPoolTable talent={paginatedTalent} />
+							{totalPages > 1 && (
+								<div className="border-t border-slate-200 p-4">
+									<Pagination>
+										<PaginationContent>
+											<PaginationItem>
+												<PaginationPrevious
+													href="#"
+													onClick={(e) => {
+														e.preventDefault();
+														if (currentPage > 1) setCurrentPage(p => p - 1);
+													}}
+													className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+												/>
+											</PaginationItem>
+											
+											{Array.from({ length: totalPages }).map((_, i) => {
+												const page = i + 1;
+												// Show first, last, current, and adjacent pages
+												if (
+													page === 1 ||
+													page === totalPages ||
+													(page >= currentPage - 1 && page <= currentPage + 1)
+												) {
+													return (
+														<PaginationItem key={page}>
+															<PaginationLink
+																href="#"
+																onClick={(e) => {
+																	e.preventDefault();
+																	setCurrentPage(page);
+																}}
+																isActive={currentPage === page}
+															>
+																{page}
+															</PaginationLink>
+														</PaginationItem>
+													);
+												} else if (
+													page === currentPage - 2 ||
+													page === currentPage + 2
+												) {
+													return (
+														<PaginationItem key={page}>
+															<PaginationEllipsis />
+														</PaginationItem>
+													);
+												}
+												return null;
+											})}
+
+											<PaginationItem>
+												<PaginationNext
+													href="#"
+													onClick={(e) => {
+														e.preventDefault();
+														if (currentPage < totalPages) setCurrentPage(p => p + 1);
+													}}
+													className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+												/>
+											</PaginationItem>
+										</PaginationContent>
+									</Pagination>
+								</div>
+							)}
+						</>
 					)}
 				</Card>
 			</div>

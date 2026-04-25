@@ -114,29 +114,6 @@ export function TalentPoolTable({ talent }: TalentPoolTableProps) {
 					)}
 				</TableBody>
 			</Table>
-
-			{talent.length > 0 && (
-				<div className="border-t py-3 px-6 flex items-center justify-between bg-slate-50/30">
-					<p className="text-xs text-muted-foreground">
-						Showing 1-{talent.length} of {talent.length} candidates in pool
-					</p>
-					<Pagination className="w-auto mx-0">
-						<PaginationContent>
-							<PaginationItem>
-								<PaginationPrevious href="#" className="pointer-events-none opacity-50 scale-90" />
-							</PaginationItem>
-							<PaginationItem>
-								<PaginationLink href="#" isActive className="h-8 w-8 text-xs">
-									1
-								</PaginationLink>
-							</PaginationItem>
-							<PaginationItem>
-								<PaginationNext href="#" className="pointer-events-none opacity-50 scale-90" />
-							</PaginationItem>
-						</PaginationContent>
-					</Pagination>
-				</div>
-			)}
 		</div>
 	);
 }
