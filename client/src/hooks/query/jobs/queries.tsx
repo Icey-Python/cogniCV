@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { JobService, ApplicantService, ScreeningService } from './service';
+import { JobService, ApplicantService, ScreeningService, ShareService } from './service';
 import { queryKeys } from '../keys';
 
 export const useJobsQuery = (page = 1, limit = 10) => {
@@ -60,5 +60,14 @@ export const useMockTalentByIdQuery = (id: string) => {
 		queryKey: ['applicants', 'mock', id],
 		queryFn: () => ApplicantService.getMockTalentById(id),
 		enabled: !!id,
+	});
+};
+
+export const useSharedAnalysisQuery = (shareId: string, password?: string) => {
+	return useQuery({
+		queryKey: ['shared-analysis', shareId, password],
+		queryFn: () => ShareService.getSharedAnalysis(shareId, password),
+		enabled: !!shareId,
+		retry: false // Don't retry on unauthorized
 	});
 };

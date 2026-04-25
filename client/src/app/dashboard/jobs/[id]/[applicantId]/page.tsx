@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
 import type { RankedCandidate, Skill, TalentProfile } from '@/types';
 import { useJobQuery, useJobApplicantsQuery, useScreeningResultsQuery } from '@/hooks/query/jobs/queries';
+import { useTriggerScreeningMutation, useGenerateShareLinkMutation } from '@/hooks/query/jobs/mutations';
 import { CircularScoreProgress } from '@/components/jobs/ranked-applicants-table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -93,6 +94,8 @@ export default function ApplicantDetailPage() {
 	const { data: jobData, isLoading: jobLoading } = useJobQuery(jobId);
 	const { data: applicantsData, isLoading: applicantsLoading } = useJobApplicantsQuery(jobId);
 	const { data: screeningData, isLoading: screeningLoading } = useScreeningResultsQuery(jobId);
+
+	const { mutateAsync: generateShareLink, isPending: isGeneratingLink } = useGenerateShareLinkMutation();
 
 	const job = jobData?.data;
 	const allApplicants = useMemo(() => {
@@ -256,10 +259,22 @@ export default function ApplicantDetailPage() {
 		);
 	};
 
-	const handleGenerateLink = () => {
-		const baseUrl = window.location.origin;
-		const link = `${baseUrl}/shared/analysis/${p._id}`;
-		setGeneratedLink(link);
+	const handleGenerateLink = async () => {
+		try {
+			const res = await generateShareLink({
+				jobId,
+				candidateId: p._id as string,
+				type: shareType,
+				password: shareType === 'protected' ? sharePassword : undefined
+			});
+			
+			const baseUrl = window.location.origin;
+			const link = `${baseUrl}/shared/analysis/${res.data.shareId}`;
+			setGeneratedLink(link);
+			toast.success('Share link generated!');
+		} catch (error) {
+			// Error handled by mutation toast
+		}
 	};
 
 	const handleCopyLink = () => {
@@ -685,8 +700,17 @@ export default function ApplicantDetailPage() {
 								/>
 							</div>
 						)}
-						<Button onClick={handleGenerateLink} className="mt-2 w-full">
-							<IconLink className="mr-2 size-4" /> Generate Link
+						<Button 
+							onClick={handleGenerateLink} 
+							className="mt-2 w-full"
+							disabled={isGeneratingLink || (shareType === 'protected' && !sharePassword)}
+						>
+							{isGeneratingLink ? (
+								<IconLoader2 className="mr-2 size-4 animate-spin" />
+							) : (
+								<IconLink className="mr-2 size-4" />
+							)}
+							Generate Link
 						</Button>
 						{generatedLink && (
 							<div className="mt-4 flex items-center gap-2">

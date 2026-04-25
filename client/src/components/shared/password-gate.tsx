@@ -8,22 +8,30 @@ import { IconLock } from '@tabler/icons-react';
 
 interface PasswordGateProps {
 	children: React.ReactNode;
-	correctPassword?: string; // In a real app, validation would happen server-side
+	onVerify: (password: string) => Promise<boolean>;
 }
 
-export function PasswordGate({ children, correctPassword = 'admin' }: PasswordGateProps) {
+export function PasswordGate({ children, onVerify }: PasswordGateProps) {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState(false);
+	const [isVerifying, setIsVerifying] = useState(false);
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		// Simulate password check (frontend only for demonstration)
-		if (password === correctPassword || password === 'test') {
-			setIsAuthenticated(true);
-			setError(false);
-		} else {
+		setIsVerifying(true);
+		try {
+			const success = await onVerify(password);
+			if (success) {
+				setIsAuthenticated(true);
+				setError(false);
+			} else {
+				setError(true);
+			}
+		} catch (err) {
 			setError(true);
+		} finally {
+			setIsVerifying(false);
 		}
 	};
 
@@ -58,11 +66,11 @@ export function PasswordGate({ children, correctPassword = 'admin' }: PasswordGa
 								autoFocus
 							/>
 							{error && (
-								<p className="text-xs text-destructive">Incorrect password. Try "test".</p>
+								<p className="text-xs text-destructive">Incorrect password. Please try again.</p>
 							)}
 						</div>
-						<Button type="submit" className="w-full">
-							Access Analysis
+						<Button type="submit" className="w-full" disabled={isVerifying}>
+							{isVerifying ? 'Verifying...' : 'Access Analysis'}
 						</Button>
 					</form>
 				</CardContent>
