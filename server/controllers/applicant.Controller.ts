@@ -2,6 +2,7 @@ import { Logger } from "borgen";
 import { HttpStatusCode } from "axios";
 import Job from "../models/job.model";
 import TalentProfile from "../models/talent.model";
+import Application from "../models/application.model";
 import ExternalApplicant from "../models/applicant.model";
 import { ParserService } from "../services/parser.service";
 import type { IServerResponse } from "../types";
@@ -104,6 +105,7 @@ export const getPlatformTalent = async (
   }
 };
 
+
 /**
  * @openapi
  * /api/v1/applicants/jobs/{id}/applicants:
@@ -138,8 +140,14 @@ export const getJobApplicants = async (
       });
     }
 
+    // 1. Fetch Platform Applicants (Linked via Application model)
+    const platformApplications = await Application.find({ jobId }).populate("profileId");
+    const platformTalent = platformApplications
+      .filter((app) => app.profileId)
+      .map((app) => app.profileId);
+
+    // 2. Fetch External Applicants (Uploaded specifically for this job)
     const externalApplicants = await ExternalApplicant.find({ jobId });
-    const platformTalent = await TalentProfile.find().limit(10);
 
     res.status(HttpStatusCode.Ok).json({
       status: "success",
