@@ -181,7 +181,7 @@ export default function JobDetailPage() {
 					</Button>
 
 					<Button variant="default" asChild className="shrink-0 gap-2">
-						<Link href={`/dashboard/jobs/${job._id}/upload`}>
+						<Link href={`/dashboard/jobs/${job._id}/add-applicant`}>
 							<IconUpload className="size-4" />
 							Import Applications
 						</Link>
