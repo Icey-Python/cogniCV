@@ -2,8 +2,11 @@
 
 import { useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
-import { type RankedCandidate, type TalentProfile } from '@/hooks/query/jobs/service';
-import { useJobQuery, useJobApplicantsQuery, useScreeningResultsQuery } from '@/hooks/query/jobs/queries';
+import {
+	useJobQuery,
+	useJobApplicantsQuery,
+	useScreeningResultsQuery
+} from '@/hooks/query/jobs/queries';
 import { useTriggerScreeningMutation } from '@/hooks/query/jobs/mutations';
 import { ApplicantInsightDrawer } from '@/components/jobs/applicant-insight-drawer';
 import { JobInfoDrawer } from '@/components/jobs/job-info-drawer';
@@ -30,10 +33,15 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function JobDetailPage() {
 	const params = useParams<{ id: string }>();
-	const { data: jobData, isLoading: jobLoading } = useJobQuery(params.id as string);
-	const { data: applicantsData, isLoading: applicantsLoading } = useJobApplicantsQuery(params.id as string);
-	const { data: screeningData, isLoading: screeningLoading } = useScreeningResultsQuery(params.id as string);
-	const { mutate: triggerScreening, isPending: screeningPending } = useTriggerScreeningMutation();
+	const { data: jobData, isLoading: jobLoading } = useJobQuery(
+		params.id as string
+	);
+	const { data: applicantsData, isLoading: applicantsLoading } =
+		useJobApplicantsQuery(params.id as string);
+	const { data: screeningData, isLoading: screeningLoading } =
+		useScreeningResultsQuery(params.id as string);
+	const { mutate: triggerScreening, isPending: screeningPending } =
+		useTriggerScreeningMutation();
 
 	const job = jobData?.data;
 	const allApplicants = useMemo(() => {
@@ -51,7 +59,8 @@ export default function JobDetailPage() {
 	const filteredRanked = useMemo(
 		() =>
 			rankedCandidates.filter((c) => {
-				const name = `${c.profileSnapshot.firstName} ${c.profileSnapshot.lastName}`.toLowerCase();
+				const name =
+					`${c.profileSnapshot.firstName} ${c.profileSnapshot.lastName}`.toLowerCase();
 				return name.includes(search.toLowerCase());
 			}),
 		[rankedCandidates, search]
@@ -74,7 +83,7 @@ export default function JobDetailPage() {
 	if (jobLoading) {
 		return (
 			<div className="text-muted-foreground flex justify-center py-20">
-				<IconLoader2 className="animate-spin size-6 mr-2" />
+				<IconLoader2 className="mr-2 size-6 animate-spin" />
 				Loading job details...
 			</div>
 		);
@@ -124,25 +133,28 @@ export default function JobDetailPage() {
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
-
 					{hasApplicants && !isScreened && (
-						<Button 
-							variant="default" 
+						<Button
+							variant="default"
 							className="bg-primary hover:bg-primary/90 gap-2"
 							onClick={() => triggerScreening(job._id)}
 							disabled={screeningPending}
 						>
-							{screeningPending ? <IconLoader2 className="animate-spin size-4" /> : <IconPlayerPlay className="size-4" />}
+							{screeningPending ? (
+								<IconLoader2 className="size-4 animate-spin" />
+							) : (
+								<IconPlayerPlay className="size-4" />
+							)}
 							Run AI Screening
 						</Button>
 					)}
-        <Button variant='outline' asChild>
+					<Button variant="outline" asChild>
 						<Link href={`/dashboard/jobs/${job._id}/edit`}>
-						<IconPencil className="size-4" />
+							<IconPencil className="size-4" />
 							Edit
 						</Link>
 					</Button>
-					
+
 					<Button variant="default" asChild className="shrink-0 gap-2">
 						<Link href={`/dashboard/jobs/${job._id}/upload`}>
 							<IconUpload className="size-4" />
@@ -155,12 +167,15 @@ export default function JobDetailPage() {
 			{/* Screening Status Alert */}
 			{hasApplicants && !isScreened && (
 				<Alert className="bg-primary/5 border-primary/20">
-					<IconSparkles className="size-4 text-primary" />
+					<IconSparkles className="text-primary size-4" />
 					<AlertTitle>Applicants Ready</AlertTitle>
 					<AlertDescription className="flex items-center justify-between">
-						<span>You have {allApplicants.length} candidates waiting for analysis. Run the AI screening to rank them by match score.</span>
-						<Button 
-							size="sm" 
+						<span>
+							You have {allApplicants.length} candidates waiting for analysis.
+							Run the AI screening to rank them by match score.
+						</span>
+						<Button
+							size="sm"
 							onClick={() => triggerScreening(job._id)}
 							disabled={screeningPending}
 							className="ml-4"
@@ -178,7 +193,8 @@ export default function JobDetailPage() {
 						<IconUsers className="text-muted-foreground mx-auto size-10" />
 						<p className="font-medium">No candidates yet</p>
 						<p className="text-muted-foreground mx-auto max-w-sm text-sm">
-							Import applications from our platform or upload CSV/PDF files to begin the recruitment process.
+							Import applications from our platform or upload CSV/PDF files to
+							begin the recruitment process.
 						</p>
 						<Button size="sm" asChild className="mt-2 gap-2">
 							<Link href={`/dashboard/jobs/${job._id}/add-applicant`}>
@@ -195,7 +211,9 @@ export default function JobDetailPage() {
 					<div className="flex flex-wrap items-center justify-between gap-4">
 						<div>
 							<h2 className="font-work-sans flex items-center gap-2 text-base font-semibold">
-								{isScreened ? 'Ranked Candidates' : 'Applicants'} ({isScreened ? filteredRanked.length : filteredUnscreened.length})
+								{isScreened ? 'Ranked Candidates' : 'Applicants'} (
+								{isScreened ? filteredRanked.length : filteredUnscreened.length}
+								)
 							</h2>
 						</div>
 						<div className="relative">
@@ -217,15 +235,22 @@ export default function JobDetailPage() {
 						) : (
 							<SimpleApplicantsTable
 								applicants={filteredUnscreened}
-								onRowClick={(a) => openDrawer({ 
-									profileSnapshot: a, 
-									matchScore: 0, 
-									rank: 0, 
-									profileSource: a.source,
-									candidateId: a._id || '',
-									subScores: { skills: 0, experience: 0, education: 0, availability: 0 },
-									reasoning: { strengths: [], gaps: [], recommendation: '' }
-								} as any)}
+								onRowClick={(a) =>
+									openDrawer({
+										profileSnapshot: a,
+										matchScore: 0,
+										rank: 0,
+										profileSource: a.source,
+										candidateId: a._id || '',
+										subScores: {
+											skills: 0,
+											experience: 0,
+											education: 0,
+											availability: 0
+										},
+										reasoning: { strengths: [], gaps: [], recommendation: '' }
+									} as any)
+								}
 							/>
 						)}
 					</Card>
