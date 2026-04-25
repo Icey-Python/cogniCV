@@ -4,8 +4,15 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
 import type { RankedCandidate, Skill, TalentProfile } from '@/types';
-import { useJobQuery, useJobApplicantsQuery, useScreeningResultsQuery } from '@/hooks/query/jobs/queries';
-import { useTriggerScreeningMutation, useGenerateShareLinkMutation } from '@/hooks/query/jobs/mutations';
+import {
+	useJobQuery,
+	useJobApplicantsQuery,
+	useScreeningResultsQuery
+} from '@/hooks/query/jobs/queries';
+import {
+	useTriggerScreeningMutation,
+	useGenerateShareLinkMutation
+} from '@/hooks/query/jobs/mutations';
 import { CircularScoreProgress } from '@/components/jobs/ranked-applicants-table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -92,10 +99,13 @@ export default function ApplicantDetailPage() {
 	const applicantId = params.applicantId;
 
 	const { data: jobData, isLoading: jobLoading } = useJobQuery(jobId);
-	const { data: applicantsData, isLoading: applicantsLoading } = useJobApplicantsQuery(jobId);
-	const { data: screeningData, isLoading: screeningLoading } = useScreeningResultsQuery(jobId);
+	const { data: applicantsData, isLoading: applicantsLoading } =
+		useJobApplicantsQuery(jobId);
+	const { data: screeningData, isLoading: screeningLoading } =
+		useScreeningResultsQuery(jobId);
 
-	const { mutateAsync: generateShareLink, isPending: isGeneratingLink } = useGenerateShareLinkMutation();
+	const { mutateAsync: generateShareLink, isPending: isGeneratingLink } =
+		useGenerateShareLinkMutation();
 
 	const job = jobData?.data;
 	const allApplicants = useMemo(() => {
@@ -104,12 +114,15 @@ export default function ApplicantDetailPage() {
 	}, [applicantsData]);
 
 	const candidateProfile = useMemo(() => {
-		return allApplicants.find(a => a._id === applicantId);
+		return allApplicants.find((a) => a._id === applicantId);
 	}, [allApplicants, applicantId]);
 
 	const rankedEntry = useMemo(() => {
 		if (!screeningData?.data) return null;
-		return screeningData.data.rankedCandidates.find(c => c.candidateId === applicantId || c.profileSnapshot._id === applicantId);
+		return screeningData.data.rankedCandidates.find(
+			(c: RankedCandidate) =>
+				c.candidateId === applicantId || c.profileSnapshot._id === applicantId
+		);
 	}, [screeningData, applicantId]);
 
 	const isScreened = !!rankedEntry;
@@ -147,8 +160,11 @@ export default function ApplicantDetailPage() {
 	const recruiterDraft = useMemo(() => {
 		if (!candidateProfile || !job) return '';
 
-		const candidateName = `${candidateProfile.firstName || ''} ${candidateProfile.lastName || ''}`.trim() || 'Candidate';
-		const topStrength = rankedEntry?.reasoning.strengths[0] || 'your profile quality';
+		const candidateName =
+			`${candidateProfile.firstName || ''} ${candidateProfile.lastName || ''}`.trim() ||
+			'Candidate';
+		const topStrength =
+			rankedEntry?.reasoning.strengths[0] || 'your profile quality';
 		const keyGap = rankedEntry?.reasoning.gaps[0] || 'the final fit details';
 
 		return `Subject: Update on your application for ${job.title}\n\nHi ${candidateProfile.firstName || 'there'},\n\nThank you for applying for the ${job.title} role. After reviewing your profile, we were especially impressed by ${topStrength.toLowerCase()}.\n\nWe would like to discuss your fit further, including ${keyGap.toLowerCase()}.\n\nIf you are available, please reply with your potential start date and interview availability for this week.\n\nBest regards,\nHiring Team`;
@@ -165,7 +181,7 @@ export default function ApplicantDetailPage() {
 
 	if (jobLoading || applicantsLoading) {
 		return (
-			<div className="flex justify-center py-20 text-muted-foreground">
+			<div className="text-muted-foreground flex justify-center py-20">
 				<IconLoader2 className="mr-2 size-6 animate-spin" />
 				Loading applicant details...
 			</div>
@@ -193,11 +209,18 @@ export default function ApplicantDetailPage() {
 	}
 
 	const p = candidateProfile;
-	const candidateName = `${p.firstName || ''} ${p.lastName || ''}`.trim() || 'Anonymous Applicant';
-	
-	const percentile = (isScreened && rankedEntry)
-		? Math.max(1, Math.round(((peers.length - rankedEntry.rank + 1) / peers.length) * 100))
-		: 0;
+	const candidateName =
+		`${p.firstName || ''} ${p.lastName || ''}`.trim() || 'Anonymous Applicant';
+
+	const percentile =
+		isScreened && rankedEntry
+			? Math.max(
+					1,
+					Math.round(
+						((peers.length - rankedEntry.rank + 1) / peers.length) * 100
+					)
+				)
+			: 0;
 
 	const suggestedFeedback = useMemo(() => {
 		if (isScreened && rankedEntry?.reasoning.suggestedFeedback?.length > 0) {
@@ -277,7 +300,7 @@ export default function ApplicantDetailPage() {
 				type: shareType,
 				password: shareType === 'protected' ? sharePassword : undefined
 			});
-			
+
 			const baseUrl = window.location.origin;
 			const link = `${baseUrl}/shared/analysis/${res.data.shareId}`;
 			setGeneratedLink(link);
@@ -290,7 +313,6 @@ export default function ApplicantDetailPage() {
 	const handleCopyLink = () => {
 		if (generatedLink) {
 			copyToClipboard(generatedLink);
-			toast.success('Link copied to clipboard');
 		}
 	};
 
@@ -301,10 +323,10 @@ export default function ApplicantDetailPage() {
 					<h1 className="font-lora text-3xl">{candidateName}</h1>
 					<div className="flex items-center gap-3">
 						<p className="text-muted-foreground max-w-3xl text-sm">
-						{p.source === 'internal'
-							? 'Platform Profile'
-							: 'External Applicant'} | {" "}
-				    	 {p.headline}
+							{p.source === 'internal'
+								? 'Platform Profile'
+								: 'External Applicant'}{' '}
+							| {p.headline}
 						</p>
 						<button
 							onClick={() => setJobInfoOpen(true)}
@@ -317,7 +339,10 @@ export default function ApplicantDetailPage() {
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
-					<Badge variant="outline" className="font-medium border-primary border-t-0 border-x-0 rounded-none shadow-none py-2.5">
+					<Badge
+						variant="outline"
+						className="border-primary rounded-none border-x-0 border-t-0 py-2.5 font-medium shadow-none"
+					>
 						{status}
 					</Badge>
 					<Button
@@ -335,16 +360,21 @@ export default function ApplicantDetailPage() {
 				<Card className="bg-primary/5 border-primary/20">
 					<CardContent className="flex items-center justify-between p-6">
 						<div className="flex items-center gap-4">
-							<div className="size-12 rounded-full bg-primary/10 flex items-center justify-center">
-								<IconSparkles className="size-6 text-primary" />
+							<div className="bg-primary/10 flex size-12 items-center justify-center rounded-full">
+								<IconSparkles className="text-primary size-6" />
 							</div>
 							<div>
 								<h3 className="text-lg font-semibold">Analysis Pending</h3>
-								<p className="text-sm text-muted-foreground">This candidate hasn't been screened by AI yet. All match scores and analysis are currently unavailable.</p>
+								<p className="text-muted-foreground text-sm">
+									This candidate hasn't been screened by AI yet. All match
+									scores and analysis are currently unavailable.
+								</p>
 							</div>
 						</div>
 						<Button asChild variant="outline" size="sm">
-							<Link href={`/dashboard/jobs/${jobId}`}>Go to dashboard to screen</Link>
+							<Link href={`/dashboard/jobs/${jobId}`}>
+								Go to dashboard to screen
+							</Link>
 						</Button>
 					</CardContent>
 				</Card>
@@ -374,7 +404,7 @@ export default function ApplicantDetailPage() {
 							{isScreened ? `#${rankedEntry?.rank}` : '-'}
 						</p>
 						<p className="text-muted-foreground mt-1 text-xs">
-							{isScreened 
+							{isScreened
 								? `Top ${percentile}% in ${job?.title || 'this role'} pool`
 								: 'Rank not available'}
 						</p>
@@ -425,9 +455,11 @@ export default function ApplicantDetailPage() {
 									&ldquo;{rankedEntry.reasoning.recommendation}&rdquo;
 								</div>
 							) : (
-								<div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
-									<IconInfoCircle className="mx-auto size-8 opacity-20 mb-3" />
-									<p className="text-sm italic">Detailed AI recommendation will appear here after screening.</p>
+								<div className="text-muted-foreground rounded-lg border border-dashed p-8 text-center">
+									<IconInfoCircle className="mx-auto mb-3 size-8 opacity-20" />
+									<p className="text-sm italic">
+										Detailed AI recommendation will appear here after screening.
+									</p>
 								</div>
 							)}
 
@@ -445,7 +477,7 @@ export default function ApplicantDetailPage() {
 											>
 												<span>{item.skill}</span>
 												{item.matched ? (
-													<span className="inline-flex items-center text-emerald-600 font-medium">
+													<span className="inline-flex items-center font-medium text-emerald-600">
 														<IconCircleCheck className="mr-1 size-3.5" /> Match
 													</span>
 												) : (
@@ -464,11 +496,13 @@ export default function ApplicantDetailPage() {
 											Key strengths
 										</p>
 										<ul className="space-y-2 text-sm">
-											{rankedEntry.reasoning.strengths.map((strength, index) => (
-												<li key={index} className="leading-relaxed">
-													• {strength}
-												</li>
-											))}
+											{rankedEntry.reasoning.strengths.map(
+												(strength: string, index: number) => (
+													<li key={index} className="leading-relaxed">
+														• {strength}
+													</li>
+												)
+											)}
 										</ul>
 									</div>
 									<div className="space-y-2 rounded-lg border border-gray-200 bg-gray-50/40 p-4">
@@ -476,11 +510,13 @@ export default function ApplicantDetailPage() {
 											Potential gaps
 										</p>
 										<ul className="space-y-2 text-sm">
-											{rankedEntry.reasoning.gaps.map((gap, index) => (
-												<li key={index} className="leading-relaxed">
-													• {gap}
-												</li>
-											))}
+											{rankedEntry.reasoning.gaps.map(
+												(gap: string, index: number) => (
+													<li key={index} className="leading-relaxed">
+														• {gap}
+													</li>
+												)
+											)}
 										</ul>
 									</div>
 								</div>
@@ -499,7 +535,7 @@ export default function ApplicantDetailPage() {
 						</CardHeader>
 						<CardContent>
 							<ul className="space-y-2 text-sm leading-relaxed">
-								{suggestedFeedback.map((feedback, index) => (
+								{suggestedFeedback.map((feedback: string, index: number) => (
 									<li
 										key={index}
 										className="bg-muted/20 rounded-md border px-3 py-2"
@@ -521,14 +557,42 @@ export default function ApplicantDetailPage() {
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+							<div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
 								{[
-									{ label: 'Skills', score: (rankedEntry?.subScores as any)?.skillMatch ?? (rankedEntry?.subScores as any)?.skills ?? 0, max: 40 },
-									{ label: 'Experience', score: (rankedEntry?.subScores as any)?.experienceAlignment ?? (rankedEntry?.subScores as any)?.experience ?? 0, max: 25 },
-									{ label: 'Education', score: (rankedEntry?.subScores as any)?.educationalAlignment ?? (rankedEntry?.subScores as any)?.education ?? 0, max: 15 },
-									{ label: 'Relevance', score: (rankedEntry?.subScores as any)?.relevance ?? 0, max: 20 }
+									{
+										label: 'Skills',
+										score:
+											(rankedEntry?.subScores as any)?.skillMatch ??
+											(rankedEntry?.subScores as any)?.skills ??
+											0,
+										max: 40
+									},
+									{
+										label: 'Experience',
+										score:
+											(rankedEntry?.subScores as any)?.experienceAlignment ??
+											(rankedEntry?.subScores as any)?.experience ??
+											0,
+										max: 25
+									},
+									{
+										label: 'Education',
+										score:
+											(rankedEntry?.subScores as any)?.educationalAlignment ??
+											(rankedEntry?.subScores as any)?.education ??
+											0,
+										max: 15
+									},
+									{
+										label: 'Relevance',
+										score: (rankedEntry?.subScores as any)?.relevance ?? 0,
+										max: 20
+									}
 								].map(({ label, score, max }) => (
-									<div key={label} className="flex flex-col items-center justify-center rounded-lg border bg-gray-50/50 p-4 text-center">
+									<div
+										key={label}
+										className="flex flex-col items-center justify-center rounded-lg border bg-gray-50/50 p-4 text-center"
+									>
 										<CircularScoreProgress score={score} max={max} />
 										<span className="text-muted-foreground mt-2 text-[10px] font-medium tracking-wider uppercase">
 											{label}
@@ -579,7 +643,7 @@ export default function ApplicantDetailPage() {
 								<IconCheck className="mr-2 size-4" /> Accept for interview
 							</Button>
 							{statusSaved && (
-								<p className="text-xs text-emerald-600 mt-2">
+								<p className="mt-2 text-xs text-emerald-600">
 									Status/message updated for recruiter workflow.
 								</p>
 							)}
@@ -710,10 +774,13 @@ export default function ApplicantDetailPage() {
 								/>
 							</div>
 						)}
-						<Button 
-							onClick={handleGenerateLink} 
+						<Button
+							onClick={handleGenerateLink}
 							className="mt-2 w-full"
-							disabled={isGeneratingLink || (shareType === 'protected' && !sharePassword)}
+							disabled={
+								isGeneratingLink ||
+								(shareType === 'protected' && !sharePassword)
+							}
 						>
 							{isGeneratingLink ? (
 								<IconLoader2 className="mr-2 size-4 animate-spin" />
