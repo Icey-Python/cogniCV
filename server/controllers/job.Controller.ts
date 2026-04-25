@@ -1,6 +1,8 @@
 import { Logger } from "borgen";
 import { HttpStatusCode } from "axios";
 import Job from "../models/job.model";
+import TalentProfile from "../models/talent.model";
+import Organization from "../models/organization.model";
 import { UserRole } from "../models/user.model";
 import type { IServerResponse } from "../types";
 import type { Request, Response } from "express";
@@ -440,21 +442,20 @@ export const getJobAnalytics = async (req: Request, res: Response<IServerRespons
   try {
     const query: any = req.user.role === UserRole.ADMIN ? {} : { createdBy: req.user._id };
     
-    const activeJobsQuery = { ...query, status: "Active" };
-    const activeJobsCount = await Job.countDocuments(activeJobsQuery);
-
-    // Mocking Total Candidates and Avg Match Score for now
-    // In the future, this would query the Applicant/Screening models
-    const totalCandidates = 42; 
-    const avgMatchScore = 83;
+    const [activeJobsCount, totalTalentPool, organization] = await Promise.all([
+      Job.countDocuments({ ...query, status: "Active" }),
+      TalentProfile.countDocuments({}), 
+      Organization.findOne({ userId: req.user._id })
+    ]);
 
     res.status(HttpStatusCode.Ok).json({
       status: "success",
       message: "Analytics retrieved successfully",
       data: {
         activeJobs: activeJobsCount,
-        totalCandidates,
-        avgMatchScore
+        totalTalentPool,
+        departments: organization?.departments?.length || 0,
+        locations: organization?.locations?.length || 0
       },
     });
   } catch (error) {
