@@ -53,10 +53,10 @@ export default function JobDetailPage() {
 		useJobApplicantsQuery(params.id as string);
 
 	const [isPolling, setIsPolling] = useState(false);
-	
+
 	const { data: screeningData, isLoading: screeningLoading } =
 		useScreeningResultsQuery(params.id as string, {
-			refetchInterval: isPolling ? 3000 : false,
+			refetchInterval: isPolling ? 3000 : false
 		});
 
 	const { mutate: triggerScreening, isPending: screeningPending } =
@@ -70,7 +70,8 @@ export default function JobDetailPage() {
 
 	const screeningResult = (screeningData as any)?.data;
 	const rankedCandidates = screeningResult?.rankedCandidates || [];
-	const isScreeningInProgress = screeningPending || screeningResult?.status === 'pending';
+	const isScreeningInProgress =
+		screeningPending || screeningResult?.status === 'pending';
 
 	useEffect(() => {
 		setIsPolling(isScreeningInProgress);
@@ -106,9 +107,10 @@ export default function JobDetailPage() {
 		[allApplicants, search]
 	);
 
-	const activeData = rankedCandidates.length > 0 ? filteredRanked : filteredUnscreened;
+	const activeData =
+		rankedCandidates.length > 0 ? filteredRanked : filteredUnscreened;
 	const totalPages = Math.ceil(activeData.length / ITEMS_PER_PAGE);
-	
+
 	const paginatedData = useMemo(() => {
 		const start = (currentPage - 1) * ITEMS_PER_PAGE;
 		return activeData.slice(start, start + ITEMS_PER_PAGE);
@@ -141,9 +143,11 @@ export default function JobDetailPage() {
 
 	const hasApplicants = allApplicants.length > 0;
 	const isScreened = rankedCandidates.length > 0;
-	
-	const progress = screeningResult?.totalCandidates 
-		? Math.round((rankedCandidates.length / screeningResult.totalCandidates) * 100) 
+
+	const progress = screeningResult?.totalCandidates
+		? Math.round(
+				(rankedCandidates.length / screeningResult.totalCandidates) * 100
+			)
 		: 0;
 
 	return (
@@ -176,25 +180,6 @@ export default function JobDetailPage() {
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
-					{hasApplicants && (
-						<Button
-							variant={isScreened ? "outline" : "default"}
-							className={cn(!isScreened && "bg-primary hover:bg-primary/90", "gap-2")}
-							onClick={() => triggerScreening(job._id)}
-							disabled={isScreeningInProgress}
-						>
-							{isScreeningInProgress ? (
-								<IconLoader2 className="size-4 animate-spin" />
-							) : isScreened ? (
-								<IconSparkles className="size-4 text-primary" />
-							) : (
-								<IconPlayerPlay className="size-4" />
-							)}
-							{isScreeningInProgress 
-								? `Analyzing (${rankedCandidates.length}/${screeningResult?.totalCandidates || allApplicants.length})` 
-								: isScreened ? "Re-analyze Applicants" : "Run AI Screening"}
-						</Button>
-					)}
 					<Button variant="outline" asChild>
 						<Link href={`/dashboard/jobs/${job._id}/edit`}>
 							<IconPencil className="size-4" />
@@ -218,12 +203,17 @@ export default function JobDetailPage() {
 					<AlertTitle>AI Screening in Progress</AlertTitle>
 					<AlertDescription className="space-y-3">
 						<p>
-							Analyzing {allApplicants.length} candidates. We're currently processing chunks of applicants to find your best matches.
+							Analyzing {allApplicants.length} candidates. We're currently
+							processing chunks of applicants to find your best matches.
 						</p>
 						<div className="space-y-1">
 							<div className="flex justify-between text-xs font-medium">
 								<span>Progress: {progress}%</span>
-								<span>{rankedCandidates.length} of {screeningResult?.totalCandidates || allApplicants.length} analyzed</span>
+								<span>
+									{rankedCandidates.length} of{' '}
+									{screeningResult?.totalCandidates || allApplicants.length}{' '}
+									analyzed
+								</span>
 							</div>
 							<Progress value={progress} className="h-2" />
 						</div>
@@ -320,13 +310,13 @@ export default function JobDetailPage() {
 						)}
 
 						{totalPages > 1 && (
-							<div className="border-t p-4 flex items-center justify-between">
-								<p className="text-sm text-muted-foreground">
+							<div className="flex items-center justify-between border-t p-4">
+								<p className="text-muted-foreground text-sm">
 									Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{' '}
 									{Math.min(currentPage * ITEMS_PER_PAGE, activeData.length)} of{' '}
 									{activeData.length} candidates
 								</p>
-								<Pagination className="w-auto mx-0">
+								<Pagination className="mx-0 w-auto">
 									<PaginationContent>
 										<PaginationItem>
 											<PaginationPrevious
@@ -336,7 +326,9 @@ export default function JobDetailPage() {
 													if (currentPage > 1) setCurrentPage((p) => p - 1);
 												}}
 												className={
-													currentPage === 1 ? 'pointer-events-none opacity-50' : ''
+													currentPage === 1
+														? 'pointer-events-none opacity-50'
+														: ''
 												}
 											/>
 										</PaginationItem>
@@ -413,4 +405,3 @@ export default function JobDetailPage() {
 		</div>
 	);
 }
-

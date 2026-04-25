@@ -118,10 +118,6 @@ export default function TalentProfilePage() {
 									</div>
 								</DialogContent>
 							</Dialog>
-
-							<Button variant="outline" className="gap-2">
-								<IconDownload className="size-4" /> Export
-							</Button>
 						</div>
 					</div>
 					<p className="text-sm text-slate-500">{profile.headline}</p>

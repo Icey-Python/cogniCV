@@ -341,7 +341,7 @@ export default function ApplicantDetailPage() {
 				<div className="flex items-center gap-2">
 					<Badge
 						variant="outline"
-						className="border-primary rounded-none border-x-0 border-t-0 py-2.5 font-medium shadow-none"
+						className="border-primary text-primary bg-primary/10 rounded-full px-4 py-2.5 font-medium shadow-none"
 					>
 						{status}
 					</Badge>
