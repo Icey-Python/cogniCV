@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	IconMessageChatbot,
@@ -46,6 +46,9 @@ export function FloatingChat({ jobId, enabled = false }: FloatingChatProps) {
 	const [view, setView] = useState<'list' | 'chat'>('list');
 	const [isIndexReady, setIsIndexReady] = useState(false);
 	const [isCheckingIndex, setIsCheckingIndex] = useState(false);
+	const [indexingState, setIndexingState] = useState<
+		'idle' | 'checking' | 'triggering' | 'building' | 'error' | 'no_screening'
+	>('idle');
 	const [isLoading, setIsLoading] = useState(false);
 
 	// Sessions state
@@ -155,27 +158,92 @@ export function FloatingChat({ jobId, enabled = false }: FloatingChatProps) {
 
 	// ─── API Interaction ─────────────────────────────────────────────────────────
 
+	// Ref to track indexing state for polling speed without causing effect re-runs
+	const indexingStateRef = useRef(indexingState);
+	useEffect(() => {
+		indexingStateRef.current = indexingState;
+	}, [indexingState]);
+
+	// Guard to prevent duplicate trigger calls
+	const hasTriggeredRef = useRef(false);
+
+	// Trigger embedding generation on-demand
+	const triggerIndexing = useCallback(async () => {
+		if (hasTriggeredRef.current) return;
+		hasTriggeredRef.current = true;
+		setIndexingState('triggering');
+		try {
+			const res = await apiBase.post(
+				`/chat/job-analysis/${jobId}/trigger-indexing`
+			);
+			const data = res.data?.data;
+
+			if (data?.triggered) {
+				setIndexingState('building');
+			} else if (data?.reason === 'already_indexed') {
+				setIsIndexReady(true);
+				setIndexingState('idle');
+			} else if (data?.reason === 'no_screening') {
+				setIndexingState('no_screening');
+			} else {
+				setIndexingState('error');
+				hasTriggeredRef.current = false; // Allow retry
+			}
+		} catch {
+			setIndexingState('error');
+			hasTriggeredRef.current = false; // Allow retry
+		}
+	}, [jobId]);
+
+	// Poll for index status — only re-runs when chat open/close state or readiness changes
 	useEffect(() => {
 		if (!enabled || (!isOpen && !isExpanded)) return;
+		if (isIndexReady) return;
+
+		let cancelled = false;
 
 		const checkStatus = async () => {
+			if (cancelled) return;
 			setIsCheckingIndex(true);
 			try {
 				const res = await apiBase.get(`/chat/job-analysis/${jobId}/status`);
-				setIsIndexReady(res.data?.data?.ready === true);
+				if (cancelled) return;
+				const ready = res.data?.data?.ready === true;
+				setIsIndexReady(ready);
+
+				if (ready) {
+					setIndexingState('idle');
+				}
 			} catch {
-				setIsIndexReady(false);
+				if (!cancelled) setIsIndexReady(false);
 			} finally {
-				setIsCheckingIndex(false);
+				if (!cancelled) setIsCheckingIndex(false);
 			}
 		};
 
-		checkStatus();
-		if (!isIndexReady) {
-			const interval = setInterval(checkStatus, 10000);
-			return () => clearInterval(interval);
-		}
-	}, [enabled, isOpen, isExpanded, jobId, isIndexReady]);
+		// Initial check
+		checkStatus().then(() => {
+			if (cancelled) return;
+			// After initial check, auto-trigger if not ready
+			if (!hasTriggeredRef.current) {
+				triggerIndexing();
+			}
+		});
+
+		// Polling interval — read poll speed from ref so we don't need indexingState as dep
+		const interval = setInterval(() => {
+			const state = indexingStateRef.current;
+			if (state === 'building' || state === 'triggering') {
+				checkStatus();
+			}
+			// Don't poll when in error/no_screening/idle states
+		}, 3000);
+
+		return () => {
+			cancelled = true;
+			clearInterval(interval);
+		};
+	}, [enabled, isOpen, isExpanded, jobId, isIndexReady, triggerIndexing]);
 
 	const handleSendMessage = useCallback(
 		async (content: string) => {
@@ -231,6 +299,76 @@ export function FloatingChat({ jobId, enabled = false }: FloatingChatProps) {
 	);
 
 	// ─── Components ──────────────────────────────────────────────────────────────
+
+	const IndexNotReadyContent = useMemo(() => {
+		if (indexingState === 'no_screening') {
+			return (
+				<div className="flex flex-1 flex-col items-center justify-center p-6 text-center">
+					<div className="mb-4 flex size-12 items-center justify-center rounded-full bg-slate-100">
+						<IconMessageChatbot className="size-6 text-slate-400" />
+					</div>
+					<p className="text-sm font-medium text-slate-700">
+						Analysis Required
+					</p>
+					<p className="text-muted-foreground mt-2 max-w-[260px] text-xs">
+						Run the AI screening first to analyze candidates. The chat
+						will become available once analysis is complete.
+					</p>
+				</div>
+			);
+		}
+
+		if (indexingState === 'error') {
+			return (
+				<div className="flex flex-1 flex-col items-center justify-center p-6 text-center">
+					<div className="mb-4 flex size-12 items-center justify-center rounded-full bg-red-50">
+						<IconX className="size-6 text-red-500" />
+					</div>
+					<p className="text-sm font-medium text-slate-700">
+						Failed to Initialize
+					</p>
+					<p className="text-muted-foreground mt-2 max-w-[260px] text-xs">
+						Something went wrong while preparing the knowledge base.
+					</p>
+					<Button
+						size="sm"
+						variant="outline"
+						className="mt-4 gap-2"
+						onClick={triggerIndexing}
+					>
+						<IconLoader2 className="size-3.5" />
+						Retry
+					</Button>
+				</div>
+			);
+		}
+
+		// Default: checking / triggering / building states
+		return (
+			<div className="flex flex-1 flex-col items-center justify-center p-6 text-center">
+				<div className="mb-4 flex size-12 items-center justify-center rounded-full bg-amber-100">
+					<IconLoader2 className="size-6 animate-spin text-amber-600" />
+				</div>
+				<p className="text-sm font-medium text-slate-700">
+					{indexingState === 'checking'
+						? 'Checking Knowledge Base...'
+						: 'Preparing Knowledge Base'}
+				</p>
+				<p className="text-muted-foreground mt-2 max-w-[260px] text-xs">
+					{indexingState === 'checking'
+						? 'Verifying if the analysis data is ready for chat...'
+						: 'Indexing your screening results for intelligent Q&A. This usually takes a few seconds...'}
+				</p>
+				{(indexingState === 'building' || indexingState === 'triggering') && (
+					<div className="mt-4 flex items-center gap-2">
+						<div className="h-1 w-24 overflow-hidden rounded-full bg-amber-100">
+							<div className="h-full animate-pulse rounded-full bg-amber-500 transition-all" style={{ width: '60%' }} />
+						</div>
+					</div>
+				)}
+			</div>
+		);
+	}, [indexingState, triggerIndexing]);
 
 	const ChatContent = (
 		<div className="flex h-full flex-col overflow-hidden bg-white">
@@ -301,19 +439,8 @@ export function FloatingChat({ jobId, enabled = false }: FloatingChatProps) {
 			</div>
 
 			{/* Main Area */}
-			{!isIndexReady && !isCheckingIndex ? (
-				<div className="flex flex-1 flex-col items-center justify-center p-6 text-center">
-					<div className="mb-4 flex size-12 items-center justify-center rounded-full bg-amber-100">
-						<IconLoader2 className="size-6 animate-spin text-amber-600" />
-					</div>
-					<p className="text-sm font-medium text-slate-700">
-						Building Knowledge Base
-					</p>
-					<p className="text-muted-foreground mt-2 max-w-[260px] text-xs">
-						The AI is indexing your screening results. This usually takes a few
-						seconds after screening completes.
-					</p>
-				</div>
+			{!isIndexReady ? (
+				IndexNotReadyContent
 			) : view === 'list' ? (
 				<div className="flex flex-1 flex-col overflow-hidden bg-slate-50/50">
 					<div className="shrink-0 p-4">

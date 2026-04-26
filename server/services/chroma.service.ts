@@ -21,7 +21,12 @@ let chromaClient: ChromaClient | null = null;
 
 function getChromaClient(): ChromaClient {
   if (!chromaClient) {
-    chromaClient = new ChromaClient({ path: ENV.CHROMA_URL });
+    const url = new URL(ENV.CHROMA_URL);
+    chromaClient = new ChromaClient({
+      host: url.hostname,
+      port: url.port ? parseInt(url.port, 10) : (url.protocol === "https:" ? 443 : 8000),
+      ssl: url.protocol === "https:",
+    });
   }
   return chromaClient;
 }

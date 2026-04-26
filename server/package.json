@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "tsx watch app.ts",
-    "build": "tsc",
+    "build": "tsc && cp ./docs/openapi.json ./build/docs/openapi.json && cp -r ./data ./build/data",
     "generateDocs": "tsx ./docs/generateDocs.ts && cp ./docs/openapi.json ./build/docs/openapi.json",
     "deploy": "pm2 start  build/app.js --name cognicv-backend --instances 1",
     "start": "node ./build/app.js"
