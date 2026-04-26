@@ -54,7 +54,7 @@ app.use(limiter);
 
 // API Reference
 app.use(
-  "/openapi",
+  "/api/v1/openapi",
   express.static(path.join(__dirname, "./docs/openapi.json")),
 );
 app.use(
@@ -65,7 +65,7 @@ app.use(
     realm: ENV.API_DOCS_REALM,
   }),
   apiReference({
-    url: `${ENV.API_DOCS_SERVER}/openapi`,
+    url: `${ENV.API_DOCS_SERVER}/api/v1/openapi`,
     layout: "modern",
     defaultOpenAllTags: true,
     expandAllResponses: true,
