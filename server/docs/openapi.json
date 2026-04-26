@@ -424,6 +424,34 @@
         }
       }
     },
+    "/api/v1/chat/job-analysis/{jobId}/trigger-indexing": {
+      "post": {
+        "summary": "Trigger on-demand embedding generation for a job's screening results",
+        "tags": [
+          "Chat"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "jobId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Indexing triggered or already available"
+          }
+        }
+      }
+    },
     "/api/v1/jobs": {
       "post": {
         "summary": "Create a new job",
