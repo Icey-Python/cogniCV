@@ -5,6 +5,7 @@ cogniCV is an intelligent recruitment tool designed to automate and enhance the 
 ## Project Overview
 
 cogniCV solves the challenge of manual resume screening by providing:
+
 - **AI-Powered Resume Parsing**: Automatically extracts structured data (skills, experience, education) from PDF resumes.
 - **Intelligent Job Creation**: An AI chat assistant that helps recruiters generate detailed, markdown-formatted job descriptions.
 - **Weighted Scoring Engine**: Ranks candidates based on a multi-dimensional scoring model (Skills, Experience, Education, Relevance).
@@ -13,12 +14,18 @@ cogniCV solves the challenge of manual resume screening by providing:
 - **Secure Sharing**: Generate password-protected links to share candidate analysis with stakeholders.
 
 ### Tech Stack
+
 - **Frontend**: Next.js 15+, Tailwind CSS, Shadcn/UI, TanStack Query.
 - **Backend**: Node.js, Express, TypeScript.
 - **Database**: MongoDB (Mongoose).
 - **Messaging/Queue**: RabbitMQ.
 - **Storage**: Cloudflare R2 / MinIO (S3 Compatible).
-- **AI Engine**: Google Gemini 2.5 Flash & Google Gemini 2.5 Flash.
+- **AI Engine**: Google Gemini 2.5 Flash & Google gemini-embedding-001.
+
+### Links
+
+- **Live link**: [cogniCV](https://cognicv.101software.site)
+- **Docs link**: [docs](https://cognicv.101software.site/api/v1/docs) - Username : admin , Pass : admin
 
 ## System Architecture
 
@@ -58,12 +65,14 @@ graph TD
 ## Setup Instructions
 
 ### Prerequisites
+
 - **Node.js** (v18+)
 - **pnpm** (recommended) or npm/yarn
 - **Docker** and **Docker Compose**
 - **Google Gemini API Key**
 
 ### 1. Clone and Install
+
 ```bash
 # Clone the repository
 git clone <repo-url>
@@ -75,34 +84,45 @@ cd ../server && pnpm install
 ```
 
 ### 2. Infrastructure (Docker)
+
 Run the required infrastructure services (RabbitMQ and MinIO):
+
 ```bash
 docker-compose up -d
 ```
-*This will start RabbitMQ on port 5672/15672 and MinIO on port 9000/9001.*
+
+_This will start RabbitMQ on port 5672/15672 and MinIO on port 9000/9001._
 
 ### 3. Environment Variables
+
 You need to set up `.env` files in both the `client` and `server` directories.
 
 #### **Server (`server/.env`)**
+
 Copy `server/.env.example` to `server/.env` and fill in the values:
+
 - `MONGO_URI`: Your MongoDB connection string.
 - `GEMINI_API_KEY`: Your Google AI Studio API Key.
 - `RABBITMQ_URL`: `amqp://localhost` (if using Docker).
 - `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`: For storage (or local MinIO credentials).
 
 #### **Client (`client/.env`)**
+
 Copy `client/.env.example` to `client/.env`:
+
 - `NEXT_PUBLIC_SERVER_URL`: `http://localhost:8001` (default backend port).
 
 ### 4. Running the Application
+
 **Start the Backend:**
+
 ```bash
 cd server
 pnpm dev
 ```
 
 **Start the Frontend:**
+
 ```bash
 cd client
 pnpm dev
@@ -113,14 +133,15 @@ The application will be available at `http://localhost:3000`.
 ## Environment Variables Detail
 
 ### Backend (Server)
-| Variable | Description | Default |
-| :--- | :--- | :--- |
-| `MONGO_URI` | MongoDB Connection String | `mongodb://localhost:27017/cognicv` |
-| `SERVER_PORT` | Port for the backend server | `8001` |
-| `GEMINI_API_KEY` | Google AI API Key | (Required) |
-| `RABBITMQ_URL` | RabbitMQ Connection String | `amqp://localhost` |
-| `R2_ENDPOINT` | S3 Compatible Storage Endpoint | (Required) |
-| `JWT_SECRET` | Secret for authentication tokens | (Required) |
+
+| Variable         | Description                      | Default                             |
+| :--------------- | :------------------------------- | :---------------------------------- |
+| `MONGO_URI`      | MongoDB Connection String        | `mongodb://localhost:27017/cognicv` |
+| `SERVER_PORT`    | Port for the backend server      | `8001`                              |
+| `GEMINI_API_KEY` | Google AI API Key                | (Required)                          |
+| `RABBITMQ_URL`   | RabbitMQ Connection String       | `amqp://localhost`                  |
+| `R2_ENDPOINT`    | S3 Compatible Storage Endpoint   | (Required)                          |
+| `JWT_SECRET`     | Secret for authentication tokens | (Required)                          |
 
 ## AI Decision Flow
 
@@ -140,12 +161,16 @@ cogniCV uses a chunked processing model to evaluate candidates efficiently while
 ## Assumptions and Limitations
 
 ### Assumptions
+
 - **Resume Language**: The system assumes resumes are in English for optimal Gemini performance.
 - **Parsing Status**: Candidates must be successfully "parsed" before they can be "screened".
 - **Infrastructure**: Assumes RabbitMQ and MongoDB are reachable as per the `.env` configuration.
 
 ### Limitations
+
 - **Rate Limits**: Heavy batches (hundreds of resumes) might hit Gemini's RPM limits; a 1-second delay is implemented between chunks to mitigate this.
 - **File Types**: Currently supports `.pdf` for resume parsing and `.csv` for batch ingestion.
 - **Chunk Size**: The system is tuned to process 10 candidates per AI call to balance speed and evaluation depth.
 - **PDF Quality**: Text extraction quality depends on the underlying PDF structure (scanned images without OCR may fail).
+
+© 2026 cogniCV Team. All rights reserved.
