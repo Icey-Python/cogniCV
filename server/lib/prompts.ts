@@ -34,6 +34,7 @@ FAIRNESS & BIAS MANDATE:
 INPUT DATA:
 - JOB_CRITERIA: {{JOB_DATA}}
 - CANDIDATE_BATCH: {{CANDIDATE_DATA}}
+{{RE_EVALUATION_FOCUS}}
 
 OUTPUT REQUIREMENTS:
 Return ONLY a valid JSON array of objects. No preamble. No markdown. No conversational text.

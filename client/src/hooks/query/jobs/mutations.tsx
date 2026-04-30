@@ -91,7 +91,7 @@ export const useUploadPdfMutation = () => {
 export const useTriggerScreeningMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (jobId: string) => ScreeningService.triggerScreening(jobId),
+		mutationFn: ({ jobId, message }: { jobId: string; message?: string }) => ScreeningService.triggerScreening({ jobId, message }),
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({ queryKey: ['screening', 'results', data.data.jobId] });
 			toast.success(data.message || 'Screening completed successfully');
