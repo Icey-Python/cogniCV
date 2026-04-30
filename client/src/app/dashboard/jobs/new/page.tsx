@@ -30,7 +30,11 @@ import {
 	IconUsers,
 	IconUpload,
 	IconChevronRight,
-	IconChevronLeft
+	IconChevronLeft,
+	IconBrain,
+	IconCode,
+	IconBriefcase,
+	IconSchool
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -53,7 +57,7 @@ const EXPERIENCE_LEVELS: ExperienceLevel[] = [
 	'Lead'
 ];
 
-const STEPS = ['Source', 'Details', 'Requirements'];
+const STEPS = ['Source', 'Details', 'Requirements', 'Scoring'];
 
 export default function NewJobPage() {
 	const router = useRouter();
@@ -76,7 +80,15 @@ export default function NewJobPage() {
 	const [skills, setSkills] = useState<string[]>([]);
 	const [skillInput, setSkillInput] = useState('');
 	const [focusAreas, setFocusAreas] = useState('');
+	const [weights, setWeights] = useState({
+		skills: 40,
+		experience: 25,
+		education: 15,
+		relevance: 20
+	});
 	const [created, setCreated] = useState(false);
+
+	const totalWeight = weights.skills + weights.experience + weights.education + weights.relevance;
 
 	// Load AI draft from localStorage if available
 	useEffect(() => {
@@ -145,7 +157,13 @@ export default function NewJobPage() {
 				experienceLevel: experienceLevel as any,
 				type: employmentType as any,
 				location: locObj,
-				aiFocusArea: focusAreas
+				aiFocusArea: focusAreas,
+				analysisWeights: {
+					skills: weights.skills,
+					experience: weights.experience,
+					education: weights.education,
+					relevance: weights.relevance
+				}
 			},
 			{
 				onSuccess: () => {
@@ -192,7 +210,7 @@ export default function NewJobPage() {
 		);
 	}
 
-	const nextStep = () => setStep((s) => Math.min(3, s + 1));
+	const nextStep = () => setStep((s) => Math.min(4, s + 1));
 	const prevStep = () => setStep((s) => Math.max(1, s - 1));
 
 	return (
@@ -505,6 +523,71 @@ export default function NewJobPage() {
 							</div>
 						</div>
 					)}
+
+					{/* Step 4: Scoring */}
+					{step === 4 && (
+						<div className="space-y-6">
+							<div>
+								<h2 className="text-lg font-semibold">AI Scoring Weights</h2>
+								<p className="text-muted-foreground mt-1 text-sm">
+									Adjust how much importance the AI should give to each factor when ranking candidates. Must total 100%.
+								</p>
+							</div>
+
+							<div className={cn("flex items-center justify-between rounded-lg border p-4 transition-colors", totalWeight === 100 ? "bg-primary/5 border-primary/20 text-primary" : "bg-destructive/5 border-destructive/20 text-destructive")}>
+								<span className="font-medium text-sm">Total Weight Allocation</span>
+								<span className="text-lg font-bold">
+									{totalWeight}% / 100%
+								</span>
+							</div>
+
+							<div className="grid gap-6 sm:grid-cols-2">
+								{[
+									{ key: 'skills', label: 'Technical Skills', icon: IconCode, color: 'text-blue-500', desc: 'Weight for matching required skills' },
+									{ key: 'experience', label: 'Experience Level', icon: IconBriefcase, color: 'text-emerald-500', desc: 'Weight for years of experience & seniority' },
+									{ key: 'education', label: 'Education', icon: IconSchool, color: 'text-amber-500', desc: 'Weight for relevant degrees & certifications' },
+									{ key: 'relevance', label: 'Overall Relevance', icon: IconBrain, color: 'text-purple-500', desc: 'Weight for general industry & domain match' }
+								].map((item) => {
+									const Icon = item.icon;
+									const val = weights[item.key as keyof typeof weights];
+									return (
+										<div key={item.key} className="rounded-xl border bg-card p-5 shadow-sm transition-all hover:border-primary/30">
+											<div className="mb-4 flex items-start justify-between gap-4">
+												<div className="flex items-center gap-3">
+													<div className={cn("flex size-10 items-center justify-center rounded-lg bg-muted/50", item.color)}>
+														<Icon className="size-5" />
+													</div>
+													<div>
+														<h3 className="font-semibold leading-none">{item.label}</h3>
+														<p className="text-xs text-muted-foreground mt-1.5">{item.desc}</p>
+													</div>
+												</div>
+												<div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+													{val}%
+												</div>
+											</div>
+											<div className="px-1">
+												<input
+													type="range"
+													min="0"
+													max="100"
+													step="5"
+													value={val}
+													onChange={(e) => setWeights(prev => ({ ...prev, [item.key]: parseInt(e.target.value) }))}
+													className="h-2 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary"
+												/>
+												<div className="mt-2 flex justify-between text-[10px] font-medium text-muted-foreground">
+													<span>Low</span>
+													<span>Medium</span>
+													<span>High</span>
+												</div>
+											</div>
+										</div>
+									);
+								})}
+							</div>
+						</div>
+					)}
 				</div>
 
 				{/* Footer */}
@@ -518,7 +601,7 @@ export default function NewJobPage() {
 							<Link href="/dashboard/jobs">Cancel</Link>
 						</Button>
 					)}
-					{step < 3 ? (
+					{step < 4 ? (
 						<Button
 							onClick={nextStep}
 							className="gap-1.5"
@@ -533,7 +616,7 @@ export default function NewJobPage() {
 						<Button
 							onClick={handleCreate}
 							className="gap-1.5"
-							disabled={createJob.isPending}
+							disabled={createJob.isPending || totalWeight !== 100}
 						>
 							{createJob.isPending ? 'Creating...' : 'Create Job'}{' '}
 							<IconCircleCheck className="size-4" />
