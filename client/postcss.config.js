@@ -1,5 +1,6 @@
 module.exports = {
-  plugins: {
-    '@tailwindcss/postcss': {},
-  },
+  plugins: [
+    require('@csstools/postcss-oklab-function')({ preserve: true }),
+    '@tailwindcss/postcss',
+  ],
 };

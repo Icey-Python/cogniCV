@@ -128,17 +128,27 @@ export const ApplicantService = {
 
 	uploadPdf: async ({ jobId, files }: { jobId: string; files: File[] }) => {
 		const formData = new FormData();
-		files.forEach((f) => formData.append('files', f));
+		files.forEach((file) => formData.append('files', file));
 		const response = await apiBase.post<IServerResponse<{ total: number; queued: number; failed: number }>>(`/applicants/jobs/${jobId}/upload/pdf`, formData, {
-			headers: { 'Content-Type': 'multipart/form-data' },
+			headers: { 'Content-Type': 'multipart/form-data' }
 		});
+		return response.data;
+	},
+
+	generateResponse: async ({ jobId, applicantId }: { jobId: string; applicantId: string }) => {
+		const response = await apiBase.post<IServerResponse<string>>(`/applicants/jobs/${jobId}/applicants/${applicantId}/generate-response`);
+		return response.data;
+	},
+
+	sendResponseEmail: async ({ jobId, applicantId, message }: { jobId: string; applicantId: string; message: string }) => {
+		const response = await apiBase.post<IServerResponse<any>>(`/applicants/jobs/${jobId}/applicants/${applicantId}/send-email`, { message });
 		return response.data;
 	},
 
 	getJobApplicants: async (jobId: string) => {
 		const response = await apiBase.get<IServerResponse<{ external: TalentProfile[]; platform: TalentProfile[] }>>(`/applicants/jobs/${jobId}/applicants`);
 		return response.data;
-	},
+	}
 };
 
 // ─── Screening Service ───────────────────────────────────────────────────────

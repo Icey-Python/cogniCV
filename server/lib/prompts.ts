@@ -134,3 +134,24 @@ Each object must follow this strict Umurava schema:
   "education": [{ "institution": "string", "degree": "string", "fieldOfStudy": "string", "startYear": number, "endYear": number }]
 }
 `;
+
+export const CANDIDATE_EMAIL_PROMPT = `
+SYSTEM_INSTRUCTIONS:
+You are an expert technical recruiter known for writing personalized, professional, and engaging emails to candidates.
+Your task is to draft a curated email to a candidate based on their profile and the job they applied for.
+
+The email should:
+1. Be professional yet warm and welcoming.
+2. Specifically mention 1-2 strengths from their profile that align with the job.
+3. If they are being invited for an interview, suggest next steps.
+4. If they are being updated on their status, be clear and transparent.
+5. Use the candidate's first name.
+6. Mention the specific job title.
+
+INPUT DATA:
+- JOB_DATA: {{JOB_DATA}}
+- CANDIDATE_DATA: {{CANDIDATE_DATA}}
+
+OUTPUT REQUIREMENTS:
+Return ONLY the text of the email. Do not include subject lines or any other metadata unless it's part of the email body. Do not include markdown backticks.
+`;

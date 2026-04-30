@@ -11,7 +11,9 @@ import {
 } from '@/hooks/query/jobs/queries';
 import {
 	useTriggerScreeningMutation,
-	useGenerateShareLinkMutation
+	useGenerateShareLinkMutation,
+	useGenerateResponseMutation,
+	useSendResponseEmailMutation
 } from '@/hooks/query/jobs/mutations';
 import { CircularScoreProgress } from '@/components/jobs/ranked-applicants-table';
 import { Badge } from '@/components/ui/badge';
@@ -40,6 +42,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { copyToClipboard } from '@/lib/utils';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { ApplicantAnalysisPDF } from '@/components/jobs/ApplicantAnalysisPDF';
 import {
 	IconArrowLeft,
 	IconBolt,
@@ -59,7 +63,9 @@ import {
 	IconShare,
 	IconLink,
 	IconLoader2,
-	IconStar
+	IconStar,
+	IconSend,
+	IconPrinter
 } from '@tabler/icons-react';
 import { JobInfoDrawer } from '@/components/jobs/job-info-drawer';
 import { toast } from 'sonner';
@@ -107,15 +113,23 @@ export default function ApplicantDetailPage() {
 	const { mutateAsync: generateShareLink, isPending: isGeneratingLink } =
 		useGenerateShareLinkMutation();
 
-	const job = jobData?.data;
+	const { mutateAsync: generateResponse, isPending: isGeneratingResponse } =
+		useGenerateResponseMutation();
+
+	const { mutateAsync: sendEmail, isPending: isSendingEmail } =
+		useSendResponseEmailMutation();
+
 	const allApplicants = useMemo(() => {
 		if (!applicantsData?.data) return [];
 		return [...applicantsData.data.external, ...applicantsData.data.platform];
 	}, [applicantsData]);
 
-	const candidateProfile = useMemo(() => {
+	const p = useMemo(() => {
 		return allApplicants.find((a) => a._id === applicantId);
 	}, [allApplicants, applicantId]);
+
+	const job = jobData?.data;
+	const candidateProfile = p;
 
 	const rankedEntry = useMemo(() => {
 		if (!screeningData?.data) return null;
@@ -156,6 +170,7 @@ export default function ApplicantDetailPage() {
 	const [shareType, setShareType] = useState('public');
 	const [sharePassword, setSharePassword] = useState('');
 	const [generatedLink, setGeneratedLink] = useState('');
+	const [customMessage, setCustomMessage] = useState('');
 
 	const recruiterDraft = useMemo(() => {
 		if (!candidateProfile || !job) return '';
@@ -170,14 +185,45 @@ export default function ApplicantDetailPage() {
 		return `Subject: Update on your application for ${job.title}\n\nHi ${candidateProfile.firstName || 'there'},\n\nThank you for applying for the ${job.title} role. After reviewing your profile, we were especially impressed by ${topStrength.toLowerCase()}.\n\nWe would like to discuss your fit further, including ${keyGap.toLowerCase()}.\n\nIf you are available, please reply with your potential start date and interview availability for this week.\n\nBest regards,\nHiring Team`;
 	}, [candidateProfile, job, rankedEntry]);
 
-	const [customMessage, setCustomMessage] = useState('');
-
 	// Update custom message when recruiterDraft changes
 	useMemo(() => {
 		if (recruiterDraft && !customMessage) {
 			setCustomMessage(recruiterDraft);
 		}
 	}, [recruiterDraft]);
+
+	const suggestedFeedback = useMemo(() => {
+		if (isScreened && rankedEntry?.reasoning.suggestedFeedback?.length > 0) {
+			return rankedEntry.reasoning.suggestedFeedback;
+		}
+
+		if (isScreened && rankedEntry) {
+			return [
+				`Highlight ${rankedEntry.reasoning.strengths[0]?.toLowerCase() || 'your strongest fit point'} in the first interview stage.`,
+				rankedEntry.reasoning.gaps[0]
+					? `Validate risk around ${rankedEntry.reasoning.gaps[0].toLowerCase()} with one focused assessment question.`
+					: 'Keep validation focused on team collaboration and delivery ownership.',
+				`Probe readiness for ${job?.experienceLevel || 'the'} role scope with examples of measurable impact.`
+			];
+		}
+
+		return [
+			'Analysis pending. Run AI screening to see tailored feedback points.',
+			'Focus initial screening on core technical competence and cultural alignment.',
+			'Verify role relevance and start date expectations.'
+		];
+	}, [isScreened, rankedEntry, job]);
+
+	const percentile = useMemo(() => {
+		return isScreened && rankedEntry
+			? Math.max(
+					1,
+					Math.round(
+						((peers.length - rankedEntry.rank + 1) / peers.length) * 100
+					)
+				)
+			: 0;
+	}, [isScreened, rankedEntry, peers.length]);
 
 	if (jobLoading || applicantsLoading) {
 		return (
@@ -208,41 +254,9 @@ export default function ApplicantDetailPage() {
 		);
 	}
 
-	const p = candidateProfile;
 	const candidateName =
-		`${p.firstName || ''} ${p.lastName || ''}`.trim() || 'Anonymous Applicant';
-
-	const percentile =
-		isScreened && rankedEntry
-			? Math.max(
-					1,
-					Math.round(
-						((peers.length - rankedEntry.rank + 1) / peers.length) * 100
-					)
-				)
-			: 0;
-
-	const suggestedFeedback = useMemo(() => {
-		if (isScreened && rankedEntry?.reasoning.suggestedFeedback?.length > 0) {
-			return rankedEntry.reasoning.suggestedFeedback;
-		}
-
-		if (isScreened && rankedEntry) {
-			return [
-				`Highlight ${rankedEntry.reasoning.strengths[0]?.toLowerCase() || 'your strongest fit point'} in the first interview stage.`,
-				rankedEntry.reasoning.gaps[0]
-					? `Validate risk around ${rankedEntry.reasoning.gaps[0].toLowerCase()} with one focused assessment question.`
-					: 'Keep validation focused on team collaboration and delivery ownership.',
-				`Probe readiness for ${job?.experienceLevel || 'the'} role scope with examples of measurable impact.`
-			];
-		}
-
-		return [
-			'Analysis pending. Run AI screening to see tailored feedback points.',
-			'Focus initial screening on core technical competence and cultural alignment.',
-			'Verify role relevance and start date expectations.'
-		];
-	}, [isScreened, rankedEntry, job]);
+		`${candidateProfile.firstName || ''} ${candidateProfile.lastName || ''}`.trim() ||
+		'Anonymous Applicant';
 
 	const handleAcceptForInterview = () => {
 		setStatus('Accepted for Interview');
@@ -316,6 +330,36 @@ export default function ApplicantDetailPage() {
 		}
 	};
 
+	const handleGenerateResponse = async () => {
+		try {
+			const res = await generateResponse({ jobId, applicantId: p._id as string });
+			if (res.data) {
+				setCustomMessage(res.data);
+				toast.success('AI response generated!');
+			}
+		} catch (error) {
+			// Error handled by mutation toast
+		}
+	};
+
+	const handleSendEmail = async () => {
+		if (!customMessage) {
+			toast.error('Please draft a message first');
+			return;
+		}
+
+		try {
+			await sendEmail({
+				jobId,
+				applicantId: p._id as string,
+				message: customMessage
+			});
+			setStatusSaved(true);
+		} catch (error) {
+			// Error handled by mutation toast
+		}
+	};
+
 	return (
 		<div className="space-y-6">
 			<div className="flex flex-wrap items-start justify-between gap-4">
@@ -323,10 +367,10 @@ export default function ApplicantDetailPage() {
 					<h1 className="font-lora text-3xl">{candidateName}</h1>
 					<div className="flex items-center gap-3">
 						<p className="text-muted-foreground max-w-3xl text-sm">
-							{p.source === 'internal'
+							{candidateProfile.source === 'internal'
 								? 'Platform Profile'
 								: 'External Applicant'}{' '}
-							| {p.headline}
+							| {candidateProfile.headline}
 						</p>
 						<button
 							onClick={() => setJobInfoOpen(true)}
@@ -345,6 +389,30 @@ export default function ApplicantDetailPage() {
 					>
 						{status}
 					</Badge>
+					{isScreened && candidateProfile && job ? (
+						<PDFDownloadLink
+							document={
+								<ApplicantAnalysisPDF
+									candidate={candidateProfile}
+									job={job}
+									rankedEntry={rankedEntry}
+									coveragePercent={coveragePercent}
+								/>
+							}
+							fileName={`${candidateProfile.firstName || 'applicant'}-${candidateProfile.lastName || 'analysis'}-report.pdf`}
+						>
+							{({ loading }) => (
+								<Button variant="outline" className="gap-2" disabled={loading}>
+									<IconPrinter className="size-4" />{' '}
+									{loading ? 'Generating...' : 'Download PDF'}
+								</Button>
+							)}
+						</PDFDownloadLink>
+					) : (
+						<Button variant="outline" className="gap-2" disabled>
+							<IconPrinter className="size-4" /> Download PDF
+						</Button>
+					)}
 					<Button
 						variant="default"
 						onClick={() => setShareModalOpen(true)}
@@ -678,8 +746,33 @@ export default function ApplicantDetailPage() {
 								>
 									Reset draft
 								</Button>
-								<Button size="sm" onClick={handleCopyMessage}>
+								<Button
+									variant="secondary"
+									size="sm"
+									onClick={handleGenerateResponse}
+									disabled={isGeneratingResponse}
+								>
+									{isGeneratingResponse ? (
+										<IconLoader2 className="mr-2 size-4 animate-spin" />
+									) : (
+										<IconSparkles className="mr-2 size-4" />
+									)}
+									Generate with AI
+								</Button>
+								<Button variant="outline" size="sm" onClick={handleCopyMessage}>
 									<IconCopy className="mr-2 size-4" /> Copy message
+								</Button>
+								<Button
+									size="sm"
+									onClick={handleSendEmail}
+									disabled={isSendingEmail || !customMessage}
+								>
+									{isSendingEmail ? (
+										<IconLoader2 className="mr-2 size-4 animate-spin" />
+									) : (
+										<IconSend className="mr-2 size-4" />
+									)}
+									Send Email
 								</Button>
 							</div>
 						</CardContent>

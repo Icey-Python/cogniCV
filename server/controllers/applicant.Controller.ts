@@ -6,6 +6,9 @@ import Job from "../models/job.model";
 import TalentProfile from "../models/talent.model";
 import Application from "../models/application.model";
 import { ParserService } from "../services/parser.service";
+import { GeminiService } from "../services/gemini.service";
+import { ENV } from "../lib/environments";
+import { Resend } from "resend";
 import type { IServerResponse } from "../types";
 import type { Request, Response } from "express";
 
@@ -620,6 +623,115 @@ export const uploadPdf = async (
     res.status(HttpStatusCode.InternalServerError).json({
       status: "error",
       message: "Failed to initiate upload pipeline",
+      data: null,
+    });
+  }
+};
+
+/**
+ * Generates an AI-curated response message for an applicant
+ */
+export const generateResponse = async (req: Request, res: Response) => {
+  const { id: jobId, applicantId } = req.params;
+
+  try {
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(HttpStatusCode.NotFound).json({
+        status: "error",
+        message: "Job not found",
+        data: null,
+      });
+    }
+
+    const candidate = await TalentProfile.findById(applicantId);
+    if (!candidate) {
+      return res.status(HttpStatusCode.NotFound).json({
+        status: "error",
+        message: "Applicant not found",
+        data: null,
+      });
+    }
+
+    const emailDraft = await GeminiService.generateCandidateEmail(job, candidate);
+
+    res.status(HttpStatusCode.Ok).json({
+      status: "success",
+      message: "AI response generated successfully",
+      data: emailDraft,
+    });
+  } catch (error) {
+    Logger.error({ message: "Error in generateResponse: " + error });
+    res.status(HttpStatusCode.InternalServerError).json({
+      status: "error",
+      message: "Failed to generate AI response",
+      data: null,
+    });
+  }
+};
+
+/**
+ * Sends a response email to an applicant using Resend
+ */
+export const sendResponseEmail = async (req: Request, res: Response) => {
+  const { id: jobId, applicantId } = req.params;
+  const { message, subject } = req.body;
+
+  if (!message) {
+    return res.status(HttpStatusCode.BadRequest).json({
+      status: "error",
+      message: "Message content is required",
+      data: null,
+    });
+  }
+
+  try {
+    const candidate = await TalentProfile.findById(applicantId);
+    if (!candidate || !candidate.email) {
+      return res.status(HttpStatusCode.NotFound).json({
+        status: "error",
+        message: "Applicant or applicant email not found",
+        data: null,
+      });
+    }
+
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(HttpStatusCode.NotFound).json({
+        status: "error",
+        message: "Job not found",
+        data: null,
+      });
+    }
+
+    const resend = new Resend(ENV.RESEND_API_KEY);
+
+    const { data, error } = await resend.emails.send({
+      from: "cogniCV <onboarding@resend.dev>", // TODO: replace with actual email
+      to: [candidate.email],
+      subject: subject || `Update on your application for ${job.title}`,
+      text: message,
+    });
+
+    if (error) {
+      Logger.error({ message: "Resend error: " + JSON.stringify(error) });
+      return res.status(HttpStatusCode.InternalServerError).json({
+        status: "error",
+        message: "Failed to send email via Resend",
+        data: error,
+      });
+    }
+
+    res.status(HttpStatusCode.Ok).json({
+      status: "success",
+      message: "Email sent successfully",
+      data: data,
+    });
+  } catch (error) {
+    Logger.error({ message: "Error in sendResponseEmail: " + error });
+    res.status(HttpStatusCode.InternalServerError).json({
+      status: "error",
+      message: "Failed to send email",
       data: null,
     });
   }

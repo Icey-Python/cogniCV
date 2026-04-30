@@ -110,3 +110,27 @@ export const useGenerateShareLinkMutation = () => {
 		}
 	});
 };
+
+export const useGenerateResponseMutation = () => {
+	return useMutation({
+		mutationFn: ApplicantService.generateResponse,
+		onSuccess: () => {
+			toast.success('AI response generated successfully');
+		},
+		onError: (error: any) => {
+			toast.error(error.response?.data?.message || 'Error generating AI response');
+		}
+	});
+};
+
+export const useSendResponseEmailMutation = () => {
+	return useMutation({
+		mutationFn: ApplicantService.sendResponseEmail,
+		onSuccess: () => {
+			toast.success('Email sent successfully');
+		},
+		onError: (error: any) => {
+			toast.error(error.response?.data?.message || 'Error sending email');
+		}
+	});
+};

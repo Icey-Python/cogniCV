@@ -29,4 +29,16 @@ router.post(
   ApplicantController.uploadPdf
 );
 
+router.post(
+  "/jobs/:id/applicants/:applicantId/generate-response",
+  authenticate(),
+  ApplicantController.generateResponse
+);
+
+router.post(
+  "/jobs/:id/applicants/:applicantId/send-email",
+  authenticate(),
+  ApplicantController.sendResponseEmail
+);
+
 export default router;
