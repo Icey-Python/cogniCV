@@ -1,6 +1,6 @@
 import { Logger } from "borgen";
 import { ENV } from "../lib/environments";
-import { MASTER_SCREENING_PROMPT } from "../lib/prompts";
+import { MASTER_SCREENING_PROMPT, CANDIDATE_EMAIL_PROMPT } from "../lib/prompts";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(ENV.GEMINI_API_KEY);
@@ -219,5 +219,37 @@ ${JSON.stringify(messages, null, 2)}`;
       return match[0];
     }
     return cleaned.trim();
+  }
+
+  /**
+   * Generates a personalized email for a candidate
+   */
+  static async generateCandidateEmail(job: any, candidate: any): Promise<string> {
+    const jobData = JSON.stringify({
+      title: job.title,
+      description: job.description,
+      requiredSkills: job.requiredSkills,
+    });
+
+    const candidateData = JSON.stringify({
+      firstName: candidate.firstName,
+      lastName: candidate.lastName,
+      skills: candidate.skills,
+      experience: candidate.experience,
+      headline: candidate.headline,
+    });
+
+    const prompt = CANDIDATE_EMAIL_PROMPT
+      .replace("{{JOB_DATA}}", jobData)
+      .replace("{{CANDIDATE_DATA}}", candidateData);
+
+    try {
+      const result = await this.model.generateContent(prompt);
+      const response = await result.response;
+      return response.text().trim();
+    } catch (error) {
+      Logger.error({ message: "Error in generateCandidateEmail: " + error });
+      throw new Error("Failed to generate email with AI");
+    }
   }
 }

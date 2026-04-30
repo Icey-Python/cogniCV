@@ -28,6 +28,8 @@ export const ENV = {
   R2_ENDPOINT: process.env.R2_ENDPOINT as string,
   R2_BUCKET_NAME: process.env.R2_BUCKET_NAME as string,
   R2_PUBLIC_DOMAIN: process.env.R2_PUBLIC_DOMAIN as string,
+  // Resend
+  RESEND_API_KEY: process.env.RESEND_API_KEY as string,
 };
 
 export const isProduction = process.env.NODE_ENV === "production";

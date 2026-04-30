@@ -33,6 +33,7 @@
 		"@radix-ui/react-slot": "^1.2.4",
 		"@radix-ui/react-tabs": "^1.1.13",
 		"@radix-ui/react-tooltip": "^1.2.8",
+		"@react-pdf/renderer": "^4.5.1",
 		"@reduxjs/toolkit": "^2.11.2",
 		"@tabler/icons-react": "^3.36.1",
 		"@tanstack/react-query": "^5.100.1",
@@ -57,6 +58,7 @@
 		"react-markdown": "^10.1.0",
 		"react-redux": "^9.2.0",
 		"react-syntax-highlighter": "^16.1.1",
+		"react-to-pdf": "^3.2.2",
 		"remark-gfm": "^4.0.1",
 		"sharp": "^0.33.5",
 		"sonner": "^2.0.7",
@@ -70,6 +72,7 @@
 	"pnpm": {
 		"onlyBuiltDependencies": [
 			"better-sqlite3",
+			"core-js",
 			"es5-ext",
 			"esbuild",
 			"lefthook",
@@ -81,6 +84,7 @@
 		}
 	},
 	"devDependencies": {
+		"@csstools/postcss-oklab-function": "^5.0.3",
 		"@eslint/eslintrc": "^3.3.3",
 		"@next/eslint-plugin-next": "16.0.7",
 		"@tailwindcss/postcss": "^4.1.18",
