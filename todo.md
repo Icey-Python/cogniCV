@@ -1,16 +1,20 @@
 # TODOS
-
+RY:
 - [] Allow recruiter to set analysis percentages
-
-- [] Advanced Search and filtering && (Allow setting shortlist size)
-
 - [] Add starting prompt to Job Analyis starting messages
 
-- [] Exporting CSV of analyzed candiates table
+SK:
+- [] Generate email response and send with resend
 - [] Allow downloading of analyzed candidates page as pdf
-
 - [] Reanalysis with updated steering prompt
 
+AM:
+
+- [] Advanced Search and filtering && (Allow setting shortlist size)
+- [] Exporting CSV of analyzed candiates table
+
+
+Others:
 - [] Email Integration
 - [] Slack Integration
 - [] Discord Integration
