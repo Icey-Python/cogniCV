@@ -7,8 +7,8 @@ RY:
 
 SK:
 
-- [] Generate email response and send with resend
-- [] Allow downloading of analyzed candidates page as pdf
+- [x] Generate email response and send with resend
+- [x] Allow downloading of analyzed candidates page as pdf
 - [] Reanalysis with updated steering prompt
 
 AB:
