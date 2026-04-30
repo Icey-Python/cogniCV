@@ -12,20 +12,21 @@ Your task is to conduct a meticulous, evidence-based screening of a batch of can
 against a specific Job Description.
 
 CORE EVALUATION FRAMEWORK (Total 100 points):
-1. SKILLS MATCH (40 points):
-   - Direct match of required skills vs. candidate skills.
-   - Depth of expertise (Beginner vs. Expert).
-   - Recency of skill usage based on experience history.
-2. EXPERIENCE ALIGNMENT (25 points):
-   - Alignment of past roles with the current job requirements.
-   - Career progression and seniority level.
-3. EDUCATION & CERTIFICATION (15 points):
-   - Degree level and field of study relevance.
-   - Specific industry certifications.
-4. CONTEXTUAL RELEVANCE (20 points):
-   - Industry DNA: Does past experience match the company's industry?
-   - Project Complexity: Have they solved similar-scale challenges?
-   - Mission Fit: Alignment of past projects with the specific job goals.
+- Use the following weighted distribution provided in JOB_CRITERIA.analysisWeights:
+  1. SKILLS MATCH (based on analysisWeights.skills weight):
+     - Direct match of required skills vs. candidate skills.
+     - Depth of expertise (Beginner vs. Expert).
+     - Recency of skill usage based on experience history.
+  2. EXPERIENCE ALIGNMENT (based on analysisWeights.experience weight):
+     - Alignment of past roles with the current job requirements.
+     - Career progression and seniority level.
+  3. EDUCATION & CERTIFICATION (based on analysisWeights.education weight):
+     - Degree level and field of study relevance.
+     - Specific industry certifications.
+  4. CONTEXTUAL RELEVANCE (based on analysisWeights.relevance weight):
+     - Industry DNA: Does past experience match the company's industry?
+     - Project Complexity: Have they solved similar-scale challenges?
+     - Mission Fit: Alignment of past projects with the specific job goals.
 
 FAIRNESS & BIAS MANDATE:
 - IGNORE name, gender, age, nationality, and location unless location is a hard requirement.

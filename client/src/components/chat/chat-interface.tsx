@@ -8,6 +8,21 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import MarkdownRenderer from '../ui/markdown';
 
+const QUESTION_POOL = [
+	"Who are the top 3 candidates for this role?",
+	"Are there any candidates with missing requirements?",
+	"Summarize the strongest candidate's experience.",
+	"Compare the top two candidates.",
+	"Who has the most relevant industry experience?",
+	"List candidates with strong communication skills.",
+	"Which candidate has the best technical skills?",
+	"Find candidates who have leadership experience.",
+	"What are the main weaknesses of the applicants?",
+	"Are there any candidates with management background?",
+	"Which candidate has the highest education level?",
+	"Who would be the best fit for a senior position?"
+];
+
 export interface ChatMessage {
 	id: string;
 	role: 'user' | 'ai';
@@ -33,6 +48,12 @@ export function ChatInterface({
 	const [input, setInput] = useState('');
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
+	const [randomQuestions, setRandomQuestions] = useState<string[]>([]);
+
+	useEffect(() => {
+		const shuffled = [...QUESTION_POOL].sort(() => 0.5 - Math.random());
+		setRandomQuestions(shuffled.slice(0, 3));
+	}, []);
 
 	const handleSubmit = (e?: React.FormEvent) => {
 		if (e) e.preventDefault();
@@ -133,6 +154,24 @@ export function ChatInterface({
 			</div>
 
 			<div className="bg-white/50 p-4">
+				{messages.filter((m) => m.role === 'user').length === 0 && randomQuestions.length > 0 && (
+					<div className="mb-3 flex flex-wrap gap-2">
+						{randomQuestions.map((q, i) => (
+							<button
+								key={i}
+								onClick={() => {
+									setInput(q);
+									if (textareaRef.current) {
+										textareaRef.current.focus();
+									}
+								}}
+								className="text-muted-foreground hover:text-foreground hover:bg-muted/80 border-muted-foreground/20 rounded-full border bg-transparent px-3 py-1.5 text-xs transition-colors"
+							>
+								{q}
+							</button>
+						))}
+					</div>
+				)}
 				<div className="relative flex w-full items-end transition-all">
 					<Textarea
 						ref={textareaRef}

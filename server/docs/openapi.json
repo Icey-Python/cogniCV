@@ -1619,6 +1619,23 @@
           "aiFocusArea": {
             "type": "string"
           },
+          "analysisWeights": {
+            "type": "object",
+            "properties": {
+              "skills": {
+                "type": "number"
+              },
+              "experience": {
+                "type": "number"
+              },
+              "education": {
+                "type": "number"
+              },
+              "relevance": {
+                "type": "number"
+              }
+            }
+          },
           "createdBy": {
             "type": "string"
           },

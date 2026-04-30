@@ -26,6 +26,13 @@ export enum JobSource {
   EXTERNAL = "External",
 }
 
+export interface IAnalysisWeights {
+  skills: number;
+  experience: number;
+  education: number;
+  relevance: number;
+}
+
 export interface JobDoc extends Document {
   title: string;
   description: string;
@@ -36,6 +43,7 @@ export interface JobDoc extends Document {
   source: JobSource;
   location: Location;
   aiFocusArea?: string;
+  analysisWeights: IAnalysisWeights;
   createdBy: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -89,6 +97,12 @@ const JobSchema: Schema = new Schema<JobDoc>(
     aiFocusArea: {
       type: String,
       required: false,
+    },
+    analysisWeights: {
+      skills: { type: Number, default: 40 },
+      experience: { type: Number, default: 25 },
+      education: { type: Number, default: 15 },
+      relevance: { type: Number, default: 20 },
     },
     createdBy: {
       type: Schema.Types.ObjectId,

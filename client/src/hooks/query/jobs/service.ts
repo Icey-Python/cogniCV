@@ -41,6 +41,12 @@ export interface Job {
 	source: JobSource;
 	location: Location;
 	aiFocusArea?: string;
+	analysisWeights?: {
+		skills: number;
+		experience: number;
+		education: number;
+		relevance: number;
+	};
 	createdBy: string;
 	applicantCount?: number;
 	createdAt: string;
