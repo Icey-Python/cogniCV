@@ -44,6 +44,17 @@ import type { Request, Response } from "express";
  *               type: boolean
  *         aiFocusArea:
  *           type: string
+ *         analysisWeights:
+ *           type: object
+ *           properties:
+ *             skills:
+ *               type: number
+ *             experience:
+ *               type: number
+ *             education:
+ *               type: number
+ *             relevance:
+ *               type: number
  *         createdBy:
  *           type: string
  *         createdAt:
@@ -76,7 +87,16 @@ import type { Request, Response } from "express";
  */
 export const createJob = async (req: Request, res: Response<IServerResponse>) => {
   try {
-    const { title, description, requiredSkills, experienceLevel, type, location, aiFocusArea } = req.body;
+    const { 
+        title, 
+        description, 
+        requiredSkills, 
+        experienceLevel, 
+        type, 
+        location, 
+        aiFocusArea,
+        analysisWeights 
+    } = req.body;
 
     if (!title || !description || !experienceLevel || !type || !location) {
       return res.status(HttpStatusCode.BadRequest).json({
@@ -94,6 +114,7 @@ export const createJob = async (req: Request, res: Response<IServerResponse>) =>
       type,
       location,
       aiFocusArea,
+      analysisWeights,
       createdBy: req.user._id,
     });
 
@@ -148,7 +169,6 @@ export const getMyJobs = async (req: Request, res: Response<IServerResponse>) =>
       Job.countDocuments(query),
     ]);
 
-    // Enhance jobs with real applicant counts
     const jobsWithCount = await Promise.all(
       jobs.map(async (job) => {
         const applicantCount = await Application.countDocuments({ jobId: job._id });
@@ -212,7 +232,6 @@ export const getJobById = async (req: Request, res: Response<IServerResponse>) =
       });
     }
 
-    // Check ownership
     if (req.user.role !== UserRole.ADMIN && job.createdBy.toString() !== req.user._id) {
       return res.status(HttpStatusCode.Forbidden).json({
         status: "error",
@@ -274,7 +293,6 @@ export const updateJob = async (req: Request, res: Response<IServerResponse>) =>
       });
     }
 
-    // Check ownership
     if (req.user.role !== UserRole.ADMIN && job.createdBy.toString() !== req.user._id) {
       return res.status(HttpStatusCode.Forbidden).json({
         status: "error",
@@ -331,7 +349,6 @@ export const deleteJob = async (req: Request, res: Response<IServerResponse>) =>
       });
     }
 
-    // Check ownership
     if (req.user.role !== UserRole.ADMIN && job.createdBy.toString() !== req.user._id) {
       return res.status(HttpStatusCode.Forbidden).json({
         status: "error",
@@ -423,7 +440,6 @@ export const searchJobs = async (req: Request, res: Response<IServerResponse>) =
       Job.countDocuments(query),
     ]);
 
-    // Enhance jobs with real applicant counts
     const jobsWithCount = await Promise.all(
       jobs.map(async (job) => {
         const applicantCount = await Application.countDocuments({ jobId: job._id });

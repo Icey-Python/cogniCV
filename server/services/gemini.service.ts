@@ -108,15 +108,18 @@ export class GeminiService {
       experienceLevel: job.experienceLevel,
       type: job.type,
       location: job.location,
+      analysisWeights: job.analysisWeights,
     });
 
     const candidateData = JSON.stringify(
       candidates.map((c) => ({
         id: c._id,
+        firstName: c.firstName,
+        lastName: c.lastName,
+        email: c.email,
         skills: c.skills,
         experience: c.experience,
         education: c.education,
-        availability: c.availability,
         bio: c.bio,
         headline: c.headline,
       }))
