@@ -9,6 +9,81 @@ import { GeminiService } from "../services/gemini.service";
 import { publishToQueue, RabbitMQQueues } from "../lib/rabbitmq";
 import type { IServerResponse } from "../types";
 import type { Request, Response } from "express";
+import { json2csv } from "json-2-csv";
+
+const applyFiltersToCandidates = (candidates: any[], query: any) => {
+  const { location, skills, experience, education, limit } = query;
+  let filtered = [...candidates];
+
+  if (location) {
+    const locRegex = new RegExp(location as string, "i");
+    filtered = filtered.filter(c => c.profileSnapshot?.location && locRegex.test(c.profileSnapshot.location));
+  }
+
+  if (skills) {
+    const skillList = (skills as string).split(',').map(s => s.trim()).filter(Boolean);
+    if (skillList.length > 0) {
+      filtered = filtered.filter(c => {
+        const candidateSkills = c.profileSnapshot?.skills || [];
+        return skillList.some(skill => {
+          const skillRegex = new RegExp(skill, "i");
+          return candidateSkills.some((cs: any) => skillRegex.test(cs.name));
+        });
+      });
+    }
+  }
+
+  if (education) {
+    const eduMap: Record<string, string> = {
+      bsc: "bsc|bachelor|b\\.s|bs",
+      msc: "msc|master|m\\.s|ms",
+      phd: "phd|doctorate",
+    };
+    const eduTerm = (education as string).toLowerCase();
+    const pattern = eduMap[eduTerm] || eduTerm;
+    const eduRegex = new RegExp(pattern, "i");
+    
+    filtered = filtered.filter(c => {
+      const candidateEducation = c.profileSnapshot?.education || [];
+      return candidateEducation.some((ce: any) => 
+        eduRegex.test(ce.degree || "") || eduRegex.test(ce.fieldOfStudy || "")
+      );
+    });
+  }
+
+  if (experience) {
+    const minYears = Number(experience);
+    if (!isNaN(minYears)) {
+      filtered = filtered.filter(c => {
+        const maxSkillYears = c.profileSnapshot?.skills?.reduce((max: number, s: any) => Math.max(max, s.yearsOfExperience || 0), 0) || 0;
+        
+        let expYears = 0;
+        const exps = c.profileSnapshot?.experience || [];
+        if (exps.length > 0) {
+          try {
+            let minYear = 9999;
+            let maxYear = 0;
+            exps.forEach((exp: any) => {
+              const start = exp.startDate ? new Date(exp.startDate).getFullYear() : null;
+              const end = exp.isCurrent ? new Date().getFullYear() : (exp.endDate ? new Date(exp.endDate).getFullYear() : null);
+              if (start && !isNaN(start)) minYear = Math.min(minYear, start);
+              if (end && !isNaN(end)) maxYear = Math.max(maxYear, end);
+            });
+            if (minYear !== 9999 && maxYear !== 0 && maxYear >= minYear) {
+              expYears = maxYear - minYear;
+            }
+          } catch(e) {}
+        }
+        
+        const totalYears = Math.max(maxSkillYears, expYears);
+        return totalYears >= minYears;
+      });
+    }
+  }
+
+  const finalLimit = limit ? Number(limit) : filtered.length;
+  return filtered.slice(0, finalLimit);
+};
 
 /**
  * @openapi
@@ -283,16 +358,126 @@ export const getScreeningResults = async (
       });
     }
 
+    const latestResult = results[0].toObject();
+    
+    if (Object.keys(req.query).length > 0) {
+      latestResult.rankedCandidates = applyFiltersToCandidates(latestResult.rankedCandidates, req.query);
+    }
+
     res.status(HttpStatusCode.Ok).json({
       status: "success",
       message: "Screening results retrieved successfully",
-      data: results[0],
+      data: latestResult,
     });
   } catch (error) {
     Logger.error({ message: "Error fetching results: " + error });
     res.status(HttpStatusCode.InternalServerError).json({
       status: "error",
       message: "Failed to fetch results",
+      data: null,
+    });
+  }
+};
+
+/**
+ * @openapi
+ * /api/v1/screening/{id}/download:
+ *   get:
+ *     summary: Download candidate analysis as CSV
+ *     tags: [Screening]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: CSV file downloaded successfully
+ *         content:
+ *           text/csv:
+ *             schema:
+ *               type: string
+ *               format: binary
+ */
+export const downloadScreeningCsv = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id: jobId } = req.params;
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+      return res.status(HttpStatusCode.NotFound).json({
+        status: "error",
+        message: "Job not found",
+        data: null,
+      });
+    }
+
+    if (req.user.role !== UserRole.ADMIN && job.createdBy.toString() !== req.user._id) {
+      return res.status(HttpStatusCode.Forbidden).json({
+        status: "error",
+        message: "Access denied",
+        data: null,
+      });
+    }
+
+    const results = await ScreeningResult.find({ jobId })
+      .sort({ createdAt: -1 })
+      .limit(1);
+
+    if (!results || results.length === 0 || results[0].status !== "completed") {
+      return res.status(HttpStatusCode.BadRequest).json({
+        status: "error",
+        message: "No completed screening results found for this job",
+        data: null,
+      });
+    }
+
+    let candidates = results[0].toObject().rankedCandidates;
+    
+    // Rank, Name, Overal Score, Location, Skill Score, Experience Score, Education Score, Relevance Score
+    const csvData = candidates.map(c => {
+      const p = c.profileSnapshot || {};
+      const name = `${p.firstName || ''} ${p.lastName || ''}`.trim();
+      return {
+        "Rank": c.rank || 0,
+        "Name": name || p.email || 'Unknown',
+        "Overall Score": c.matchScore || 0,
+        "Location": p.location || '',
+        "Skill Score": c.subScores?.skills || 0,
+        "Experience Score": c.subScores?.experience || 0,
+        "Education Score": c.subScores?.education || 0,
+        "Relevance Score": c.subScores?.relevance || 0,
+      };
+    });
+
+    if (csvData.length === 0) {
+      return res.status(HttpStatusCode.BadRequest).json({
+        status: "error",
+        message: "No candidates found in analysis",
+        data: null,
+      });
+    }
+
+    const csvString = await json2csv(csvData, {
+      keys: ["Rank", "Name", "Overall Score", "Location", "Skill Score", "Experience Score", "Education Score", "Relevance Score"]
+    });
+
+    const fileName = job.title.toLowerCase().replace(/\s+/g, '_') + '_analysis.csv';
+
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+    res.status(HttpStatusCode.Ok).send(csvString);
+  } catch (error) {
+    Logger.error({ message: "Error generating CSV: " + error });
+    res.status(HttpStatusCode.InternalServerError).json({
+      status: "error",
+      message: "Failed to generate CSV",
       data: null,
     });
   }

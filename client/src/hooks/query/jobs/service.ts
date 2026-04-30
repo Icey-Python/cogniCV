@@ -159,10 +159,43 @@ export const ScreeningService = {
 		return response.data;
 	},
 
-	getScreeningResults: async (jobId: string) => {
-		const response = await apiBase.get<IServerResponse<ScreeningResult>>(`/screening/${jobId}/results`);
+	getScreeningResults: async (jobId: string, params?: Record<string, string | number>) => {
+		const queryParams = new URLSearchParams();
+		if (params) {
+			Object.entries(params).forEach(([key, value]) => {
+				if (value !== undefined && value !== '') {
+					queryParams.append(key, String(value));
+				}
+			});
+		}
+		const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+		const response = await apiBase.get<IServerResponse<ScreeningResult>>(`/screening/${jobId}/results${queryString}`);
 		return response.data;
 	},
+
+	downloadScreeningCsv: async (jobId: string, params?: Record<string, string | number>) => {
+		const queryParams = new URLSearchParams();
+		if (params) {
+			Object.entries(params).forEach(([key, value]) => {
+				if (value !== undefined && value !== '') {
+					queryParams.append(key, String(value));
+				}
+			});
+		}
+		const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+		const response = await apiBase.get(`/screening/${jobId}/download${queryString}`, {
+			responseType: 'blob'
+		});
+		
+		const url = window.URL.createObjectURL(new Blob([response.data]));
+		const link = document.createElement('a');
+		link.href = url;
+		link.setAttribute('download', `candidates-${jobId}.csv`);
+		document.body.appendChild(link);
+		link.click();
+		link.parentNode?.removeChild(link);
+		window.URL.revokeObjectURL(url);
+	}
 };
 
 // ─── Share Service ──────────────────────────────────────────────────────────

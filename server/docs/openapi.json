@@ -800,6 +800,42 @@
         }
       }
     },
+    "/api/v1/screening/{id}/download": {
+      "get": {
+        "summary": "Download candidate analysis as CSV",
+        "tags": [
+          "Screening"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CSV file downloaded successfully",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/user": {
       "post": {
         "summary": "Create a new user",

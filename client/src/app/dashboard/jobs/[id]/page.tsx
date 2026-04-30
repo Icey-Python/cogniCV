@@ -12,7 +12,24 @@ import { ApplicantInsightDrawer } from '@/components/jobs/applicant-insight-draw
 import { JobInfoDrawer } from '@/components/jobs/job-info-drawer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle
+} from '@/components/ui/dialog';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue
+} from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { RankedApplicantsTable } from '@/components/jobs/ranked-applicants-table';
 import { SimpleApplicantsTable } from '@/components/jobs/simple-applicants-table';
 import {
@@ -24,8 +41,14 @@ import {
 	IconInfoCircle,
 	IconLoader2,
 	IconSparkles,
-	IconPencil
+	IconPencil,
+	IconFilter,
+	IconDownload,
+	IconX,
+	IconPlus,
+	IconCheck
 } from '@tabler/icons-react';
+import { ScreeningService } from '@/hooks/query/jobs/service';
 import { FloatingChat } from '@/components/chat/floating-chat';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -76,9 +99,21 @@ export default function JobDetailPage() {
 		useJobApplicantsQuery(params.id as string);
 
 	const [isPolling, setIsPolling] = useState(false);
+	const [filters, setFilters] = useState<{
+		location?: string;
+		skills?: string;
+		limit?: string;
+	}>({ limit: '20' });
+	const [tempFilters, setTempFilters] = useState<{
+		location?: string;
+		skills?: string;
+		limit?: string;
+	}>({ limit: '20' });
+	const [filtersDialogOpen, setFiltersDialogOpen] = useState(false);
+	const [isDownloading, setIsDownloading] = useState(false);
 
 	const { data: screeningData, isLoading: screeningLoading } =
-		useScreeningResultsQuery(params.id as string, {
+		useScreeningResultsQuery(params.id as string, filters, {
 			refetchInterval: isPolling ? 3000 : false
 		});
 
@@ -93,6 +128,7 @@ export default function JobDetailPage() {
 
 	const screeningResult = (screeningData as any)?.data;
 	const rankedCandidates = screeningResult?.rankedCandidates || [];
+	const isScreened = screeningResult?.status === 'completed';
 	const isScreeningInProgress =
 		screeningPending || screeningResult?.status === 'pending';
 
@@ -151,6 +187,24 @@ export default function JobDetailPage() {
 	const [jobInfoOpen, setJobInfoOpen] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
 
+	const handleApplyFilters = () => {
+		setFilters(tempFilters);
+		setFiltersDialogOpen(false);
+		setCurrentPage(1);
+	};
+
+	const handleDownloadCsv = async () => {
+		if (!job) return;
+		try {
+			setIsDownloading(true);
+			await ScreeningService.downloadScreeningCsv(job._id);
+		} catch (error) {
+			console.error('Failed to download CSV', error);
+		} finally {
+			setIsDownloading(false);
+		}
+	};
+
 	// Reset to page 1 when search changes
 	useEffect(() => {
 		setCurrentPage(1);
@@ -175,8 +229,7 @@ export default function JobDetailPage() {
 		[allApplicants, search]
 	);
 
-	const activeData =
-		rankedCandidates.length > 0 ? filteredRanked : filteredUnscreened;
+	const activeData = isScreened ? filteredRanked : filteredUnscreened;
 	const totalPages = Math.ceil(activeData.length / ITEMS_PER_PAGE);
 
 	const paginatedData = useMemo(() => {
@@ -210,12 +263,11 @@ export default function JobDetailPage() {
 	}
 
 	const hasApplicants = allApplicants.length > 0;
-	const isScreened = rankedCandidates.length > 0;
 
 	return (
 		<div className="space-y-6">
 			{/* Header */}
-			<div className="flex items-start gap-4">
+			<div className="flex flex-col items-start gap-4 lg:flex-row">
 				<div className="min-w-0 flex-1">
 					<div className="flex items-center gap-3">
 						<h1 className="text-2xl font-semibold">{job.title} </h1>
@@ -345,20 +397,57 @@ export default function JobDetailPage() {
 				<div className="mt-8 space-y-4">
 					<div className="flex flex-wrap items-center justify-between gap-4">
 						<div>
-							<h2 className="font-work-sans flex items-center gap-2 text-base font-semibold">
+							<h2 className="font-work-sans flex items-center gap-2 text-base font-medium">
 								{isScreened ? 'Ranked Candidates' : 'Applicants'} (
 								{isScreened ? filteredRanked.length : filteredUnscreened.length}
 								)
 							</h2>
 						</div>
-						<div className="relative">
-							<IconSearch className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-							<Input
-								placeholder="Search applicants..."
-								value={search}
-								onChange={(e) => setSearch(e.target.value)}
-								className="bg-background h-9 w-120 pl-9"
-							/>
+						<div className="flex flex-wrap items-center gap-2">
+							<div className="relative">
+								<IconSearch className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+								<Input
+									placeholder="Search applicants..."
+									value={search}
+									onChange={(e) => setSearch(e.target.value)}
+									className="bg-background h-9 w-64 pl-9"
+								/>
+							</div>
+							{isScreened && (
+								<>
+									<Button
+										variant="outline"
+										className="h-9 gap-2"
+										onClick={() => {
+											setTempFilters(filters);
+											setFiltersDialogOpen(true);
+										}}
+									>
+										<IconFilter className="size-4" />
+										Filters
+										{Object.keys(filters).length > 1 && (
+											<span className="bg-primary text-primary-foreground ml-1 flex size-5 items-center justify-center rounded-full text-xs">
+												{Object.keys(filters).length -
+													(filters.limit ? 1 : 0) +
+													(filters.limit !== '20' ? 1 : 0)}
+											</span>
+										)}
+									</Button>
+									<Button
+										variant="outline"
+										className="h-9 gap-2"
+										onClick={handleDownloadCsv}
+										disabled={isDownloading}
+									>
+										{isDownloading ? (
+											<IconLoader2 className="size-4 animate-spin" />
+										) : (
+											<IconDownload className="size-4" />
+										)}
+										Download CSV
+									</Button>
+								</>
+							)}
 						</div>
 					</div>
 					<Card>
@@ -481,6 +570,144 @@ export default function JobDetailPage() {
 				open={jobInfoOpen}
 				onOpenChange={setJobInfoOpen}
 			/>
+
+			<Dialog open={filtersDialogOpen} onOpenChange={setFiltersDialogOpen}>
+				<DialogContent className="sm:max-w-[425px]">
+					<DialogHeader>
+						<DialogTitle>Filter Candidates</DialogTitle>
+						<DialogDescription>
+							Refine your ranked candidates list based on specific criteria.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="grid gap-4 py-4">
+						<div className="grid grid-cols-4 items-center gap-4">
+							<Label htmlFor="location" className="text-right">
+								Location
+							</Label>
+							<Select
+								value={tempFilters.location || 'any'}
+								onValueChange={(val) =>
+									setTempFilters({
+										...tempFilters,
+										location: val === 'any' ? undefined : val
+									})
+								}
+							>
+								<SelectTrigger className="col-span-3">
+									<SelectValue placeholder="Any Location" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="any">Any Location</SelectItem>
+									{job.location?.city && job.location?.country && (
+										<SelectItem value={job.location.city.toLowerCase()}>
+											{job.location.city}, {job.location.country}
+											{job.location.workspaceType
+												? ` (${job.location.workspaceType})`
+												: ''}
+										</SelectItem>
+									)}
+									<SelectItem value="remote">Remote</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
+						<div className="grid grid-cols-4 items-start gap-4">
+							<Label className="mt-2 text-right">Skills</Label>
+							<div className="col-span-3 space-y-3">
+								<div className="flex flex-wrap gap-1.5">
+									{(tempFilters.skills?.split(',') || [])
+										.filter(Boolean)
+										.map((skill) => (
+											<Badge
+												key={skill}
+												variant="secondary"
+												className="flex items-center gap-1 py-1 pr-1"
+											>
+												{skill}
+												<button
+													type="button"
+													onClick={() => {
+														const newSkills = (
+															tempFilters.skills?.split(',') || []
+														)
+															.filter((s) => s !== skill)
+															.join(',');
+														setTempFilters({
+															...tempFilters,
+															skills: newSkills || undefined
+														});
+													}}
+													className="hover:bg-muted rounded-full p-0.5"
+												>
+													<IconX size={12} />
+												</button>
+											</Badge>
+										))}
+								</div>
+								<Select
+									onValueChange={(val) => {
+										const current = tempFilters.skills?.split(',') || [];
+										if (!current.includes(val)) {
+											setTempFilters({
+												...tempFilters,
+												skills: [...current, val].filter(Boolean).join(',')
+											});
+										}
+									}}
+								>
+									<SelectTrigger>
+										<SelectValue placeholder="Add a skill..." />
+									</SelectTrigger>
+									<SelectContent>
+										{(job.requiredSkills || []).map((skill: string) => (
+											<SelectItem key={skill} value={skill}>
+												<div className="flex w-full items-center justify-between">
+													<span>{skill}</span>
+													{tempFilters.skills?.split(',').includes(skill) && (
+														<IconCheck
+															size={14}
+															className="text-primary ml-2"
+														/>
+													)}
+												</div>
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+								<p className="text-muted-foreground text-[10px] italic">
+									Select skills required for this job to filter candidates.
+								</p>
+							</div>
+						</div>
+						<div className="grid grid-cols-4 items-center gap-4">
+							<Label htmlFor="limit" className="text-right text-xs">
+								Shortlist Size
+							</Label>
+							<Input
+								id="limit"
+								type="number"
+								min="1"
+								value={tempFilters.limit || ''}
+								onChange={(e) =>
+									setTempFilters({ ...tempFilters, limit: e.target.value })
+								}
+								className="col-span-3 h-8 text-xs"
+							/>
+						</div>
+					</div>
+					<DialogFooter className="gap-2 sm:gap-0">
+						<Button
+							variant="ghost"
+							onClick={() => {
+								setTempFilters({ limit: '20' });
+							}}
+						>
+							Clear Filters
+						</Button>
+						<Button onClick={handleApplyFilters}>Apply Filters</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
 			<FloatingChat jobId={job._id} enabled={isScreened} />
 		</div>
 	);
