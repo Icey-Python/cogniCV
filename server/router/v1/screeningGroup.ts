@@ -11,4 +11,6 @@ router.post("/:id/trigger", ScreeningController.triggerScreening);
 
 router.get("/:id/results", ScreeningController.getScreeningResults);
 
+router.get("/:id/download", ScreeningController.downloadScreeningCsv);
+
 export default router;

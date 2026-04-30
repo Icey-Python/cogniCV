@@ -39,10 +39,10 @@ export const useJobApplicantsQuery = (jobId: string) => {
 	});
 };
 
-export const useScreeningResultsQuery = (jobId: string, options?: any) => {
+export const useScreeningResultsQuery = (jobId: string, params?: Record<string, string | number>, options?: any) => {
 	return useQuery<any>({
-		queryKey: ['screening', 'results', jobId],
-		queryFn: () => ScreeningService.getScreeningResults(jobId),
+		queryKey: ['screening', 'results', jobId, params],
+		queryFn: () => ScreeningService.getScreeningResults(jobId, params),
 		enabled: !!jobId,
 		retry: false, // Don't retry if not found
 		...options,
