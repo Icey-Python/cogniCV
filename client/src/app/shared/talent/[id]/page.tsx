@@ -2,12 +2,14 @@
 
 import { useParams } from 'next/navigation';
 import { useMockTalentByIdQuery } from '@/hooks/query/jobs/queries';
-import { IconLoader2, IconSparkles, IconMapPin, IconBriefcase, IconTrophy, IconCircleCheck, IconInfoCircle, IconStar, IconCheck, IconShare, IconLink, IconCopy, IconDownload, IconFileTypeJs, IconExternalLink, IconMessage } from '@tabler/icons-react';
+import { IconLoader2, IconSparkles, IconMapPin, IconBriefcase, IconTrophy, IconCircleCheck, IconInfoCircle, IconStar, IconCheck, IconShare, IconLink, IconCopy, IconDownload, IconFileTypeJs, IconExternalLink, IconMessage, IconPrinter } from '@tabler/icons-react';
 import { TalentProfileView } from '@/components/talent/talent-profile-view';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CircularScoreProgress } from '@/components/jobs/ranked-applicants-table';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { TalentProfilePDF } from '@/components/talent/TalentProfilePDF';
 
 export default function SharedTalentProfilePage() {
 	const params = useParams<{ id: string }>();
@@ -66,6 +68,17 @@ export default function SharedTalentProfilePage() {
 							</div>
 						</div>
 						<div className="flex items-center gap-2">
+							<PDFDownloadLink
+								document={<TalentProfilePDF profile={p} />}
+								fileName={`${p.firstName}-${p.lastName}-profile.pdf`}
+							>
+								{({ loading }) => (
+									<Button variant="outline" size="sm" className="gap-2" disabled={loading}>
+										<IconPrinter className="size-4" />
+										{loading ? 'Preparing...' : 'Download Profile'}
+									</Button>
+								)}
+							</PDFDownloadLink>
 							<Badge variant="outline" className="font-medium border-primary border-t-0 border-x-0 rounded-none shadow-none py-2.5">
 								{p.availability?.status || 'Active'}
 							</Badge>
