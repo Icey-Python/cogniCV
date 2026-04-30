@@ -2,8 +2,8 @@
 
 RY:
 
-- [] Allow recruiter to set analysis percentages
-- [] Add starting prompt to Job Analyis starting messages
+- [x] Allow recruiter to set analysis percentages
+- [x] Add starting prompt to Job Analyis starting messages
 
 SK:
 
