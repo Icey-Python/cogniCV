@@ -51,6 +51,9 @@ import {
 import { ScreeningService } from '@/hooks/query/jobs/service';
 import { FloatingChat } from '@/components/chat/floating-chat';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+const MdxEditor = dynamic(() => import('@/components/ui/mdx-editor'), { ssr: false });
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { motion, AnimatePresence } from 'motion/react';
@@ -111,6 +114,8 @@ export default function JobDetailPage() {
 	}>({ limit: '20' });
 	const [filtersDialogOpen, setFiltersDialogOpen] = useState(false);
 	const [isDownloading, setIsDownloading] = useState(false);
+	const [reEvaluateMode, setReEvaluateMode] = useState(false);
+	const [reEvaluateMessage, setReEvaluateMessage] = useState('');
 
 	const { data: screeningData, isLoading: screeningLoading } =
 		useScreeningResultsQuery(params.id as string, filters, {
@@ -364,11 +369,57 @@ export default function JobDetailPage() {
 						</span>
 						<Button
 							size="sm"
-							onClick={() => triggerScreening(job._id)}
+							onClick={() => triggerScreening({ jobId: job._id })}
 							className="ml-4"
 						>
 							Start Analysis
 						</Button>
+					</AlertDescription>
+				</Alert>
+			)}
+
+			{hasApplicants && isScreened && !isScreeningInProgress && (
+				<Alert className="bg-primary/5 border-primary/20">
+					<IconSparkles className="text-primary size-4" />
+					<AlertTitle className="flex justify-between items-center -mt-1">
+						<span>Re-evaluate Candidates</span>
+						{!reEvaluateMode && (
+							<Button size="sm" variant="outline" onClick={() => setReEvaluateMode(true)}>
+								Add Review
+							</Button>
+						)}
+					</AlertTitle>
+					<AlertDescription className="mt-2">
+						{reEvaluateMode ? (
+							<div className="space-y-4">
+								<p className="text-sm">Provide specific instructions or focus areas for the AI to consider during re-evaluation.</p>
+								<div className="bg-background rounded-md">
+									<MdxEditor
+										markdown={reEvaluateMessage}
+										onChange={setReEvaluateMessage}
+										placeholder="e.g. Focus on candidates with strong React and Node.js experience, prioritize remote workers..."
+									/>
+								</div>
+								<div className="flex justify-end gap-2">
+									<Button size="sm" variant="ghost" onClick={() => setReEvaluateMode(false)}>
+										Cancel
+									</Button>
+									<Button
+										size="sm"
+										onClick={() => {
+											triggerScreening({ jobId: job._id, message: reEvaluateMessage });
+											setReEvaluateMode(false);
+										}}
+									>
+										Re-evaluate
+									</Button>
+								</div>
+							</div>
+						) : (
+							<span>
+								Results are already analyzed. You can re-evaluate with a specific focus if needed.
+							</span>
+						)}
 					</AlertDescription>
 				</Alert>
 			)}

@@ -9,7 +9,8 @@ import {
 	IconArrowLeft,
 	IconDownload,
 	IconShare,
-	IconCopy
+	IconCopy,
+	IconPrinter
 } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,6 +26,8 @@ import { toast } from 'sonner';
 import { TalentProfileView } from '@/components/talent/talent-profile-view';
 import { copyToClipboard } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { TalentProfilePDF } from '@/components/talent/TalentProfilePDF';
 
 export default function TalentProfilePage() {
 	const params = useParams<{ id: string }>();
@@ -81,6 +84,17 @@ export default function TalentProfilePage() {
 						</h1>
 
 						<div className="flex flex-row items-center gap-2">
+							<PDFDownloadLink
+								document={<TalentProfilePDF profile={profile} />}
+								fileName={`${profile.firstName}-${profile.lastName}-profile.pdf`}
+							>
+								{({ loading }) => (
+									<Button variant="outline" className="gap-2" disabled={loading}>
+										<IconPrinter className="size-4" />
+										{loading ? 'Preparing...' : 'Download PDF'}
+									</Button>
+								)}
+							</PDFDownloadLink>
 							<Dialog
 								open={isShareModalOpen}
 								onOpenChange={setIsShareModalOpen}

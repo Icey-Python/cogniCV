@@ -44,6 +44,7 @@ import { Label } from '@/components/ui/label';
 import { copyToClipboard } from '@/lib/utils';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { ApplicantAnalysisPDF } from '@/components/jobs/ApplicantAnalysisPDF';
+import { TalentProfilePDF } from '@/components/talent/TalentProfilePDF';
 import {
 	IconArrowLeft,
 	IconBolt,
@@ -390,27 +391,41 @@ export default function ApplicantDetailPage() {
 						{status}
 					</Badge>
 					{isScreened && candidateProfile && job ? (
-						<PDFDownloadLink
-							document={
-								<ApplicantAnalysisPDF
-									candidate={candidateProfile}
-									job={job}
-									rankedEntry={rankedEntry}
-									coveragePercent={coveragePercent}
-								/>
-							}
-							fileName={`${candidateProfile.firstName || 'applicant'}-${candidateProfile.lastName || 'analysis'}-report.pdf`}
-						>
-							{({ loading }) => (
-								<Button variant="outline" className="gap-2" disabled={loading}>
-									<IconPrinter className="size-4" />{' '}
-									{loading ? 'Generating...' : 'Download PDF'}
-								</Button>
-							)}
-						</PDFDownloadLink>
+						<div className="flex items-center gap-2">
+							<PDFDownloadLink
+								document={
+									<ApplicantAnalysisPDF
+										candidate={candidateProfile}
+										job={job}
+										rankedEntry={rankedEntry}
+										coveragePercent={coveragePercent}
+									/>
+								}
+								fileName={`${candidateProfile.firstName || 'applicant'}-${candidateProfile.lastName || 'analysis'}-report.pdf`}
+							>
+								{({ loading }) => (
+									<Button variant="outline" className="gap-2" disabled={loading}>
+										<IconPrinter className="size-4" />{' '}
+										{loading ? 'Preparing...' : 'Download Analysis'}
+									</Button>
+								)}
+							</PDFDownloadLink>
+
+							<PDFDownloadLink
+								document={<TalentProfilePDF profile={candidateProfile} />}
+								fileName={`${candidateProfile.firstName || 'applicant'}-${candidateProfile.lastName || 'profile'}.pdf`}
+							>
+								{({ loading }) => (
+									<Button variant="outline" className="gap-2" disabled={loading}>
+										<IconDownload className="size-4" />{' '}
+										{loading ? 'Preparing...' : 'Download Profile'}
+									</Button>
+								)}
+							</PDFDownloadLink>
+						</div>
 					) : (
 						<Button variant="outline" className="gap-2" disabled>
-							<IconPrinter className="size-4" /> Download PDF
+							<IconPrinter className="size-4" /> Download Analysis
 						</Button>
 					)}
 					<Button

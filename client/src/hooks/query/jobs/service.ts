@@ -170,8 +170,9 @@ export interface ScreeningResult {
 }
 
 export const ScreeningService = {
-	triggerScreening: async (jobId: string) => {
-		const response = await apiBase.post<IServerResponse<ScreeningResult>>(`/screening/${jobId}/trigger`);
+	triggerScreening: async ({ jobId, message }: { jobId: string; message?: string }) => {
+		const payload = message ? { message } : {};
+		const response = await apiBase.post<IServerResponse<ScreeningResult>>(`/screening/${jobId}/trigger`, payload);
 		return response.data;
 	},
 
