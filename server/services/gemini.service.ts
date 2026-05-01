@@ -16,7 +16,8 @@ export class GeminiService {
   static async evaluateCandidates(
     job: any, 
     candidates: any[], 
-    onProgress?: (results: any[]) => Promise<void>
+    onProgress?: (results: any[]) => Promise<void>,
+    message?: string
   ): Promise<any[]> {
     const chunks = this.createChunks(candidates, this.CHUNK_SIZE);
     let allResults: any[] = [];
@@ -36,7 +37,7 @@ export class GeminiService {
             await new Promise(resolve => setTimeout(resolve, 1000));
           }
 
-          const prompt = this.constructScreeningPrompt(job, chunk);
+          const prompt = this.constructScreeningPrompt(job, chunk, message);
           const result = await this.model.generateContent(prompt);
           const response = await result.response;
           const text = response.text();
@@ -100,7 +101,7 @@ export class GeminiService {
   /**
    * Construct the master screening prompt using the external template
    */
-  private static constructScreeningPrompt(job: any, candidates: any[]): string {
+  private static constructScreeningPrompt(job: any, candidates: any[], message?: string): string {
     const jobData = JSON.stringify({
       title: job.title,
       description: job.description,
@@ -125,9 +126,17 @@ export class GeminiService {
       }))
     );
 
-    return MASTER_SCREENING_PROMPT
+    let prompt = MASTER_SCREENING_PROMPT
       .replace("{{JOB_DATA}}", jobData)
       .replace("{{CANDIDATE_DATA}}", candidateData);
+
+    if (message) {
+      prompt = prompt.replace("{{RE_EVALUATION_FOCUS}}", `- RE_EVALUATION_FOCUS: The user requested the following specific focus for this re-evaluation: "${message}". Please weigh this heavily in your analysis.`);
+    } else {
+      prompt = prompt.replace("{{RE_EVALUATION_FOCUS}}", "");
+    }
+
+    return prompt;
   }
 
   /**

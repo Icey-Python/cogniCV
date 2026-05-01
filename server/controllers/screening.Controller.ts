@@ -207,6 +207,7 @@ export const triggerScreening = async (
 
     // 4. Run AI Evaluation 
     try {
+      const message = req.body?.message;
       const aiResults = await GeminiService.evaluateCandidates(
         job, 
         allCandidates,
@@ -233,7 +234,8 @@ export const triggerScreening = async (
           await ScreeningResult.findByIdAndUpdate(screeningRecord._id, {
             rankedCandidates: partialRanked
           });
-        }
+        },
+        message
       );
 
       // 5. Map final AI results back to our schema

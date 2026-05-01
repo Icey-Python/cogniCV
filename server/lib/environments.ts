@@ -28,8 +28,12 @@ export const ENV = {
   R2_ENDPOINT: process.env.R2_ENDPOINT as string,
   R2_BUCKET_NAME: process.env.R2_BUCKET_NAME as string,
   R2_PUBLIC_DOMAIN: process.env.R2_PUBLIC_DOMAIN as string,
-  // Resend
-  RESEND_API_KEY: process.env.RESEND_API_KEY as string,
+  // SMTP
+  SMTP_HOST: process.env.SMTP_HOST as string,
+  SMTP_PORT: parseInt(process.env.SMTP_PORT || "587", 10),
+  SMTP_USER: process.env.SMTP_USER as string,
+  SMTP_PASS: process.env.SMTP_PASS as string,
+  SMTP_FROM: process.env.SMTP_FROM as string,
   // Slack Integration
   SLACK_SIGNING_SECRET: process.env.SLACK_SIGNING_SECRET as string,
   SLACK_BOT_TOKEN: process.env.SLACK_BOT_TOKEN as string,

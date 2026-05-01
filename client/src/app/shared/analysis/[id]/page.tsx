@@ -6,7 +6,7 @@ import { PasswordGate } from '@/components/shared/password-gate';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CircularScoreProgress } from '@/components/jobs/ranked-applicants-table';
-import { IconBriefcase, IconCircleCheck, IconLoader2, IconMapPin, IconSparkles, IconTrophy } from '@tabler/icons-react';
+import { IconBriefcase, IconCircleCheck, IconLoader2, IconMapPin, IconSparkles, IconTrophy, IconPrinter } from '@tabler/icons-react';
 import { type Skill } from '@/types';
 import { useSharedAnalysisQuery } from '@/hooks/query/jobs/queries';
 import { ShareService } from '@/hooks/query/jobs/service';
@@ -15,6 +15,9 @@ import { JobDetailsView } from '@/components/jobs/job-details-view';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import MarkdownRenderer from '@/components/ui/markdown';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { ApplicantAnalysisPDF } from '@/components/jobs/ApplicantAnalysisPDF';
+import { TalentProfilePDF } from '@/components/talent/TalentProfilePDF';
 
 function hasSkill(profileSkills: Skill[], requiredSkill: string) {
 	const needle = requiredSkill.toLowerCase();
@@ -143,8 +146,56 @@ export default function SharedAnalysisPage() {
 						</Button>
 					</nav>
 
-					<div className="text-xs font-medium text-slate-400">
-						Analysis Report
+					<div className="flex items-center gap-3">
+						{activeTab !== 'job' && (
+							<div className="hidden sm:block">
+								{activeTab === 'analysis' ? (
+									<PDFDownloadLink
+										document={
+											<ApplicantAnalysisPDF
+												candidate={candidate}
+												job={contextJob}
+												rankedEntry={candidate}
+												coveragePercent={coveragePercent}
+											/>
+										}
+										fileName={`${p.firstName}-${p.lastName}-analysis.pdf`}
+									>
+										{({ loading }) => (
+											<Button
+												variant="outline"
+												size="sm"
+												className="h-8 gap-2 text-xs"
+												disabled={loading}
+											>
+												<IconPrinter className="size-3.5" />
+												{loading ? 'Preparing...' : 'Download Analysis'}
+											</Button>
+										)}
+									</PDFDownloadLink>
+								) : (
+									<PDFDownloadLink
+										document={<TalentProfilePDF profile={p} />}
+										fileName={`${p.firstName}-${p.lastName}-profile.pdf`}
+									>
+										{({ loading }) => (
+											<Button
+												variant="outline"
+												size="sm"
+												className="h-8 gap-2 text-xs"
+												disabled={loading}
+											>
+												<IconPrinter className="size-3.5" />
+												{loading ? 'Preparing...' : 'Download Profile'}
+											</Button>
+										)}
+									</PDFDownloadLink>
+								)}
+							</div>
+						)}
+						<div className="text-xs font-medium text-slate-400">
+							Analysis Report
+						</div>
 					</div>
 				</div>
 			</header>
