@@ -3,6 +3,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DepartmentsTab } from '@/components/organization/departments-tab';
 import { LocationsTab } from '@/components/organization/locations-tab';
+import { IntegrationsTab } from '@/components/organization/integrations-tab';
 
 export default function OrganizationPage() {
 	return (
@@ -13,9 +14,10 @@ export default function OrganizationPage() {
 			</div>
 
 			<Tabs defaultValue="departments" className="w-full">
-				<TabsList className="grid w-full max-w-[400px] grid-cols-2">
+				<TabsList className="grid w-full max-w-[600px] grid-cols-3">
 					<TabsTrigger value="departments">Departments</TabsTrigger>
 					<TabsTrigger value="locations">Locations</TabsTrigger>
+					<TabsTrigger value="integrations">Integrations</TabsTrigger>
 				</TabsList>
 				<div className="mt-6">
 					<TabsContent value="departments" className="mt-0">
@@ -23,6 +25,9 @@ export default function OrganizationPage() {
 					</TabsContent>
 					<TabsContent value="locations" className="mt-0">
 						<LocationsTab />
+					</TabsContent>
+					<TabsContent value="integrations" className="mt-0">
+						<IntegrationsTab />
 					</TabsContent>
 				</div>
 			</Tabs>

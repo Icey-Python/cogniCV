@@ -34,6 +34,9 @@ export const ENV = {
   SMTP_USER: process.env.SMTP_USER as string,
   SMTP_PASS: process.env.SMTP_PASS as string,
   SMTP_FROM: process.env.SMTP_FROM as string,
+  // Slack Integration
+  SLACK_SIGNING_SECRET: process.env.SLACK_SIGNING_SECRET as string,
+  SLACK_BOT_TOKEN: process.env.SLACK_BOT_TOKEN as string,
 };
 
 export const isProduction = process.env.NODE_ENV === "production";
