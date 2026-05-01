@@ -11,12 +11,19 @@ import {
 	IconLoader2
 } from '@tabler/icons-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
 	useSearchJobsQuery,
 	useJobAnalyticsQuery
 } from '@/hooks/query/jobs/queries';
+
+const SlackIcon = ({ className }: { className?: string }) => (
+	<div className={cn('flex items-center justify-center', className)}>
+		<Image src="/slack.svg" alt="Slack" width={20} height={20} />
+	</div>
+);
 
 export default function DashboardPage() {
 	const { data: analyticsData } = useJobAnalyticsQuery();
@@ -54,11 +61,12 @@ export default function DashboardPage() {
 			color: 'text-primary'
 		},
 		{
-			label: 'Locations',
-			value: analytics?.locations || 0,
-			icon: IconMapPin,
-			change: 'Added office locations',
-			color: 'text-primary'
+			label: 'Slack Integration',
+			value: 'Inactive',
+			icon: SlackIcon,
+			change: 'Connect to workspace',
+			color: 'text-muted-foreground',
+			href: '/dashboard/organization?tab=integrations'
 		}
 	];
 
@@ -86,7 +94,16 @@ export default function DashboardPage() {
 								{stat.value}
 							</div>
 							<p className="text-muted-foreground mt-1 text-xs">
-								{stat.change}
+								{stat.href ? (
+									<Link
+										href={stat.href}
+										className="text-primary hover:underline font-medium"
+									>
+										{stat.change}
+									</Link>
+								) : (
+									stat.change
+								)}
 							</p>
 						</CardContent>
 					</Card>
