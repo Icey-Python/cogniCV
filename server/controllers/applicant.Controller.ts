@@ -8,7 +8,7 @@ import Application from "../models/application.model";
 import { ParserService } from "../services/parser.service";
 import { GeminiService } from "../services/gemini.service";
 import { ENV } from "../lib/environments";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import type { IServerResponse } from "../types";
 import type { Request, Response } from "express";
 
@@ -704,20 +704,30 @@ export const sendResponseEmail = async (req: Request, res: Response) => {
       });
     }
 
-    const resend = new Resend(ENV.RESEND_API_KEY);
-
-    const { data, error } = await resend.emails.send({
-      from: "cogniCV <onboarding@resend.dev>", // TODO: replace with actual email
-      to: [candidate.email],
-      subject: subject || `Update on your application for ${job.title}`,
-      text: message,
+    const transporter = nodemailer.createTransport({
+      host: ENV.SMTP_HOST,
+      port: ENV.SMTP_PORT,
+      secure: ENV.SMTP_PORT === 465, // true for 465, false for other ports
+      auth: {
+        user: ENV.SMTP_USER,
+        pass: ENV.SMTP_PASS,
+      },
     });
 
-    if (error) {
-      Logger.error({ message: "Resend error: " + JSON.stringify(error) });
+    try {
+      const info = await transporter.sendMail({
+        from: `"cogniCV" <${ENV.SMTP_FROM}>`,
+        to: "ndungusamkelly5@gmail.com",
+        subject: subject || `Update on your application for ${job.title}`,
+        text: message,
+      });
+
+      Logger.info({ message: "Email sent: " + info.messageId });
+    } catch (error) {
+      Logger.error({ message: "SMTP error: " + JSON.stringify(error) });
       return res.status(HttpStatusCode.InternalServerError).json({
         status: "error",
-        message: "Failed to send email via Resend",
+        message: "Failed to send email via SMTP",
         data: error,
       });
     }
@@ -725,7 +735,7 @@ export const sendResponseEmail = async (req: Request, res: Response) => {
     res.status(HttpStatusCode.Ok).json({
       status: "success",
       message: "Email sent successfully",
-      data: data,
+      data: null,
     });
   } catch (error) {
     Logger.error({ message: "Error in sendResponseEmail: " + error });
