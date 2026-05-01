@@ -4,7 +4,6 @@ import { IconBriefcase, IconMapPin, IconClock, IconUsers, IconArrowRight } from 
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import MarkdownRenderer from '@/components/ui/markdown';
 
 interface JobCardProps {
 	job: Job;
@@ -17,7 +16,17 @@ const statusDot: Record<Job['status'], string> = {
 	Draft: 'border-amber-400 text-amber-600',
 };
 
+const stripMarkdown = (text: string) => {
+	return text
+		.replace(/[#*`_~]/g, '') // Remove simple markdown symbols
+		.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1') // Replace links [text](url) with text
+		.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '') // Remove images
+		.replace(/\n+/g, ' ') // Replace newlines with spaces
+		.trim();
+};
+
 export function JobCard({ job, disableLink }: JobCardProps) {
+	const descriptionPreview = stripMarkdown(job.description).slice(0, 200);
 	const content = (
 		<Card className="h-full transition-all duration-200 hover:border-primary/40 cursor-pointer">
 			<CardHeader className="pb-3 flex flex-row items-start justify-between space-y-0">
@@ -25,8 +34,9 @@ export function JobCard({ job, disableLink }: JobCardProps) {
 					<CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2 font-lora">
 						{job.title}
 					</CardTitle>
-					<div className="text-sm text-muted-foreground line-clamp-2 leading-relaxed my-2 h-10 overflow-hidden prose-p:my-0 prose-headings:text-sm prose-headings:my-0">
-						<MarkdownRenderer content={job.description} />
+					<div className="text-sm text-muted-foreground line-clamp-2 leading-relaxed my-2 h-10 overflow-hidden">
+						{descriptionPreview}
+						{stripMarkdown(job.description).length > 200 && '...'}
 					</div>
 				</div>
 				<Badge variant="outline" className={cn('text-xs', statusDot[job.status])}>
