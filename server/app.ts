@@ -16,6 +16,7 @@ import expressBasicAuth from "express-basic-auth";
 import { apiReference } from "@scalar/express-api-reference";
 import { initRabbitMQ } from "./lib/rabbitmq";
 import { AllowedOrigins, ENV, isDevelopment } from "./lib/environments";
+import { slackReceiver } from "./controllers/slack/slack.Controller";
 
 const app = express();
 
@@ -29,6 +30,10 @@ const limiter = rateLimit({
 });
 
 app.set("trust proxy", 1);
+
+// Register Slack events at the absolute top to ensure the raw request stream 
+// is available for signature verification.
+app.use("/api/v1/slack", slackReceiver.router);
 
 // Middleware
 app.use(
@@ -46,6 +51,7 @@ app.use(
 );
 app.use(helmet(helmetConfig));
 app.use(Borgen({}));
+
 app.use(express.json());
 app.use(compression() as unknown as express.RequestHandler);
 app.use(cookieParser());

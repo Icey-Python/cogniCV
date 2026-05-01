@@ -17,6 +17,7 @@
     "@chroma-core/default-embed": "^0.1.9",
     "@google/generative-ai": "^0.24.1",
     "@scalar/express-api-reference": "^0.8.40",
+    "@slack/bolt": "^4.7.2",
     "@types/multer": "^2.1.0",
     "amqplib": "^1.0.3",
     "axios": "^1.13.4",

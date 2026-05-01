@@ -219,7 +219,8 @@ export class ChromaService {
   static async queryJobAnalysis(
     jobId: string,
     question: string,
-    history: { role: string; content: string }[] = []
+    history: { role: string; content: string }[] = [],
+    format: "markdown" | "mrkdwn" = "markdown"
   ): Promise<string> {
     const client = getChromaClient();
     const collectionName = `job_${jobId}`;
@@ -279,12 +280,83 @@ CRITICAL RULES:
 5. Maintain a professional, analytical tone appropriate for a recruiter audience.
 6. When comparing candidates, always cite their specific scores and reasoning.
 
+FORMATTING RULES:
+${format === "mrkdwn" ? `
+- Use Slack's mrkdwn syntax:
+  - Use *text* for BOLD (NOT **text**)
+  - Use _text_ for ITALIC
+  - Use ~text~ for STRIKETHROUGH
+  - Use <url|text> for LINKS (NOT [text](url))
+  - Use bullet points and code blocks as usual.
+` : `
+- Use standard Markdown syntax (**bold**, [link](url), etc.).
+`}
+
 Recruiter's Question: ${question}`;
 
     // 4. Generate answer using Gemini
     const result = await chatModel.generateContent(systemPrompt);
     const response = result.response;
     return response.text();
+  }
+
+  /**
+   * Index a job summary into a global "job_discovery" collection for RAG-based search.
+   */
+  static async indexJobForDiscovery(jobId: string): Promise<void> {
+    const client = getChromaClient();
+    const collectionName = "job_discovery";
+
+    const job = await Job.findById(jobId);
+    if (!job) return;
+
+    const collection = await client.getOrCreateCollection({
+      name: collectionName,
+      metadata: { description: "Global index for job discovery" },
+    });
+
+    const text = `JOB: ${job.title}\nLevel: ${job.experienceLevel}\nType: ${job.type}\nLocation: ${job.location.city}, ${job.location.country}\nRequired Skills: ${job.requiredSkills.join(", ")}\nDescription: ${job.description}`;
+    const [embedding] = await embedTexts([text], TaskType.RETRIEVAL_DOCUMENT);
+
+    await collection.upsert({
+      ids: [jobId.toString()],
+      documents: [text],
+      embeddings: [embedding],
+      metadatas: [{ jobId: jobId.toString(), title: job.title }],
+    });
+
+    Logger.info({ message: `[ChromaService] Indexed job ${jobId} for discovery` });
+  }
+
+  /**
+   * Search for relevant jobs based on a natural language query.
+   */
+  static async searchJobs(query: string, limit: number = 3): Promise<{ jobId: string; title: string }[]> {
+    const client = getChromaClient();
+    const collectionName = "job_discovery";
+
+    try {
+      const collection = await client.getCollection({ name: collectionName });
+      const [queryEmbedding] = await embedTexts([query], TaskType.RETRIEVAL_QUERY);
+
+      const results = await collection.query({
+        queryEmbeddings: [queryEmbedding],
+        nResults: limit,
+      });
+
+      const metadatas = results.metadatas?.[0] || [];
+      return metadatas.map((m: any) => ({
+        jobId: m.jobId,
+        title: m.title,
+      }));
+    } catch {
+      // If collection doesn't exist, fall back to simple title search in MongoDB
+      const jobs = await Job.find({ title: { $regex: query, $options: "i" } }).limit(limit);
+      return jobs.map((j) => ({
+        jobId: j._id.toString(),
+        title: j.title,
+      }));
+    }
   }
 
   /**

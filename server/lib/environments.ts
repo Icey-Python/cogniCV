@@ -30,6 +30,9 @@ export const ENV = {
   R2_PUBLIC_DOMAIN: process.env.R2_PUBLIC_DOMAIN as string,
   // Resend
   RESEND_API_KEY: process.env.RESEND_API_KEY as string,
+  // Slack Integration
+  SLACK_SIGNING_SECRET: process.env.SLACK_SIGNING_SECRET as string,
+  SLACK_BOT_TOKEN: process.env.SLACK_BOT_TOKEN as string,
 };
 
 export const isProduction = process.env.NODE_ENV === "production";
