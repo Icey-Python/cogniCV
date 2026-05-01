@@ -88,7 +88,8 @@ export default function NewJobPage() {
 	});
 	const [created, setCreated] = useState(false);
 
-	const totalWeight = weights.skills + weights.experience + weights.education + weights.relevance;
+	const totalWeight =
+		weights.skills + weights.experience + weights.education + weights.relevance;
 
 	// Load AI draft from localStorage if available
 	useEffect(() => {
@@ -375,9 +376,9 @@ export default function NewJobPage() {
 									<Label htmlFor="description">
 										Job Description <span className="text-destructive">*</span>
 									</Label>
-									<MdxEditor 
-										markdown={description} 
-										onChange={setDescription} 
+									<MdxEditor
+										markdown={description}
+										onChange={setDescription}
 										placeholder="Describe the role and responsibilities..."
 									/>
 								</div>
@@ -530,39 +531,83 @@ export default function NewJobPage() {
 							<div>
 								<h2 className="text-lg font-semibold">AI Scoring Weights</h2>
 								<p className="text-muted-foreground mt-1 text-sm">
-									Adjust how much importance the AI should give to each factor when ranking candidates. Must total 100%.
+									Adjust how much importance the AI should give to each factor
+									when ranking candidates. Must total 100%.
 								</p>
 							</div>
 
-							<div className={cn("flex items-center justify-between rounded-lg border p-4 transition-colors", totalWeight === 100 ? "bg-primary/5 border-primary/20 text-primary" : "bg-destructive/5 border-destructive/20 text-destructive")}>
-								<span className="font-medium text-sm">Total Weight Allocation</span>
-								<span className="text-lg font-bold">
-									{totalWeight}% / 100%
+							<div
+								className={cn(
+									'flex items-center justify-between rounded-lg border p-4 transition-colors',
+									totalWeight === 100
+										? 'bg-primary/5 border-primary/20 text-primary'
+										: 'bg-destructive/5 border-destructive/20 text-destructive'
+								)}
+							>
+								<span className="text-sm font-medium">
+									Total Weight Allocation
 								</span>
+								<span className="text-lg font-bold">{totalWeight}% / 100%</span>
 							</div>
 
 							<div className="grid gap-6 sm:grid-cols-2">
 								{[
-									{ key: 'skills', label: 'Technical Skills', icon: IconCode, color: 'text-blue-500', desc: 'Weight for matching required skills' },
-									{ key: 'experience', label: 'Experience Level', icon: IconBriefcase, color: 'text-emerald-500', desc: 'Weight for years of experience & seniority' },
-									{ key: 'education', label: 'Education', icon: IconSchool, color: 'text-amber-500', desc: 'Weight for relevant degrees & certifications' },
-									{ key: 'relevance', label: 'Overall Relevance', icon: IconBrain, color: 'text-purple-500', desc: 'Weight for general industry & domain match' }
+									{
+										key: 'skills',
+										label: 'Technical Skills',
+										icon: IconCode,
+										color: 'text-blue-500',
+										desc: 'Weight for matching required skills'
+									},
+									{
+										key: 'experience',
+										label: 'Experience Level',
+										icon: IconBriefcase,
+										color: 'text-emerald-500',
+										desc: 'Weight for years of experience & seniority'
+									},
+									{
+										key: 'education',
+										label: 'Education',
+										icon: IconSchool,
+										color: 'text-amber-500',
+										desc: 'Weight for relevant degrees & certifications'
+									},
+									{
+										key: 'relevance',
+										label: 'Overall Relevance',
+										icon: IconBrain,
+										color: 'text-purple-500',
+										desc: 'Weight for general industry & domain match'
+									}
 								].map((item) => {
 									const Icon = item.icon;
 									const val = weights[item.key as keyof typeof weights];
 									return (
-										<div key={item.key} className="rounded-xl border bg-card p-5 shadow-sm transition-all hover:border-primary/30">
+										<div
+											key={item.key}
+											className="bg-card hover:border-primary/30 rounded-xl border p-5 shadow-sm transition-all"
+										>
 											<div className="mb-4 flex items-start justify-between gap-4">
 												<div className="flex items-center gap-3">
-													<div className={cn("flex size-10 items-center justify-center rounded-lg bg-muted/50", item.color)}>
+													<div
+														className={cn(
+															'bg-muted/50 flex size-10 items-center justify-center rounded-lg',
+															item.color
+														)}
+													>
 														<Icon className="size-5" />
 													</div>
 													<div>
-														<h3 className="font-semibold leading-none">{item.label}</h3>
-														<p className="text-xs text-muted-foreground mt-1.5">{item.desc}</p>
+														<h3 className="leading-none font-semibold">
+															{item.label}
+														</h3>
+														<p className="text-muted-foreground mt-1.5 text-xs">
+															{item.desc}
+														</p>
 													</div>
 												</div>
-												<div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+												<div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-bold">
 													{val}%
 												</div>
 											</div>
@@ -573,10 +618,15 @@ export default function NewJobPage() {
 													max="100"
 													step="5"
 													value={val}
-													onChange={(e) => setWeights(prev => ({ ...prev, [item.key]: parseInt(e.target.value) }))}
-													className="h-2 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary"
+													onChange={(e) =>
+														setWeights((prev) => ({
+															...prev,
+															[item.key]: parseInt(e.target.value)
+														}))
+													}
+													className="bg-muted accent-primary h-2 w-full cursor-pointer appearance-none rounded-full"
 												/>
-												<div className="mt-2 flex justify-between text-[10px] font-medium text-muted-foreground">
+												<div className="text-muted-foreground mt-2 flex justify-between text-[10px] font-medium">
 													<span>Low</span>
 													<span>Medium</span>
 													<span>High</span>
